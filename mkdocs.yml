@@ -1,0 +1,7 @@
+site_name: TestFlow | Docs
+theme: readthedocs
+nav:
+  - Home: index.md
+  - Phase 1:
+      - Overview: phase-1/overview.md
+      - Architecture: phase-1/architecture.md
