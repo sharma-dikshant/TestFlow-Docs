@@ -1,5 +1,8 @@
 site_name: TestFlow | Docs
 theme: readthedocs
+plugins:
+  - search
+  - mermaid2
 nav:
   - Home: index.md
   - Phase 1:
