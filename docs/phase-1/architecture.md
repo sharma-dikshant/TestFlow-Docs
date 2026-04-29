@@ -1,5 +1,56 @@
 # Architecture
 
+## v2.1.0
+
+```mermaid
+flowchart TD
+
+    %% USER
+    user["User (Web/App)"]
+
+    %% CONTROLLERS
+    subgraph controllers["Controllers Layer"]
+        testCtrl["Test Controller"]
+        attemptCtrl["Attempt Controller"]
+        authCtrl["Auth Controller"]
+    end
+
+    %% SERVICES
+    subgraph services["Services Layer"]
+        testService["Test Service"]
+        attemptService["Attempt Service"]
+        evalService["Evaluation Logic"]
+        llmService["LLM Module (Question Provider)"]
+        authService["Auth Service"]
+    end
+
+    %% DATABASE
+    db[(Database)]
+
+    %% USER FLOW
+    user -->|"Create Test"| testCtrl
+    user -->|"Attempt Test"| attemptCtrl
+    user -->|"Auth"| authCtrl
+
+    %% TEST FLOW
+    testCtrl --> testService
+    testService -->|"get questions"| llmService
+    testService -->|"store test"| db
+    testService -->|"return test"| user
+
+    %% ATTEMPT FLOW
+    attemptCtrl --> attemptService
+    attemptService -->|"fetch test"| db
+    attemptService --> evalService
+    evalService -->|"score"| attemptService
+    attemptService -->|"store attempt"| db
+    attemptService -->|"return result"| user
+
+    %% AUTH FLOW
+    authCtrl --> authService
+    authService --> db
+```
+
 ## v2
 
 ```mermaid
