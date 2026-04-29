@@ -1,5 +1,33 @@
 # Architecture
 
+## v2
+
+```mermaid
+flowchart LR
+    user["User"]
+
+    subgraph backend["NestJS Backend (Modular Monolith)"]
+        auth["Auth Module"]
+        test["Test Module"]
+        attempt["Attempt Module"]
+        evaluation["Evaluation Logic"]
+        llm["LLM Module (Question Provider)"]
+    end
+
+    db[(Database)]
+
+    user -->|"Create / Give Test"| test
+    test -->|"fetch questions"| llm
+    test --> db
+
+    user -->|"Submit Answers"| attempt
+    attempt --> evaluation
+    evaluation --> db
+
+    auth -.-> test
+    auth -.-> attempt
+```
+
 ## v1
 
 ```mermaid
