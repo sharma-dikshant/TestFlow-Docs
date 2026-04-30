@@ -11,17 +11,18 @@ flowchart TD
     %% CONTROLLERS
     subgraph controllers["Controllers Layer"]
         testCtrl["Test Controller"]
-        attemptCtrl["Attempt Controller"]
+        submissionCtrl["submission Controller"]
         authCtrl["Auth Controller"]
     end
 
     %% SERVICES
     subgraph services["Services Layer"]
         testService["Test Service"]
-        attemptService["Attempt Service"]
+        submissionService["submission Service"]
         evalService["Evaluation Logic"]
         llmService["LLM Module (Question Provider)"]
         authService["Auth Service"]
+
     end
 
     %% DATABASE
@@ -29,7 +30,7 @@ flowchart TD
 
     %% USER FLOW
     user -->|"Create Test"| testCtrl
-    user -->|"Attempt Test"| attemptCtrl
+    user -->|"submission Test"| submissionCtrl
     user -->|"Auth"| authCtrl
 
     %% TEST FLOW
@@ -38,13 +39,13 @@ flowchart TD
     testService -->|"store test"| db
     testService -->|"return test"| user
 
-    %% ATTEMPT FLOW
-    attemptCtrl --> attemptService
-    attemptService -->|"fetch test"| db
-    attemptService --> evalService
-    evalService -->|"score"| attemptService
-    attemptService -->|"store attempt"| db
-    attemptService -->|"return result"| user
+    %% submission FLOW
+    submissionCtrl --> submissionService
+    submissionService -->|"fetch test"| db
+    submissionService --> evalService
+    evalService -->|"score"| submissionService
+    submissionService -->|"store submission"| db
+    submissionService -->|"return result"| user
 
     %% AUTH FLOW
     authCtrl --> authService
@@ -60,7 +61,7 @@ flowchart LR
     subgraph backend["NestJS Backend (Modular Monolith)"]
         auth["Auth Module"]
         test["Test Module"]
-        attempt["Attempt Module"]
+        submission["submission Module"]
         evaluation["Evaluation Logic"]
         llm["LLM Module (Question Provider)"]
     end
@@ -71,12 +72,12 @@ flowchart LR
     test -->|"fetch questions"| llm
     test --> db
 
-    user -->|"Submit Answers"| attempt
-    attempt --> evaluation
+    user -->|"Submit Answers"| submission
+    submission --> evaluation
     evaluation --> db
 
     auth -.-> test
-    auth -.-> attempt
+    auth -.-> submission
 ```
 
 ## v1
