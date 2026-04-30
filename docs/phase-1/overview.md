@@ -4,7 +4,7 @@ This is the first phase of the project. In this phase, we will focus on the foll
 
 1. Architecture Design: We will design the overall architecture of the system, including the components, their interactions, and the data flow.
 2. Microservices Identification: We will identify the microservices that will be part of the system and define their responsibilities.
-3. Communication Protocols: We will decide on the communication protocols that will be used for inter-service communication.
+3. Communication Protocols: We will decide on the communication protocols that will be used in the inter-service communication.
 
 # Key Features Considerations while designing the inital architecture:
 
