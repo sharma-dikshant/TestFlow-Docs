@@ -9,3 +9,4 @@ nav:
       - Overview: phase-1/overview.md
       - Architecture: phase-1/architecture.md
       - ERD: phase-1/erd.md
+      - ERDv2: phase/erdv2.md
