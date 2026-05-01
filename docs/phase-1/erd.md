@@ -2,6 +2,134 @@
 
 In this section, we will create an Entity Relationship Diagram (ERD) to visually represent the relationships between the entities in our database. An ERD is a graphical representation of the entities and their relationships in a database.
 
+## v1.2
+
+```mermaid
+erDiagram
+
+    users {
+        int id PK
+        varchar full_name
+        varchar first_name
+        varchar last_name
+        varchar username
+        varchar email
+        varchar password
+        varchar phone_number
+        enum status
+        boolean is_verified
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+    roles {
+        int id PK
+        varchar name
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+    user_roles {
+        int id PK
+        int user_id FK
+        int role_id FK
+        timestamp created_at
+    }
+
+    resources {
+        int id PK
+        varchar key
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+    policies {
+        int id PK
+        int role_id FK
+        int resource_id FK
+        text description
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+    tests {
+        int id PK
+        varchar title
+        text description
+        timestamp start_time
+        timestamp end_time
+        int duration
+        int created_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    questions {
+        int id PK
+        text question_text
+        enum type
+        jsonb options
+        jsonb test_cases
+        int default_marks
+        int created_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    test_questions {
+        int id PK
+        int test_id FK
+        int question_id FK
+        int marks
+        int order_index
+    }
+
+    test_participants {
+        int id PK
+        int user_id FK
+        int test_id FK
+        enum status
+        timestamp started_at
+        timestamp completed_at
+        timestamp created_at
+    }
+
+    submissions {
+        int id PK
+        int participant_id FK
+        int test_question_id FK
+        text answer
+        jsonb evaluated_result
+        int score
+        int attempt_no
+        timestamp submitted_at
+    }
+
+    %% Auth relationships
+    users ||--o{ user_roles : has
+    roles ||--o{ user_roles : assigned_to
+
+    roles ||--o{ policies : "id -> role_id"
+    resources ||--o{ policies : "id -> resource_id"
+
+    %% Test relationships
+    users ||--o{ tests : creates
+    users ||--o{ questions : creates
+    users ||--o{ test_participants : participates
+
+    tests ||--o{ test_participants : has
+    tests ||--o{ test_questions : includes
+
+    questions ||--o{ test_questions : mapped_in
+
+    test_participants ||--o{ submissions : makes
+    test_questions ||--o{ submissions : answered_in
+```
+
 ## v1.1
 
 ```mermaid
