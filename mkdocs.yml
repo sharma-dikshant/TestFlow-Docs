@@ -10,3 +10,4 @@ nav:
       - Architecture: phase-1/architecture.md
       - ERD: phase-1/erd.md
       - ERDv2: phase-1/erdv2.md
+      - Data Access Pattern: phase-1/data-access-pattern.md
