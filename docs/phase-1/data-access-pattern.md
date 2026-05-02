@@ -28,43 +28,43 @@
 
 ## 🔐 RBAC / Authorization
 
-| Scenario                                      | DQL | Remark |
-| --------------------------------------------- | --- | ------ |
-| Get all roles                                 |     |        |
-| Get all resources                             |     |        |
-| Get all policies for a role                   |     |        |
-| Get all resources accessible by a role        |     |        |
-| Check whether role has access to resource     |     |        |
-| Get all users having a specific role          |     |        |
-| Get all roles using a specific resource       |     |        |
-| Get all policies with role + resource details |     |        |
-| Find unused resources                         |     |        |
-| Find roles without policies                   |     |        |
-| Get all permissions matrix for admin panel    |     |        |
+| Scenario                                      | DQL                                                                                                                                                                                                                                                          | Remark |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| Get all roles                                 | `SELECT * FROM roles WHERE deleted_at IS NULL;`                                                                                                                                                                                                              |        |
+| Get all resources                             | `SELECT * FROM resources WHERE deleted_at IS NULL;`                                                                                                                                                                                                          |        |
+| Get all policies for a role                   | `SELECT p.* FROM policies p JOIN roles r ON r.id = p.role_id WHERE r.name = 'ADMIN' AND p.deleted_at IS NULL;`                                                                                                                                               |        |
+| Get all resources accessible by a role        | `SELECT res.* FROM resources res JOIN policies p ON p.resource_id = res.id JOIN roles r ON r.id = p.role_id WHERE r.name = 'ADMIN' AND res.deleted_at IS NULL;`                                                                                              |        |
+| Check whether role has access to resource     | `SELECT EXISTS ( SELECT 1 FROM policies p JOIN roles r ON r.id = p.role_id JOIN resources res ON res.id = p.resource_id WHERE r.name = 'ADMIN' AND res.key = 'tests:create' AND p.deleted_at IS NULL );`                                                     |        |
+| Get all users having a specific role          | `SELECT u.* FROM users u JOIN user_roles ur ON ur.user_id = u.id JOIN roles r ON r.id = ur.role_id WHERE r.name = 'ADMIN' AND u.deleted_at IS NULL;`                                                                                                         |        |
+| Get all roles using a specific resource       | `SELECT r.* FROM roles r JOIN policies p ON p.role_id = r.id JOIN resources res ON res.id = p.resource_id WHERE res.key = 'tests:create' AND r.deleted_at IS NULL;`                                                                                          |        |
+| Get all policies with role + resource details | `SELECT p.id, r.name AS role_name, res.key AS resource_key, p.description FROM policies p JOIN roles r ON r.id = p.role_id JOIN resources res ON res.id = p.resource_id WHERE p.deleted_at IS NULL;`                                                         |        |
+| Find unused resources                         | `SELECT res.* FROM resources res LEFT JOIN policies p ON p.resource_id = res.id WHERE p.id IS NULL AND res.deleted_at IS NULL;`                                                                                                                              |        |
+| Find roles without policies                   | `SELECT r.* FROM roles r LEFT JOIN policies p ON p.role_id = r.id WHERE p.id IS NULL AND r.deleted_at IS NULL;`                                                                                                                                              |        |
+| Get all permissions matrix for admin panel    | `SELECT r.name AS role_name, res.key AS resource_key, CASE WHEN p.id IS NOT NULL THEN true ELSE false END AS has_access FROM roles r CROSS JOIN resources res LEFT JOIN policies p ON p.role_id = r.id AND p.resource_id = res.id ORDER BY r.name, res.key;` |        |
 
 ## 📝 Tests
 
-| Scenario                               | DQL | Remark |
-| -------------------------------------- | --- | ------ |
-| Create test                            |     |        |
-| Get test by id                         |     |        |
-| Get all tests                          |     |        |
-| Get all upcoming tests                 |     |        |
-| Get all ongoing tests                  |     |        |
-| Get all completed tests                |     |        |
-| Get all tests created by a user        |     |        |
-| Search tests by title                  |     |        |
-| Get test with creator details          |     |        |
-| Get tests between dates                |     |        |
-| Get tests with participant count       |     |        |
-| Get tests with question count          |     |        |
-| Get tests sorted by latest             |     |        |
-| Get tests sorted by popularity         |     |        |
-| Soft delete test                       |     |        |
-| Get tests available for a user         |     |        |
-| Get tests user already participated in |     |        |
-| Get currently active tests             |     |        |
-| Get tests ending soon                  |     |        |
+| Scenario                               | DQL                                                                                                                                                                                                                    | Remark |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Create test                            | `INSERT INTO tests (title, description, start_time, end_time, duration, created_by, created_at, updated_at) VALUES ('JavaScript Test', 'Basic JS assessment', NOW(), NOW() + INTERVAL '1 HOUR', 60, 1, NOW(), NOW());` |        |
+| Get test by id                         | `SELECT * FROM tests WHERE id = 1;`                                                                                                                                                                                    |        |
+| Get all tests                          | `SELECT * FROM tests ORDER BY created_at DESC;`                                                                                                                                                                        |        |
+| Get all upcoming tests                 | `SELECT * FROM tests WHERE start_time > NOW() ORDER BY start_time ASC;`                                                                                                                                                |        |
+| Get all ongoing tests                  | `SELECT * FROM tests WHERE start_time <= NOW() AND end_time >= NOW();`                                                                                                                                                 |        |
+| Get all completed tests                | `SELECT * FROM tests WHERE end_time < NOW();`                                                                                                                                                                          |        |
+| Get all tests created by a user        | `SELECT * FROM tests WHERE created_by = 1 ORDER BY created_at DESC;`                                                                                                                                                   |        |
+| Search tests by title                  | `SELECT * FROM tests WHERE title ILIKE '%javascript%';`                                                                                                                                                                |        |
+| Get test with creator details          | `SELECT t.*, u.id AS creator_id, u.full_name, u.email FROM tests t JOIN users u ON u.id = t.created_by WHERE t.id = 1;`                                                                                                |        |
+| Get tests between dates                | `SELECT * FROM tests WHERE start_time BETWEEN '2026-05-01' AND '2026-05-31';`                                                                                                                                          |        |
+| Get tests with participant count       | `SELECT t.id, t.title, COUNT(tp.id) AS participant_count FROM tests t LEFT JOIN test_participants tp ON tp.test_id = t.id GROUP BY t.id, t.title;`                                                                     |        |
+| Get tests with question count          | `SELECT t.id, t.title, COUNT(tq.id) AS question_count FROM tests t LEFT JOIN test_questions tq ON tq.test_id = t.id GROUP BY t.id, t.title;`                                                                           |        |
+| Get tests sorted by latest             | `SELECT * FROM tests ORDER BY created_at DESC;`                                                                                                                                                                        |        |
+| Get tests sorted by popularity         | `SELECT t.id, t.title, COUNT(tp.id) AS participant_count FROM tests t LEFT JOIN test_participants tp ON tp.test_id = t.id GROUP BY t.id, t.title ORDER BY participant_count DESC;`                                     |        |
+| Soft delete test                       | `UPDATE tests SET deleted_at = NOW() WHERE id = 1;`                                                                                                                                                                    |        |
+| Get tests available for a user         | `SELECT * FROM tests WHERE start_time > NOW() AND id NOT IN ( SELECT test_id FROM test_participants WHERE user_id = 1 );`                                                                                              |        |
+| Get tests user already participated in | `SELECT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1;`                                                                                                                         |        |
+| Get currently active tests             | `SELECT * FROM tests WHERE start_time <= NOW() AND end_time >= NOW();`                                                                                                                                                 |        |
+| Get tests ending soon                  | `SELECT * FROM tests WHERE end_time BETWEEN NOW() AND NOW() + INTERVAL '30 MINUTES';`                                                                                                                                  |        |
 
 ## ❓ Questions
 
