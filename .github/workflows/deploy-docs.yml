@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs mkdocs-mermaid2-plugin
+          pip install -r requirements.txt
 
       - name: Deploy documentation
         run: mkdocs gh-deploy --force
