@@ -1,5 +1,5 @@
 site_name: TestFlow | Docs
-theme: readthedocs
+theme: material
 plugins:
   - search
   - mermaid2
