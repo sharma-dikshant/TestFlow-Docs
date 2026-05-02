@@ -2,6 +2,11 @@
 
 ## 👤 Users & Auth
 
+### Important Note:
+
+- We use soft delete by having a `deleted_at` timestamp column. All queries should include `AND deleted_at IS NULL` to exclude soft-deleted records. `deleted_at` is used by admin to soft delete user accounts, allowing for potential restoration later. This approach ensures that deleted accounts are not permanently removed from the database, providing flexibility for account recovery if needed.
+- We supporting account activation/inactivation using a boolean flag `is_active`. Queries should include `AND is_active = true` to only consider active accounts.
+
 | Scenario                             | DQL                                                                                                                                                                                                        | Remark                                                 |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | Get user by email                    | `SELECT * FROM users WHERE email = 'john@example.com' AND deleted_at IS NULL`                                                                                                                              |                                                        |
