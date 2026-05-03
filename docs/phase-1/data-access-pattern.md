@@ -80,9 +80,9 @@
 | Get questions used in tests          | `SELECT DISTINCT q.* FROM questions q JOIN test_questions tq ON tq.question_id = q.id;` |        |
 | Get unused questions                 | `SELECT * FROM questions WHERE id NOT IN (SELECT question_id FROM test_questions);` |        |
 | Get most frequently used questions   | `SELECT q.id, q.question_text, COUNT(tq.id) AS usage_count FROM questions q JOIN test_questions tq ON tq.question_id = q.id GROUP BY q.id, q.question_text ORDER BY usage_count DESC LIMIT 10;` |        |
-| Get coding questions only            | `SELECT * FROM questions WHERE test_cases IS NOT NULL AND jsonb_array_length(test_cases) > 0;` |        |
-| Get MCQ questions only               | `SELECT * FROM questions WHERE options IS NOT NULL AND jsonb_array_length(options) > 0;` |        |
-| Get subjective questions only        | `SELECT * FROM questions WHERE (options IS NULL OR jsonb_array_length(options) = 0) AND (test_cases IS NULL OR jsonb_array_length(test_cases) = 0);` |        |
+| Get coding questions only            | `SELECT * FROM questions WHERE type = 'CODING';` |        |
+| Get MCQ questions only               | `SELECT * FROM questions WHERE type = 'MCQ';` |        |
+| Get subjective questions only        | `SELECT * FROM questions WHERE type = 'SUBJECTIVE';` |        |
 | Get question with all tests using it | `SELECT t.id, t.title FROM tests t JOIN test_questions tq ON tq.test_id = t.id WHERE tq.question_id = 1;` |        |
 | Get recently created questions       | `SELECT * FROM questions ORDER BY created_at DESC LIMIT 10;` |        |
 
@@ -109,18 +109,18 @@
 | -------------------------------------- | --- | ------ |
 | Enroll user in test                    | `INSERT INTO test_participants (user_id, test_id, status, created_at) VALUES (1, 1, 'ENROLLED', NOW());` |        |
 | Get all participants of a test         | `SELECT u.id, u.full_name, u.email, tp.status FROM test_participants tp JOIN users u ON u.id = tp.user_id WHERE tp.test_id = 1;` |        |
-| Get all tests participated by a user   | `SELECT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1;` |        |
+| Get all tests participated by a user   | `SELECT DISTINCT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1 AND tp.status = 'COMPLETED';` | Only counts completed attempts |
 | Get participant status                 | `SELECT id AS participant_id, status FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at;` | One row per attempt |
 | Get participants currently taking test | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'IN_PROGRESS';` |        |
 | Get completed participants             | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'COMPLETED';` |        |
-| Get absent participants                | `SELECT * FROM test_participants WHERE test_id = 1 AND started_at IS NULL;` | Enrolled but never started |
+| Get absent participants                | `SELECT tp.* FROM test_participants tp JOIN tests t ON t.id = tp.test_id WHERE tp.test_id = 1 AND t.end_time < NOW() AND tp.started_at IS NULL;` | Test window has ended and the participant never started |
 | Get participant start/completion time  | `SELECT id, started_at, completed_at FROM test_participants WHERE id = 1;` |        |
 | Get average completion time            | `SELECT AVG(EXTRACT(EPOCH FROM (completed_at - started_at))) AS avg_seconds FROM test_participants WHERE test_id = 1 AND completed_at IS NOT NULL;` |        |
-| Count participants per test            | `SELECT test_id, COUNT(*) AS participant_count FROM test_participants GROUP BY test_id;` |        |
+| Count participants per test            | `SELECT test_id, COUNT(DISTINCT user_id) AS participant_count FROM test_participants GROUP BY test_id;` | Dedupes multiple attempts by the same user |
 | Count tests attempted by user          | `SELECT user_id, COUNT(DISTINCT test_id) AS tests_attempted FROM test_participants WHERE user_id = 1 GROUP BY user_id;` |        |
-| Get leaderboard participation list     | `SELECT tp.id AS participant_id, u.full_name, COALESCE(SUM(s.score), 0) AS total_score FROM test_participants tp JOIN users u ON u.id = tp.user_id LEFT JOIN submissions s ON s.participant_id = tp.id WHERE tp.test_id = 1 GROUP BY tp.id, u.full_name ORDER BY total_score DESC;` |        |
+| Get leaderboard participation list     | `SELECT u.id AS user_id, u.full_name, COALESCE(SUM(s.score), 0) AS total_score FROM (SELECT DISTINCT ON (user_id) id, user_id FROM test_participants WHERE test_id = 1 AND status = 'COMPLETED' ORDER BY user_id, created_at ASC) first_tp JOIN users u ON u.id = first_tp.user_id LEFT JOIN submissions s ON s.participant_id = first_tp.id GROUP BY u.id, u.full_name ORDER BY total_score DESC;` | One row per user — first completed attempt only |
 | Get latest participants                | `SELECT * FROM test_participants ORDER BY created_at DESC LIMIT 10;` |        |
-| Check if user already joined test      | `SELECT id AS participant_id, status, started_at, completed_at, created_at FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at;` | One row per attempt; user may have multiple |
+| Check if user already joined test      | `SELECT EXISTS (SELECT 1 FROM test_participants WHERE user_id = 1 AND test_id = 1 AND status = 'IN_PROGRESS') AS already_joined;` | "Already joined" = has an `IN_PROGRESS` attempt |
 | Get participant by user + test         | `SELECT * FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at DESC;` | Returns one row per attempt; segregated by `participant_id` (use `LIMIT 1` for the latest attempt) |
 | Get participants who never submitted   | `SELECT tp.* FROM test_participants tp LEFT JOIN submissions s ON s.participant_id = tp.id WHERE s.id IS NULL;` | Per attempt — a `participant_id` with no submissions |
 
@@ -130,27 +130,27 @@
 | --------------------------------------- | --- | ------ |
 | Create submission                       | `INSERT INTO submissions (participant_id, test_question_id, answer, attempt_no, submitted_at) VALUES (1, 1, 'My answer', 1, NOW());` | `evaluated_result` and `score` filled later by evaluator |
 | Get submission by id                    | `SELECT * FROM submissions WHERE id = 1;` |        |
-| Get all submissions of participant      | `SELECT * FROM submissions WHERE participant_id = 1 ORDER BY submitted_at DESC;` |        |
-| Get all submissions for test            | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.test_id = 1;` |        |
-| Get all submissions for question        | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.question_id = 10;` |        |
-| Get latest submission for question      | `SELECT * FROM submissions WHERE participant_id = 1 AND test_question_id = 1 ORDER BY attempt_no DESC LIMIT 1;` |        |
-| Get highest scoring submission          | `SELECT * FROM submissions ORDER BY score DESC NULLS LAST LIMIT 1;` |        |
+| Get all submissions of participant      | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;` | Only after the participant has completed |
+| Get all submissions for test            | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.test_id = 1 AND tp.status = 'COMPLETED';` | Only completed participants |
+| Get all submissions for question        | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.question_id = 10 AND tp.status = 'COMPLETED';` | Only completed participants |
+| Get latest submission for question      | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND s.test_question_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.attempt_no DESC LIMIT 1;` |        |
+| Get highest scoring submission          | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.score DESC NULLS LAST LIMIT 1;` |        |
 | Get submissions between dates           | `SELECT * FROM submissions WHERE submitted_at BETWEEN '2026-05-01' AND '2026-05-31';` |        |
-| Count submissions per question          | `SELECT tq.question_id, COUNT(*) AS submission_count FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.question_id;` |        |
-| Count submissions per participant       | `SELECT participant_id, COUNT(*) AS submission_count FROM submissions GROUP BY participant_id;` |        |
+| Count submissions per question          | `SELECT tq.question_id, COUNT(*) AS submission_count FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.question_id;` |        |
+| Count submissions per participant       | `SELECT s.participant_id, COUNT(*) AS submission_count FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY s.participant_id;` |        |
 | Get unanswered questions                | `SELECT tq.* FROM test_questions tq WHERE tq.test_id = 1 AND tq.id NOT IN (SELECT test_question_id FROM submissions WHERE participant_id = 1);` | For a given participant in a test |
 | Get evaluated submissions               | `SELECT * FROM submissions WHERE evaluated_result IS NOT NULL;` |        |
 | Get pending evaluations                 | `SELECT * FROM submissions WHERE evaluated_result IS NULL;` |        |
-| Get submissions with score > X          | `SELECT * FROM submissions WHERE score > 5;` |        |
+| Get submissions with score > X          | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.score > 5 AND tp.status = 'COMPLETED';` |        |
 | Get submissions with failed test cases  | `SELECT * FROM submissions WHERE (evaluated_result->>'failed_count')::int > 0;` | Assumes evaluator stores `failed_count` in `evaluated_result` jsonb |
-| Get submissions sorted by latest        | `SELECT * FROM submissions ORDER BY submitted_at DESC;` |        |
-| Get average score per question          | `SELECT tq.question_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.question_id;` |        |
-| Get average score per test              | `SELECT tq.test_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.test_id;` |        |
-| Get submission history for participant  | `SELECT s.*, tq.question_id FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE s.participant_id = 1 ORDER BY s.submitted_at DESC;` |        |
-| Get multiple attempts for same question | `SELECT * FROM submissions WHERE participant_id = 1 AND test_question_id = 1 ORDER BY attempt_no ASC;` |        |
-| Get latest attempt only                 | `SELECT DISTINCT ON (participant_id, test_question_id) * FROM submissions ORDER BY participant_id, test_question_id, attempt_no DESC;` | One row per (participant, question) — the highest `attempt_no` |
-| Get total score of participant          | `SELECT participant_id, SUM(score) AS total_score FROM (SELECT DISTINCT ON (participant_id, test_question_id) participant_id, test_question_id, score FROM submissions WHERE participant_id = 1 ORDER BY participant_id, test_question_id, attempt_no DESC) latest GROUP BY participant_id;` | Sums latest attempt per question only |
-| Get participant rank in test            | `SELECT participant_id, total_score, RANK() OVER (ORDER BY total_score DESC) AS rank FROM (SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.test_id = 1 GROUP BY s.participant_id) scores;` |        |
+| Get submissions sorted by latest        | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;` |        |
+| Get average score per question          | `SELECT tq.question_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.question_id;` |        |
+| Get average score per test              | `SELECT tq.test_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.test_id;` |        |
+| Get submission history for participant  | `SELECT s.*, tq.question_id FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;` |        |
+| Get multiple attempts for same question | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND s.test_question_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.attempt_no ASC;` |        |
+| Get latest attempt only                 | `SELECT DISTINCT ON (s.participant_id, s.test_question_id) s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.participant_id, s.test_question_id, s.attempt_no DESC;` | One row per (participant, question) — the highest `attempt_no` |
+| Get total score of participant          | `SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' GROUP BY s.participant_id;` | Each `participant_id` = one attempt, so plain SUM is correct |
+| Get participant rank in test            | `SELECT participant_id, total_score, RANK() OVER (ORDER BY total_score DESC) AS rank FROM (SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.test_id = 1 AND tp.status = 'COMPLETED' GROUP BY s.participant_id) scores;` |        |
 
 ## 📊 Analytics / Reporting
 
