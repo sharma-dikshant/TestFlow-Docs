@@ -70,87 +70,87 @@
 
 | Scenario                             | DQL | Remark |
 | ------------------------------------ | --- | ------ |
-| Create question                      |     |        |
-| Get question by id                   |     |        |
-| Get all questions                    |     |        |
-| Get questions by type                |     |        |
-| Get questions created by a user      |     |        |
-| Search questions by text             |     |        |
-| Get questions with default marks     |     |        |
-| Get questions used in tests          |     |        |
-| Get unused questions                 |     |        |
-| Get most frequently used questions   |     |        |
-| Get coding questions only            |     |        |
-| Get MCQ questions only               |     |        |
-| Get subjective questions only        |     |        |
-| Get question with all tests using it |     |        |
-| Get recently created questions       |     |        |
+| Create question                      | `INSERT INTO questions (question_text, type, options, test_cases, default_marks, created_by, created_at, updated_at) VALUES ('What is 2+2?', 'MCQ', '[{"text":"3","isCorrect":false},{"text":"4","isCorrect":true}]'::jsonb, NULL, 1, 1, NOW(), NOW());` | MCQ → fill `options`; CODING → fill `test_cases`; SUBJECTIVE → both NULL |
+| Get question by id                   | `SELECT * FROM questions WHERE id = 1;` |        |
+| Get all questions                    | `SELECT * FROM questions ORDER BY created_at DESC;` |        |
+| Get questions by type                | `SELECT * FROM questions WHERE type = 'MCQ';` |        |
+| Get questions created by a user      | `SELECT * FROM questions WHERE created_by = 1 ORDER BY created_at DESC;` |        |
+| Search questions by text             | `SELECT * FROM questions WHERE question_text ILIKE '%binary search%';` |        |
+| Get questions with default marks     | `SELECT * FROM questions WHERE default_marks = 5;` |        |
+| Get questions used in tests          | `SELECT DISTINCT q.* FROM questions q JOIN test_questions tq ON tq.question_id = q.id;` |        |
+| Get unused questions                 | `SELECT * FROM questions WHERE id NOT IN (SELECT question_id FROM test_questions);` |        |
+| Get most frequently used questions   | `SELECT q.id, q.question_text, COUNT(tq.id) AS usage_count FROM questions q JOIN test_questions tq ON tq.question_id = q.id GROUP BY q.id, q.question_text ORDER BY usage_count DESC LIMIT 10;` |        |
+| Get coding questions only            | `SELECT * FROM questions WHERE test_cases IS NOT NULL AND jsonb_array_length(test_cases) > 0;` |        |
+| Get MCQ questions only               | `SELECT * FROM questions WHERE options IS NOT NULL AND jsonb_array_length(options) > 0;` |        |
+| Get subjective questions only        | `SELECT * FROM questions WHERE (options IS NULL OR jsonb_array_length(options) = 0) AND (test_cases IS NULL OR jsonb_array_length(test_cases) = 0);` |        |
+| Get question with all tests using it | `SELECT t.id, t.title FROM tests t JOIN test_questions tq ON tq.test_id = t.id WHERE tq.question_id = 1;` |        |
+| Get recently created questions       | `SELECT * FROM questions ORDER BY created_at DESC LIMIT 10;` |        |
 
 ## 🔗 Test Questions Mapping
 
 | Scenario                            | DQL | Remark |
 | ----------------------------------- | --- | ------ |
-| Add question to test                |     |        |
-| Get all questions for a test        |     |        |
-| Get ordered questions for a test    |     |        |
-| Get total marks of a test           |     |        |
-| Get question count for a test       |     |        |
-| Get all tests containing a question |     |        |
-| Update question order in test       |     |        |
-| Update marks override in test       |     |        |
-| Remove question from test           |     |        |
-| Find duplicate question mappings    |     |        |
-| Get first/last question of a test   |     |        |
-| Get questions with custom marks     |     |        |
+| Add question to test                | `INSERT INTO test_questions (test_id, question_id, marks, order_index) VALUES (1, 10, 5, 1);` | `marks` overrides `questions.default_marks` for this test |
+| Get all questions for a test        | `SELECT q.*, tq.marks, tq.order_index FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.test_id = 1;` |        |
+| Get ordered questions for a test    | `SELECT q.*, tq.marks, tq.order_index FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.test_id = 1 ORDER BY tq.order_index ASC;` |        |
+| Get total marks of a test           | `SELECT SUM(marks) AS total_marks FROM test_questions WHERE test_id = 1;` |        |
+| Get question count for a test       | `SELECT COUNT(*) AS question_count FROM test_questions WHERE test_id = 1;` |        |
+| Get all tests containing a question | `SELECT t.* FROM tests t JOIN test_questions tq ON tq.test_id = t.id WHERE tq.question_id = 10;` |        |
+| Update question order in test       | `UPDATE test_questions SET order_index = 3 WHERE test_id = 1 AND question_id = 10;` |        |
+| Update marks override in test       | `UPDATE test_questions SET marks = 10 WHERE test_id = 1 AND question_id = 10;` |        |
+| Remove question from test           | `DELETE FROM test_questions WHERE test_id = 1 AND question_id = 10;` |        |
+| Find duplicate question mappings    | `SELECT test_id, question_id, COUNT(*) FROM test_questions GROUP BY test_id, question_id HAVING COUNT(*) > 1;` |        |
+| Get first/last question of a test   | `SELECT * FROM test_questions WHERE test_id = 1 AND order_index IN ((SELECT MIN(order_index) FROM test_questions WHERE test_id = 1), (SELECT MAX(order_index) FROM test_questions WHERE test_id = 1));` |        |
+| Get questions with custom marks     | `SELECT q.id, q.default_marks, tq.marks, tq.test_id FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.marks IS DISTINCT FROM q.default_marks;` | Rows where the per-test override differs from `default_marks` |
 
 ## 👥 Test Participants
 
 | Scenario                               | DQL | Remark |
 | -------------------------------------- | --- | ------ |
-| Enroll user in test                    |     |        |
-| Get all participants of a test         |     |        |
-| Get all tests participated by a user   |     |        |
-| Get participant status                 |     |        |
-| Get participants currently taking test |     |        |
-| Get completed participants             |     |        |
-| Get absent participants                |     |        |
-| Get participant start/completion time  |     |        |
-| Get average completion time            |     |        |
-| Count participants per test            |     |        |
-| Count tests attempted by user          |     |        |
-| Get leaderboard participation list     |     |        |
-| Get latest participants                |     |        |
-| Check if user already joined test      |     |        |
-| Get participant by user + test         |     |        |
-| Get participants who never submitted   |     |        |
+| Enroll user in test                    | `INSERT INTO test_participants (user_id, test_id, status, created_at) VALUES (1, 1, 'ENROLLED', NOW());` |        |
+| Get all participants of a test         | `SELECT u.id, u.full_name, u.email, tp.status FROM test_participants tp JOIN users u ON u.id = tp.user_id WHERE tp.test_id = 1;` |        |
+| Get all tests participated by a user   | `SELECT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1;` |        |
+| Get participant status                 | `SELECT id AS participant_id, status FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at;` | One row per attempt |
+| Get participants currently taking test | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'IN_PROGRESS';` |        |
+| Get completed participants             | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'COMPLETED';` |        |
+| Get absent participants                | `SELECT * FROM test_participants WHERE test_id = 1 AND started_at IS NULL;` | Enrolled but never started |
+| Get participant start/completion time  | `SELECT id, started_at, completed_at FROM test_participants WHERE id = 1;` |        |
+| Get average completion time            | `SELECT AVG(EXTRACT(EPOCH FROM (completed_at - started_at))) AS avg_seconds FROM test_participants WHERE test_id = 1 AND completed_at IS NOT NULL;` |        |
+| Count participants per test            | `SELECT test_id, COUNT(*) AS participant_count FROM test_participants GROUP BY test_id;` |        |
+| Count tests attempted by user          | `SELECT user_id, COUNT(DISTINCT test_id) AS tests_attempted FROM test_participants WHERE user_id = 1 GROUP BY user_id;` |        |
+| Get leaderboard participation list     | `SELECT tp.id AS participant_id, u.full_name, COALESCE(SUM(s.score), 0) AS total_score FROM test_participants tp JOIN users u ON u.id = tp.user_id LEFT JOIN submissions s ON s.participant_id = tp.id WHERE tp.test_id = 1 GROUP BY tp.id, u.full_name ORDER BY total_score DESC;` |        |
+| Get latest participants                | `SELECT * FROM test_participants ORDER BY created_at DESC LIMIT 10;` |        |
+| Check if user already joined test      | `SELECT id AS participant_id, status, started_at, completed_at, created_at FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at;` | One row per attempt; user may have multiple |
+| Get participant by user + test         | `SELECT * FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at DESC;` | Returns one row per attempt; segregated by `participant_id` (use `LIMIT 1` for the latest attempt) |
+| Get participants who never submitted   | `SELECT tp.* FROM test_participants tp LEFT JOIN submissions s ON s.participant_id = tp.id WHERE s.id IS NULL;` | Per attempt — a `participant_id` with no submissions |
 
 ## 📤 Submissions
 
 | Scenario                                | DQL | Remark |
 | --------------------------------------- | --- | ------ |
-| Create submission                       |     |        |
-| Get submission by id                    |     |        |
-| Get all submissions of participant      |     |        |
-| Get all submissions for test            |     |        |
-| Get all submissions for question        |     |        |
-| Get latest submission for question      |     |        |
-| Get highest scoring submission          |     |        |
-| Get submissions between dates           |     |        |
-| Count submissions per question          |     |        |
-| Count submissions per participant       |     |        |
-| Get unanswered questions                |     |        |
-| Get evaluated submissions               |     |        |
-| Get pending evaluations                 |     |        |
-| Get submissions with score > X          |     |        |
-| Get submissions with failed test cases  |     |        |
-| Get submissions sorted by latest        |     |        |
-| Get average score per question          |     |        |
-| Get average score per test              |     |        |
-| Get submission history for participant  |     |        |
-| Get multiple attempts for same question |     |        |
-| Get latest attempt only                 |     |        |
-| Get total score of participant          |     |        |
-| Get participant rank in test            |     |        |
+| Create submission                       | `INSERT INTO submissions (participant_id, test_question_id, answer, attempt_no, submitted_at) VALUES (1, 1, 'My answer', 1, NOW());` | `evaluated_result` and `score` filled later by evaluator |
+| Get submission by id                    | `SELECT * FROM submissions WHERE id = 1;` |        |
+| Get all submissions of participant      | `SELECT * FROM submissions WHERE participant_id = 1 ORDER BY submitted_at DESC;` |        |
+| Get all submissions for test            | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.test_id = 1;` |        |
+| Get all submissions for question        | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.question_id = 10;` |        |
+| Get latest submission for question      | `SELECT * FROM submissions WHERE participant_id = 1 AND test_question_id = 1 ORDER BY attempt_no DESC LIMIT 1;` |        |
+| Get highest scoring submission          | `SELECT * FROM submissions ORDER BY score DESC NULLS LAST LIMIT 1;` |        |
+| Get submissions between dates           | `SELECT * FROM submissions WHERE submitted_at BETWEEN '2026-05-01' AND '2026-05-31';` |        |
+| Count submissions per question          | `SELECT tq.question_id, COUNT(*) AS submission_count FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.question_id;` |        |
+| Count submissions per participant       | `SELECT participant_id, COUNT(*) AS submission_count FROM submissions GROUP BY participant_id;` |        |
+| Get unanswered questions                | `SELECT tq.* FROM test_questions tq WHERE tq.test_id = 1 AND tq.id NOT IN (SELECT test_question_id FROM submissions WHERE participant_id = 1);` | For a given participant in a test |
+| Get evaluated submissions               | `SELECT * FROM submissions WHERE evaluated_result IS NOT NULL;` |        |
+| Get pending evaluations                 | `SELECT * FROM submissions WHERE evaluated_result IS NULL;` |        |
+| Get submissions with score > X          | `SELECT * FROM submissions WHERE score > 5;` |        |
+| Get submissions with failed test cases  | `SELECT * FROM submissions WHERE (evaluated_result->>'failed_count')::int > 0;` | Assumes evaluator stores `failed_count` in `evaluated_result` jsonb |
+| Get submissions sorted by latest        | `SELECT * FROM submissions ORDER BY submitted_at DESC;` |        |
+| Get average score per question          | `SELECT tq.question_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.question_id;` |        |
+| Get average score per test              | `SELECT tq.test_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id GROUP BY tq.test_id;` |        |
+| Get submission history for participant  | `SELECT s.*, tq.question_id FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE s.participant_id = 1 ORDER BY s.submitted_at DESC;` |        |
+| Get multiple attempts for same question | `SELECT * FROM submissions WHERE participant_id = 1 AND test_question_id = 1 ORDER BY attempt_no ASC;` |        |
+| Get latest attempt only                 | `SELECT DISTINCT ON (participant_id, test_question_id) * FROM submissions ORDER BY participant_id, test_question_id, attempt_no DESC;` | One row per (participant, question) — the highest `attempt_no` |
+| Get total score of participant          | `SELECT participant_id, SUM(score) AS total_score FROM (SELECT DISTINCT ON (participant_id, test_question_id) participant_id, test_question_id, score FROM submissions WHERE participant_id = 1 ORDER BY participant_id, test_question_id, attempt_no DESC) latest GROUP BY participant_id;` | Sums latest attempt per question only |
+| Get participant rank in test            | `SELECT participant_id, total_score, RANK() OVER (ORDER BY total_score DESC) AS rank FROM (SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id WHERE tq.test_id = 1 GROUP BY s.participant_id) scores;` |        |
 
 ## 📊 Analytics / Reporting
 
