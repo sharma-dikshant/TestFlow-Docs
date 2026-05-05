@@ -101,6 +101,7 @@ erDiagram
         timestamp started_at
         timestamp completed_at
         timestamp created_at
+        timestamp deleted_at
     }
 
     submissions {
