@@ -1,8 +1,17 @@
+---
+title: Entity Relationship Diagram (ERD)
+description: Full ERD version history for the TestFlow database schema, from v1 through v2.2.1
+status: stable
+last_updated: 2026-05-05
+---
+
 # Entity Relationship Diagram (ERD)
 
-In this section, we will create an Entity Relationship Diagram (ERD) to visually represent the relationships between the entities in our database. An ERD is a graphical representation of the entities and their relationships in a database.
+This page documents the evolution of the TestFlow database schema. The most recent version is v2.2.1.
 
-## v2.2.1
+## Version History
+
+### v2.2.1
 
 ```mermaid
 erDiagram
@@ -137,7 +146,7 @@ erDiagram
 
 ```
 
-## v2.2
+### v2.2
 
 ```mermaid
 erDiagram
@@ -272,7 +281,7 @@ erDiagram
 
 ```
 
-## v2.1
+### v2.1
 
 ```mermaid
 erDiagram
@@ -404,7 +413,7 @@ erDiagram
 
 ```
 
-## v2
+### v2
 
 ```mermaid
 erDiagram
@@ -532,7 +541,7 @@ erDiagram
     test_questions ||--o{ submissions : answered_in
 ```
 
-## v1.2
+### v1.2
 
 ```mermaid
 erDiagram
@@ -660,7 +669,7 @@ erDiagram
     test_questions ||--o{ submissions : answered_in
 ```
 
-## v1.1
+### v1.1
 
 ```mermaid
 erDiagram
@@ -781,7 +790,7 @@ erDiagram
     test_questions ||--o{ submissions : answered_in
 ```
 
-## v1
+### v1
 
 ```mermaid
 erDiagram
@@ -910,7 +919,9 @@ erDiagram
     test_questions ||--o{ submissions : answered_in
 ```
 
-## Authentication and Authorization
+## Sub-diagrams
+
+### Authentication and Authorization
 
 ```mermaid
 erDiagram
@@ -973,7 +984,7 @@ erDiagram
     resources ||--o{ permissions : "id -> resource_id"
 ```
 
-## Test Management
+### Test Management
 
 ```mermaid
 erDiagram

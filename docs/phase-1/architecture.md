@@ -1,6 +1,15 @@
+---
+title: Architecture
+description: System architecture diagrams showing the evolution from v1 to v2.1.0
+status: stable
+last_updated: 2026-05-05
+---
+
 # Architecture
 
-## v2.1.0
+## Version History
+
+### v2.1.0
 
 ```mermaid
 flowchart TD
@@ -52,7 +61,7 @@ flowchart TD
     authService --> db
 ```
 
-## v2
+### v2
 
 ```mermaid
 flowchart LR
@@ -80,7 +89,7 @@ flowchart LR
     auth -.-> submission
 ```
 
-## v1
+### v1
 
 ```mermaid
 flowchart LR
