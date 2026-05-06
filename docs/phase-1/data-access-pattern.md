@@ -1,3 +1,10 @@
+---
+title: Data Access Patterns
+description: SQL query patterns for all database access scenarios in TestFlow Phase 1
+status: draft
+last_updated: 2026-05-05
+---
+
 # Data Access Patterns
 
 ## 👤 Users & Auth
@@ -154,6 +161,8 @@
 
 ## 📊 Analytics / Reporting
 
+> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+
 | Scenario                    | DQL | Remark |
 | --------------------------- | --- | ------ |
 | Total users count           |     |        |
@@ -179,6 +188,8 @@
 
 ## 🧠 Evaluation / AI Related
 
+> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+
 | Scenario                                | DQL | Remark |
 | --------------------------------------- | --- | ------ |
 | Get submissions pending evaluation      |     |        |
@@ -195,6 +206,8 @@
 
 ## ⚡ Real-Time / Operational Scenarios
 
+> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+
 | Scenario                            | DQL | Remark |
 | ----------------------------------- | --- | ------ |
 | Get users currently taking test     |     |        |
@@ -209,6 +222,8 @@
 | Get live submission feed            |     |        |
 
 ## 🧹 Integrity / Validation Queries
+
+> **Status: Work in Progress** — DQL queries for this section are not yet defined.
 
 | Scenario                              | DQL | Remark |
 | ------------------------------------- | --- | ------ |
@@ -225,6 +240,8 @@
 | Find inconsistent timestamps          |     |        |
 
 ## 🔍 Complex Business Queries
+
+> **Status: Work in Progress** — DQL queries for this section are not yet defined.
 
 | Scenario                                 | DQL | Remark |
 | ---------------------------------------- | --- | ------ |
