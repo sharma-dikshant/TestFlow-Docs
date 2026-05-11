@@ -26,3 +26,5 @@ nav:
       - API Design:
           - v1.0: phase-1/api-design/v1.md
           - v2.0: phase-1/api-design/v2.md
+      - Low Level Design:
+          - Workflow: phase-1/lld-design/lld-workflow.md
