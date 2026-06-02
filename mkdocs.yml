@@ -18,15 +18,13 @@ plugins:
   - mermaid2
 nav:
   - Home: index.md
-  - Phase 1:
-      - Overview: phase-1/overview.md
-      - Architecture: phase-1/architecture.md
-      - ERD: phase-1/erd.md
-      - Data Access Pattern: phase-1/data-access-pattern.md
-      - API Design:
-          - v1.0: phase-1/api-design/v1.md
-          - v2.0: phase-1/api-design/v2.md
-      - High Level Design:
-          - Authentication: phase-1/hld-design/auth.md
-      - Low Level Design:
-          - Workflow: phase-1/lld-design/lld-workflow.md
+  - Overview: overview.md
+  - Architecture: architecture.md
+  - ERD: erd.md
+  - Data Access Pattern: data-access-pattern.md
+  - API Design:
+      - v1.0: api-design/v1.md
+
+  - High Level Design:
+      - Authentication: hld-design/auth.md
+  - Claude Code Architecture: claude-agent-arch/arch.md

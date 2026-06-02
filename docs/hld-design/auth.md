@@ -25,15 +25,15 @@ No other module handles authentication logic. All protected routes depend on `Jw
 
 ## 2. Scope
 
-| In Scope | Out of Scope |
-|---|---|
-| Local register / login | Role assignment (handled by RBACModule) |
+| In Scope                             | Out of Scope                               |
+| ------------------------------------ | ------------------------------------------ |
+| Local register / login               | Role assignment (handled by RBACModule)    |
 | JWT access + refresh token lifecycle | Permission checking (handled by RBACGuard) |
-| OAuth login (Google, GitHub) | MFA (TOTP/FIDO2) — future |
-| OTP-based email verification | SMS OTP — future |
-| Password forgot / reset | Session-based auth |
-| Brute force lockout | IP reputation scoring |
-| Token blacklisting on logout | Device management |
+| OAuth login (Google, GitHub)         | MFA (TOTP/FIDO2) — future                  |
+| OTP-based email verification         | SMS OTP — future                           |
+| Password forgot / reset              | Session-based auth                         |
+| Brute force lockout                  | IP reputation scoring                      |
+| Token blacklisting on logout         | Device management                          |
 
 ---
 
@@ -81,18 +81,18 @@ flowchart TD
 
 ### 3.1 Component Responsibilities
 
-| Component | Responsibility |
-|---|---|
-| `AuthController` | Exposes all `/auth/*` HTTP endpoints; validates DTOs; formats responses |
-| `AuthService` | Orchestrates all auth flows; sole writer to auth-related Redis keys |
-| `JwtService` | Signs and verifies JWTs; wraps `@nestjs/jwt` |
-| `OtpService` | Generates a 6-digit numeric OTP; stores hashed OTP in Redis with TTL |
-| `PasswordService` | `bcrypt.hash` (cost 12) and `bcrypt.compare`; never stores plaintext |
-| `OAuthService` | Exchanges authorization code for provider profile; upserts user record |
-| `MailService` | Renders Handlebars template and enqueues email via BullMQ `mail` queue |
-| `JwtAuthGuard` | Applied globally; skips routes decorated with `@Public()` |
-| `JwtStrategy` | Validates access token signature and expiry; checks token is not blacklisted |
-| `OAuthStrategy` | Implements Passport OAuth2 strategy per provider |
+| Component         | Responsibility                                                               |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `AuthController`  | Exposes all `/auth/*` HTTP endpoints; validates DTOs; formats responses      |
+| `AuthService`     | Orchestrates all auth flows; sole writer to auth-related Redis keys          |
+| `JwtService`      | Signs and verifies JWTs; wraps `@nestjs/jwt`                                 |
+| `OtpService`      | Generates a 6-digit numeric OTP; stores hashed OTP in Redis with TTL         |
+| `PasswordService` | `bcrypt.hash` (cost 12) and `bcrypt.compare`; never stores plaintext         |
+| `OAuthService`    | Exchanges authorization code for provider profile; upserts user record       |
+| `MailService`     | Renders Handlebars template and enqueues email via BullMQ `mail` queue       |
+| `JwtAuthGuard`    | Applied globally; skips routes decorated with `@Public()`                    |
+| `JwtStrategy`     | Validates access token signature and expiry; checks token is not blacklisted |
+| `OAuthStrategy`   | Implements Passport OAuth2 strategy per provider                             |
 
 ---
 
@@ -123,16 +123,16 @@ erDiagram
 
 All Redis keys used by AuthModule follow a consistent naming pattern. TTLs are set at write time — no separate expiry jobs needed.
 
-| Key Pattern | Type | TTL | Purpose |
-|---|---|---|---|
-| `auth:refresh:{userId}:{tokenId}` | String (jti) | 7 days | Active refresh token store; deleted on logout |
-| `auth:refresh:family:{userId}` | Set of tokenIds | 7 days | Token family for reuse-attack detection |
-| `auth:otp:{email}` | String (bcrypt hash) | 10 minutes | Active OTP; deleted on successful verify |
-| `auth:otp:attempts:{email}` | Integer | 10 minutes | Failed OTP attempt counter (max 5) |
-| `auth:lockout:{identifier}` | String ("1") | 15 minutes | Brute-force lockout flag (identifier = email or IP) |
-| `auth:login:attempts:{identifier}` | Integer | 15 minutes | Failed login counter |
-| `auth:pwd_reset:{token}` | String (userId) | 1 hour | Password reset token → userId mapping |
-| `auth:blacklist:{jti}` | String ("1") | Remaining access token TTL | Explicitly revoked access tokens (edge case) |
+| Key Pattern                        | Type                 | TTL                        | Purpose                                             |
+| ---------------------------------- | -------------------- | -------------------------- | --------------------------------------------------- |
+| `auth:refresh:{userId}:{tokenId}`  | String (jti)         | 7 days                     | Active refresh token store; deleted on logout       |
+| `auth:refresh:family:{userId}`     | Set of tokenIds      | 7 days                     | Token family for reuse-attack detection             |
+| `auth:otp:{email}`                 | String (bcrypt hash) | 10 minutes                 | Active OTP; deleted on successful verify            |
+| `auth:otp:attempts:{email}`        | Integer              | 10 minutes                 | Failed OTP attempt counter (max 5)                  |
+| `auth:lockout:{identifier}`        | String ("1")         | 15 minutes                 | Brute-force lockout flag (identifier = email or IP) |
+| `auth:login:attempts:{identifier}` | Integer              | 15 minutes                 | Failed login counter                                |
+| `auth:pwd_reset:{token}`           | String (userId)      | 1 hour                     | Password reset token → userId mapping               |
+| `auth:blacklist:{jti}`             | String ("1")         | Remaining access token TTL | Explicitly revoked access tokens (edge case)        |
 
 ---
 
@@ -174,6 +174,7 @@ sequenceDiagram
 ```
 
 **Business rules**:
+
 - `email` and `username` must be globally unique among non-deleted users
 - Password minimum 8 characters, at least one number and one letter (validated in DTO)
 - Account is created with `is_verified = false`; user can log in but may be restricted from certain actions until verified
@@ -261,6 +262,7 @@ sequenceDiagram
 ```
 
 **Brute-force rules**:
+
 - 5 failed attempts → 15-minute lockout on the `identifier` (email or username used in the request)
 - Counter resets on successful login
 - Both the failed identifier AND the client IP are tracked independently (dual-key lockout)
@@ -423,6 +425,7 @@ sequenceDiagram
 ### 6.1 Token Structure
 
 **Access Token** (short-lived, 15 minutes):
+
 ```json
 {
   "sub": "42",
@@ -435,6 +438,7 @@ sequenceDiagram
 ```
 
 **Refresh Token** (long-lived, 7 days):
+
 ```json
 {
   "sub": "42",
@@ -446,6 +450,7 @@ sequenceDiagram
 ```
 
 **Design decisions**:
+
 - `role` is embedded in the access token to avoid a DB/Redis lookup on every request — `JwtStrategy` does not call the DB for role resolution
 - `role` embeds the role name only (not permissions) — `RBACGuard` resolves permissions from its own cache
 - `jti` (JWT ID) in the refresh token is the Redis key suffix — enables O(1) revocation lookup
@@ -453,10 +458,10 @@ sequenceDiagram
 
 ### 6.2 Token Storage
 
-| Token | Storage | Rationale |
-|---|---|---|
-| Access token | JS memory (Zustand store) | Never in `localStorage` (XSS risk); never in cookie (not needed — short TTL) |
-| Refresh token | `httpOnly; Secure; SameSite=Strict` cookie | Inaccessible to JavaScript; `SameSite=Strict` prevents CSRF |
+| Token         | Storage                                    | Rationale                                                                    |
+| ------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
+| Access token  | JS memory (Zustand store)                  | Never in `localStorage` (XSS risk); never in cookie (not needed — short TTL) |
+| Refresh token | `httpOnly; Secure; SameSite=Strict` cookie | Inaccessible to JavaScript; `SameSite=Strict` prevents CSRF                  |
 
 ### 6.3 JwtStrategy (Passport)
 
@@ -489,25 +494,26 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 
 ### 7.1 Endpoint Summary
 
-| Method | Endpoint | Auth required | Description |
-|---|---|---|---|
-| POST | `/auth/register` | No | Register with email + password |
-| POST | `/auth/login` | No | Login; returns access token + sets refresh cookie |
-| POST | `/auth/refresh` | No (uses cookie) | Rotate refresh token; return new access token |
-| POST | `/auth/logout` | Yes | Revoke refresh token; clear cookie |
-| POST | `/auth/otp` | No | Send/resend OTP to email |
-| POST | `/auth/otp/verify` | No | Verify OTP; set `is_verified = true` |
-| GET | `/auth/oauth/{provider}` | No | Redirect to OAuth provider (`google` \| `github`) |
-| GET | `/auth/oauth/{provider}/callback` | No | Handle OAuth callback |
-| POST | `/auth/password/forgot` | No | Request password reset email |
-| GET | `/auth/password/reset/verify` | No | Validate reset token (for frontend to show form) |
-| POST | `/auth/password/reset` | No | Set new password using reset token |
+| Method | Endpoint                          | Auth required    | Description                                       |
+| ------ | --------------------------------- | ---------------- | ------------------------------------------------- |
+| POST   | `/auth/register`                  | No               | Register with email + password                    |
+| POST   | `/auth/login`                     | No               | Login; returns access token + sets refresh cookie |
+| POST   | `/auth/refresh`                   | No (uses cookie) | Rotate refresh token; return new access token     |
+| POST   | `/auth/logout`                    | Yes              | Revoke refresh token; clear cookie                |
+| POST   | `/auth/otp`                       | No               | Send/resend OTP to email                          |
+| POST   | `/auth/otp/verify`                | No               | Verify OTP; set `is_verified = true`              |
+| GET    | `/auth/oauth/{provider}`          | No               | Redirect to OAuth provider (`google` \| `github`) |
+| GET    | `/auth/oauth/{provider}/callback` | No               | Handle OAuth callback                             |
+| POST   | `/auth/password/forgot`           | No               | Request password reset email                      |
+| GET    | `/auth/password/reset/verify`     | No               | Validate reset token (for frontend to show form)  |
+| POST   | `/auth/password/reset`            | No               | Set new password using reset token                |
 
 ### 7.2 Request / Response Contracts
 
 #### POST `/auth/register`
 
 **Request**:
+
 ```json
 {
   "full_name": "John Doe",
@@ -518,12 +524,14 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 ```
 
 **Validation rules**:
+
 - `full_name`: string, 2–100 chars
 - `username`: string, 3–30 chars, alphanumeric + underscores only (`^[a-zA-Z0-9_]+$`)
 - `email`: valid email format
 - `password`: min 8 chars, at least 1 letter and 1 number
 
 **Response 201**:
+
 ```json
 {
   "success": true,
@@ -539,17 +547,18 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 
 **Error responses**:
 
-| Status | Error code | Condition |
-|---|---|---|
-| 409 | `EMAIL_TAKEN` | Email already registered and not soft-deleted |
-| 409 | `USERNAME_TAKEN` | Username already registered and not soft-deleted |
-| 400 | `VALIDATION_ERROR` | DTO validation failed |
+| Status | Error code         | Condition                                        |
+| ------ | ------------------ | ------------------------------------------------ |
+| 409    | `EMAIL_TAKEN`      | Email already registered and not soft-deleted    |
+| 409    | `USERNAME_TAKEN`   | Username already registered and not soft-deleted |
+| 400    | `VALIDATION_ERROR` | DTO validation failed                            |
 
 ---
 
 #### POST `/auth/login`
 
 **Request**:
+
 ```json
 {
   "identifier": "john@example.com",
@@ -560,6 +569,7 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 `identifier` accepts either email or username.
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -583,11 +593,11 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 
 **Error responses**:
 
-| Status | Error code | Condition |
-|---|---|---|
-| 401 | `INVALID_CREDENTIALS` | User not found, inactive, or wrong password |
-| 429 | `ACCOUNT_LOCKED` | 5+ failed attempts; includes `retryAfterSeconds` field |
-| 400 | `VALIDATION_ERROR` | Missing fields |
+| Status | Error code            | Condition                                              |
+| ------ | --------------------- | ------------------------------------------------------ |
+| 401    | `INVALID_CREDENTIALS` | User not found, inactive, or wrong password            |
+| 429    | `ACCOUNT_LOCKED`      | 5+ failed attempts; includes `retryAfterSeconds` field |
+| 400    | `VALIDATION_ERROR`    | Missing fields                                         |
 
 ---
 
@@ -596,6 +606,7 @@ The DB call in step 3 can be eliminated if `is_active` and `is_verified` are emb
 **Request**: No body. Refresh token read from `httpOnly` cookie.
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -611,10 +622,10 @@ New `Set-Cookie` header with rotated refresh token.
 
 **Error responses**:
 
-| Status | Error code | Condition |
-|---|---|---|
-| 401 | `INVALID_REFRESH_TOKEN` | Token invalid, malformed, or expired |
-| 401 | `REFRESH_TOKEN_REUSE_DETECTED` | Presented token was already rotated (possible theft) |
+| Status | Error code                     | Condition                                            |
+| ------ | ------------------------------ | ---------------------------------------------------- |
+| 401    | `INVALID_REFRESH_TOKEN`        | Token invalid, malformed, or expired                 |
+| 401    | `REFRESH_TOKEN_REUSE_DETECTED` | Presented token was already rotated (possible theft) |
 
 ---
 
@@ -629,11 +640,13 @@ New `Set-Cookie` header with rotated refresh token.
 #### POST `/auth/otp`
 
 **Request**:
+
 ```json
 { "email": "john@example.com" }
 ```
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -650,6 +663,7 @@ Rate limited: 3 requests per 10 minutes per email.
 #### POST `/auth/otp/verify`
 
 **Request**:
+
 ```json
 {
   "email": "john@example.com",
@@ -658,6 +672,7 @@ Rate limited: 3 requests per 10 minutes per email.
 ```
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -669,11 +684,11 @@ Rate limited: 3 requests per 10 minutes per email.
 
 **Error responses**:
 
-| Status | Error code | Condition |
-|---|---|---|
-| 422 | `OTP_EXPIRED` | Redis key expired or never set |
-| 422 | `OTP_INVALID` | Wrong OTP code |
-| 429 | `OTP_ATTEMPTS_EXCEEDED` | 5+ failed attempts on this OTP |
+| Status | Error code              | Condition                      |
+| ------ | ----------------------- | ------------------------------ |
+| 422    | `OTP_EXPIRED`           | Redis key expired or never set |
+| 422    | `OTP_INVALID`           | Wrong OTP code                 |
+| 429    | `OTP_ATTEMPTS_EXCEEDED` | 5+ failed attempts on this OTP |
 
 ---
 
@@ -698,15 +713,19 @@ Handled internally by Passport strategy. On success:
 #### POST `/auth/password/forgot`
 
 **Request**:
+
 ```json
 { "email": "john@example.com" }
 ```
 
 **Response 200** (always, regardless of whether email exists):
+
 ```json
 {
   "success": true,
-  "data": { "message": "If an account exists for this email, a reset link has been sent." },
+  "data": {
+    "message": "If an account exists for this email, a reset link has been sent."
+  },
   "meta": null,
   "error": null
 }
@@ -719,6 +738,7 @@ Rate limited: 3 requests per hour per email.
 #### GET `/auth/password/reset/verify?token={token}`
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -735,6 +755,7 @@ Rate limited: 3 requests per hour per email.
 #### POST `/auth/password/reset`
 
 **Request**:
+
 ```json
 {
   "token": "a3f9b2c1...",
@@ -743,6 +764,7 @@ Rate limited: 3 requests per hour per email.
 ```
 
 **Response 200**:
+
 ```json
 {
   "success": true,
@@ -754,10 +776,10 @@ Rate limited: 3 requests per hour per email.
 
 **Error responses**:
 
-| Status | Error code | Condition |
-|---|---|---|
-| 422 | `RESET_TOKEN_INVALID` | Token not in Redis (expired or already used) |
-| 400 | `VALIDATION_ERROR` | Password does not meet strength requirements |
+| Status | Error code            | Condition                                    |
+| ------ | --------------------- | -------------------------------------------- |
+| 422    | `RESET_TOKEN_INVALID` | Token not in Redis (expired or already used) |
+| 400    | `VALIDATION_ERROR`    | Password does not meet strength requirements |
 
 ---
 
@@ -785,12 +807,12 @@ stateDiagram-v2
 
 **Valid state transitions**:
 
-| From | To | Trigger |
-|---|---|---|
-| ISSUED | ACTIVE | Token presented to any endpoint |
-| ACTIVE | EXPIRED | Time passes beyond `exp` claim |
+| From   | To      | Trigger                                                 |
+| ------ | ------- | ------------------------------------------------------- |
+| ISSUED | ACTIVE  | Token presented to any endpoint                         |
+| ACTIVE | EXPIRED | Time passes beyond `exp` claim                          |
 | ACTIVE | REVOKED | `POST /auth/logout`, password reset, or reuse detection |
-| ACTIVE | ROTATED | `POST /auth/refresh` consumes the refresh token |
+| ACTIVE | ROTATED | `POST /auth/refresh` consumes the refresh token         |
 
 **Invalid transitions**: EXPIRED → ACTIVE, REVOKED → ACTIVE (these produce 401).
 
@@ -800,13 +822,13 @@ stateDiagram-v2
 
 ### 9.1 Password Security
 
-| Concern | Implementation |
-|---|---|
-| Hashing algorithm | bcrypt, cost factor 12 (~250ms on modern hardware) |
-| Plaintext exposure | Never stored, never logged, never returned in responses |
-| Comparison timing | `bcrypt.compare()` — constant-time comparison by design |
-| Minimum strength | 8+ chars, 1 letter, 1 number (DTO `@Matches` validator) |
-| OAuth users | `password` column is `NULL`; login via password rejected with `OAUTH_ONLY_ACCOUNT` error |
+| Concern            | Implementation                                                                           |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| Hashing algorithm  | bcrypt, cost factor 12 (~250ms on modern hardware)                                       |
+| Plaintext exposure | Never stored, never logged, never returned in responses                                  |
+| Comparison timing  | `bcrypt.compare()` — constant-time comparison by design                                  |
+| Minimum strength   | 8+ chars, 1 letter, 1 number (DTO `@Matches` validator)                                  |
+| OAuth users        | `password` column is `NULL`; login via password rejected with `OAUTH_ONLY_ACCOUNT` error |
 
 ### 9.2 Brute Force Protection
 
@@ -843,18 +865,19 @@ flowchart TD
 
 ### 9.3 Transport Security
 
-| Mechanism | Configuration |
-|---|---|
-| HTTPS | Required in production; Nginx terminates TLS |
-| HSTS | `Strict-Transport-Security: max-age=31536000; includeSubDomains` |
-| Cookie flags | `HttpOnly; Secure; SameSite=Strict` |
-| CORS | Allowlist of known frontend origins only |
-| X-Frame-Options | `DENY` (via Helmet) |
-| Content-Security-Policy | Defined in Nginx; NestJS sets `default-src 'self'` baseline |
+| Mechanism               | Configuration                                                    |
+| ----------------------- | ---------------------------------------------------------------- |
+| HTTPS                   | Required in production; Nginx terminates TLS                     |
+| HSTS                    | `Strict-Transport-Security: max-age=31536000; includeSubDomains` |
+| Cookie flags            | `HttpOnly; Secure; SameSite=Strict`                              |
+| CORS                    | Allowlist of known frontend origins only                         |
+| X-Frame-Options         | `DENY` (via Helmet)                                              |
+| Content-Security-Policy | Defined in Nginx; NestJS sets `default-src 'self'` baseline      |
 
 ### 9.4 Prompt Injection / Data Exposure
 
 Auth endpoints do not call the LLM. No injection risk in this module. Ensure:
+
 - Error messages never expose whether an account exists (forgot password always returns 200)
 - Stack traces never returned to client (GlobalExceptionFilter strips them in production)
 - Response bodies never include `password` field (use `@Exclude()` on the entity)
@@ -867,29 +890,31 @@ Auth endpoints do not call the LLM. No injection risk in this module. Ensure:
 
 Queries issued by AuthModule:
 
-| Operation | Query pattern | Frequency |
-|---|---|---|
-| Email existence check | `SELECT EXISTS (...WHERE email=$1 AND deleted_at IS NULL)` | On register |
-| Username existence check | `SELECT EXISTS (...WHERE username=$1 AND deleted_at IS NULL)` | On register |
-| Login lookup | `SELECT ... WHERE (email=$1 OR username=$1) AND is_active=true AND deleted_at IS NULL` | On every login |
-| OAuth upsert (find by provider) | `SELECT ... WHERE oauth_provider=$1 AND oauth_id=$2` | On OAuth callback |
-| OAuth upsert (find by email for linking) | `SELECT ... WHERE email=$1 AND deleted_at IS NULL` | On OAuth callback (new user path) |
-| Set `is_verified = true` | `UPDATE users SET is_verified=true WHERE email=$1` | On OTP verify |
-| Update password | `UPDATE users SET password=$1 WHERE id=$2` | On password reset |
-| Insert new user | `INSERT INTO users (...)` | On register / new OAuth user |
-| Fetch user for JWT strategy | `SELECT id, is_active, role FROM users WHERE id=$1` | On every authenticated request |
+| Operation                                | Query pattern                                                                          | Frequency                         |
+| ---------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------- |
+| Email existence check                    | `SELECT EXISTS (...WHERE email=$1 AND deleted_at IS NULL)`                             | On register                       |
+| Username existence check                 | `SELECT EXISTS (...WHERE username=$1 AND deleted_at IS NULL)`                          | On register                       |
+| Login lookup                             | `SELECT ... WHERE (email=$1 OR username=$1) AND is_active=true AND deleted_at IS NULL` | On every login                    |
+| OAuth upsert (find by provider)          | `SELECT ... WHERE oauth_provider=$1 AND oauth_id=$2`                                   | On OAuth callback                 |
+| OAuth upsert (find by email for linking) | `SELECT ... WHERE email=$1 AND deleted_at IS NULL`                                     | On OAuth callback (new user path) |
+| Set `is_verified = true`                 | `UPDATE users SET is_verified=true WHERE email=$1`                                     | On OTP verify                     |
+| Update password                          | `UPDATE users SET password=$1 WHERE id=$2`                                             | On password reset                 |
+| Insert new user                          | `INSERT INTO users (...)`                                                              | On register / new OAuth user      |
+| Fetch user for JWT strategy              | `SELECT id, is_active, role FROM users WHERE id=$1`                                    | On every authenticated request    |
 
 **Index dependency**: Login lookup requires the partial index on `email` and `username` where `deleted_at IS NULL` (defined in DB Migration Plan). Without it, login performance degrades at scale.
 
 ### 10.2 Redis
 
 All Redis interactions use `ioredis` via a shared `RedisModule` (singleton connection). AuthModule calls Redis for:
+
 - Token storage / deletion (refresh tokens)
 - OTP storage / deletion
 - Lockout flags
 - Password reset token storage
 
 **Connection failure handling**: If Redis is unavailable:
+
 - Token refresh fails (401 returned) — acceptable, user must re-login
 - OTP send succeeds (OTP stored in Redis); if Redis is down, OTP storage fails and user is notified
 - Brute-force protection degrades gracefully (skip lockout check, log warning) — never block legitimate users due to Redis outage
@@ -897,12 +922,14 @@ All Redis interactions use `ioredis` via a shared `RedisModule` (singleton conne
 ### 10.3 MailService
 
 AuthModule calls MailService for:
+
 - OTP verification email (on register and OTP resend)
 - Password reset email
 
 MailService enqueues the job to BullMQ `mail` queue with retry. AuthModule does not wait for delivery confirmation — fire-and-forget. If the mail queue is unavailable, the operation is logged as a warning; the user may need to request a resend.
 
 **Templates used**:
+
 - `otp-verification.hbs`: variables `{otp, expiryMinutes, recipientName}`
 - `password-reset.hbs`: variables `{resetUrl, expiryMinutes, recipientName}`
 
@@ -912,10 +939,10 @@ AuthModule does not directly call RBACModule. However, on user creation, AuthMod
 
 ### 10.5 OAuth Providers
 
-| Provider | Auth endpoint | Token endpoint | Profile fields used |
-|---|---|---|---|
-| Google | `https://accounts.google.com/o/oauth2/v2/auth` | `https://oauth2.googleapis.com/token` | `id`, `email`, `name` |
-| GitHub | `https://github.com/login/oauth/authorize` | `https://github.com/login/oauth/access_token` | `id`, `email` (from `/user/emails`), `name` |
+| Provider | Auth endpoint                                  | Token endpoint                                | Profile fields used                         |
+| -------- | ---------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| Google   | `https://accounts.google.com/o/oauth2/v2/auth` | `https://oauth2.googleapis.com/token`         | `id`, `email`, `name`                       |
+| GitHub   | `https://github.com/login/oauth/authorize`     | `https://github.com/login/oauth/access_token` | `id`, `email` (from `/user/emails`), `name` |
 
 GitHub requires a separate API call to `/user/emails` to get the verified primary email (the profile endpoint may not return email if it is set to private). `OAuthService` must handle this case.
 
@@ -925,22 +952,22 @@ GitHub requires a separate API call to `/user/emails` to get the verified primar
 
 ### 11.1 Error Code Registry
 
-| Error Code | HTTP Status | Description |
-|---|---|---|
-| `VALIDATION_ERROR` | 400 | DTO validation failed; `details` array with field-level messages |
-| `INVALID_CREDENTIALS` | 401 | Login failed (user not found, inactive, or wrong password) |
-| `INVALID_REFRESH_TOKEN` | 401 | Refresh token invalid, malformed, or expired |
-| `REFRESH_TOKEN_REUSE_DETECTED` | 401 | Presented refresh token was already rotated |
-| `UNAUTHORIZED` | 401 | No valid access token on a protected route |
-| `EMAIL_TAKEN` | 409 | Registration: email already in use |
-| `USERNAME_TAKEN` | 409 | Registration: username already in use |
-| `OTP_EXPIRED` | 422 | OTP not found in Redis (expired or not sent) |
-| `OTP_INVALID` | 422 | Presented OTP does not match stored hash |
-| `RESET_TOKEN_INVALID` | 422 | Password reset token not found or expired |
-| `OAUTH_ONLY_ACCOUNT` | 422 | Account has no password; must use OAuth login |
-| `ACCOUNT_LOCKED` | 429 | Brute-force threshold exceeded |
-| `OTP_ATTEMPTS_EXCEEDED` | 429 | Too many failed OTP attempts |
-| `OTP_RATE_LIMIT` | 429 | OTP resend rate limit exceeded |
+| Error Code                     | HTTP Status | Description                                                      |
+| ------------------------------ | ----------- | ---------------------------------------------------------------- |
+| `VALIDATION_ERROR`             | 400         | DTO validation failed; `details` array with field-level messages |
+| `INVALID_CREDENTIALS`          | 401         | Login failed (user not found, inactive, or wrong password)       |
+| `INVALID_REFRESH_TOKEN`        | 401         | Refresh token invalid, malformed, or expired                     |
+| `REFRESH_TOKEN_REUSE_DETECTED` | 401         | Presented refresh token was already rotated                      |
+| `UNAUTHORIZED`                 | 401         | No valid access token on a protected route                       |
+| `EMAIL_TAKEN`                  | 409         | Registration: email already in use                               |
+| `USERNAME_TAKEN`               | 409         | Registration: username already in use                            |
+| `OTP_EXPIRED`                  | 422         | OTP not found in Redis (expired or not sent)                     |
+| `OTP_INVALID`                  | 422         | Presented OTP does not match stored hash                         |
+| `RESET_TOKEN_INVALID`          | 422         | Password reset token not found or expired                        |
+| `OAUTH_ONLY_ACCOUNT`           | 422         | Account has no password; must use OAuth login                    |
+| `ACCOUNT_LOCKED`               | 429         | Brute-force threshold exceeded                                   |
+| `OTP_ATTEMPTS_EXCEEDED`        | 429         | Too many failed OTP attempts                                     |
+| `OTP_RATE_LIMIT`               | 429         | OTP resend rate limit exceeded                                   |
 
 ### 11.2 Error Response Format
 
@@ -960,6 +987,7 @@ All errors conform to the platform envelope:
 ```
 
 For validation errors, `details` contains per-field errors:
+
 ```json
 {
   "error": {
@@ -967,7 +995,10 @@ For validation errors, `details` contains per-field errors:
     "message": "Request validation failed.",
     "details": [
       { "field": "email", "message": "email must be a valid email address" },
-      { "field": "password", "message": "password must be at least 8 characters" }
+      {
+        "field": "password",
+        "message": "password must be at least 8 characters"
+      }
     ]
   }
 }
@@ -981,42 +1012,42 @@ For validation errors, `details` contains per-field errors:
 
 Every auth event is logged as a structured JSON entry with the following context. Sensitive fields (`password`, `otp`, `token` values) are never logged.
 
-| Event | Log level | Key fields logged |
-|---|---|---|
-| Successful login | `info` | `userId`, `method` (local/oauth), `ip`, `userAgent` |
-| Failed login | `warn` | `identifier`, `ip`, `attemptCount`, `reason` |
-| Account locked | `warn` | `identifier`, `ip`, `lockoutDurationSeconds` |
-| Refresh token rotated | `debug` | `userId`, `oldJti`, `newJti` |
-| Refresh token reuse detected | `error` | `userId`, `jti`, `ip` — triggers security alert |
-| Logout | `info` | `userId` |
-| OTP sent | `info` | `email` (no OTP value) |
-| OTP verified | `info` | `email` |
-| OTP failed | `warn` | `email`, `attemptCount` |
-| Password reset requested | `info` | `email` |
-| Password reset completed | `info` | `userId` |
-| OAuth callback success | `info` | `userId`, `provider`, `isNewUser` |
-| OAuth callback failure | `error` | `provider`, `reason` |
+| Event                        | Log level | Key fields logged                                   |
+| ---------------------------- | --------- | --------------------------------------------------- |
+| Successful login             | `info`    | `userId`, `method` (local/oauth), `ip`, `userAgent` |
+| Failed login                 | `warn`    | `identifier`, `ip`, `attemptCount`, `reason`        |
+| Account locked               | `warn`    | `identifier`, `ip`, `lockoutDurationSeconds`        |
+| Refresh token rotated        | `debug`   | `userId`, `oldJti`, `newJti`                        |
+| Refresh token reuse detected | `error`   | `userId`, `jti`, `ip` — triggers security alert     |
+| Logout                       | `info`    | `userId`                                            |
+| OTP sent                     | `info`    | `email` (no OTP value)                              |
+| OTP verified                 | `info`    | `email`                                             |
+| OTP failed                   | `warn`    | `email`, `attemptCount`                             |
+| Password reset requested     | `info`    | `email`                                             |
+| Password reset completed     | `info`    | `userId`                                            |
+| OAuth callback success       | `info`    | `userId`, `provider`, `isNewUser`                   |
+| OAuth callback failure       | `error`   | `provider`, `reason`                                |
 
 ### 12.2 Metrics
 
-| Metric | Type | Labels |
-|---|---|---|
-| `auth_login_total` | Counter | `method` (local/google/github), `status` (success/failure) |
-| `auth_register_total` | Counter | `status` (success/conflict) |
-| `auth_token_refresh_total` | Counter | `status` (success/reuse_detected/invalid) |
-| `auth_otp_total` | Counter | `action` (sent/verified/failed) |
-| `auth_lockout_total` | Counter | `trigger` (login/otp) |
-| `auth_password_reset_total` | Counter | `step` (requested/completed) |
-| `auth_request_duration_seconds` | Histogram | `endpoint` |
+| Metric                          | Type      | Labels                                                     |
+| ------------------------------- | --------- | ---------------------------------------------------------- |
+| `auth_login_total`              | Counter   | `method` (local/google/github), `status` (success/failure) |
+| `auth_register_total`           | Counter   | `status` (success/conflict)                                |
+| `auth_token_refresh_total`      | Counter   | `status` (success/reuse_detected/invalid)                  |
+| `auth_otp_total`                | Counter   | `action` (sent/verified/failed)                            |
+| `auth_lockout_total`            | Counter   | `trigger` (login/otp)                                      |
+| `auth_password_reset_total`     | Counter   | `step` (requested/completed)                               |
+| `auth_request_duration_seconds` | Histogram | `endpoint`                                                 |
 
 ### 12.3 Alerts
 
-| Alert | Condition | Severity |
-|---|---|---|
-| High login failure rate | `auth_login_total{status="failure"}` rate > 10/s for 2 min | P2 |
-| Refresh token reuse spike | `auth_token_refresh_total{status="reuse_detected"}` > 5 in 5 min | P1 |
-| Account lockout surge | `auth_lockout_total` rate > 20/min | P2 |
-| OTP send failure | MailService queue depth > 100 | P2 |
+| Alert                     | Condition                                                        | Severity |
+| ------------------------- | ---------------------------------------------------------------- | -------- |
+| High login failure rate   | `auth_login_total{status="failure"}` rate > 10/s for 2 min       | P2       |
+| Refresh token reuse spike | `auth_token_refresh_total{status="reuse_detected"}` > 5 in 5 min | P1       |
+| Account lockout surge     | `auth_lockout_total` rate > 20/min                               | P2       |
+| OTP send failure          | MailService queue depth > 100                                    | P2       |
 
 ---
 
@@ -1037,6 +1068,7 @@ Login lookup uses `OR` across two columns. PostgreSQL will use a bitmap index sc
 ### 13.2 bcrypt Cost Factor
 
 Cost factor 12 produces ~250ms hash time. This is intentional (makes brute force expensive) but means:
+
 - Registration: ~250ms blocking for password hash
 - Login: ~250ms blocking for password comparison
 
@@ -1052,14 +1084,14 @@ If this becomes a bottleneck: cache the user record in Redis (key: `user:{userId
 
 Implemented via `@nestjs/throttler` with Redis store (so limits are shared across multiple NestJS instances):
 
-| Endpoint | Limit | Window |
-|---|---|---|
-| `POST /auth/login` | 10 requests | 1 minute per IP |
-| `POST /auth/register` | 5 requests | 1 minute per IP |
-| `POST /auth/otp` | 3 requests | 10 minutes per email |
-| `POST /auth/password/forgot` | 3 requests | 1 hour per email |
-| `POST /auth/password/reset` | 10 requests | 1 hour per IP |
-| `POST /auth/refresh` | 30 requests | 1 minute per userId |
+| Endpoint                     | Limit       | Window               |
+| ---------------------------- | ----------- | -------------------- |
+| `POST /auth/login`           | 10 requests | 1 minute per IP      |
+| `POST /auth/register`        | 5 requests  | 1 minute per IP      |
+| `POST /auth/otp`             | 3 requests  | 10 minutes per email |
+| `POST /auth/password/forgot` | 3 requests  | 1 hour per email     |
+| `POST /auth/password/reset`  | 10 requests | 1 hour per IP        |
+| `POST /auth/refresh`         | 30 requests | 1 minute per userId  |
 
 ---
 
@@ -1081,48 +1113,48 @@ The AuthModule is stateless at the NestJS layer — all state (tokens, OTPs, loc
 
 File: `src/modules/auth/auth.service.spec.ts`
 
-| Test case | What is asserted |
-|---|---|
-| `register()` — happy path | User inserted, OTP sent, 201 response shape |
-| `register()` — duplicate email | `ConflictException` with `EMAIL_TAKEN` code |
-| `register()` — duplicate username | `ConflictException` with `USERNAME_TAKEN` code |
-| `login()` — valid credentials | Access token issued, refresh token stored in Redis |
-| `login()` — wrong password | `UnauthorizedException`; attempt counter incremented |
-| `login()` — 5th failed attempt | Lockout key set in Redis; `TooManyRequestsException` on 6th |
-| `login()` — locked account | `TooManyRequestsException` even with correct credentials |
-| `login()` — inactive user | `UnauthorizedException` |
-| `refresh()` — valid token | New token issued; old jti deleted from Redis |
-| `refresh()` — already-rotated token | Entire family revoked; `UnauthorizedException` |
-| `refresh()` — expired token | `UnauthorizedException` |
-| `logout()` — valid | jti removed from Redis |
-| `verifyOtp()` — correct OTP | `is_verified` updated to true; OTP key deleted |
-| `verifyOtp()` — wrong OTP | Attempt counter incremented; OTP key preserved |
-| `verifyOtp()` — expired OTP | `UnprocessableEntityException` with `OTP_EXPIRED` |
-| `resetPassword()` — valid token | Password updated; all refresh tokens revoked |
-| `resetPassword()` — expired token | `UnprocessableEntityException` |
+| Test case                           | What is asserted                                            |
+| ----------------------------------- | ----------------------------------------------------------- |
+| `register()` — happy path           | User inserted, OTP sent, 201 response shape                 |
+| `register()` — duplicate email      | `ConflictException` with `EMAIL_TAKEN` code                 |
+| `register()` — duplicate username   | `ConflictException` with `USERNAME_TAKEN` code              |
+| `login()` — valid credentials       | Access token issued, refresh token stored in Redis          |
+| `login()` — wrong password          | `UnauthorizedException`; attempt counter incremented        |
+| `login()` — 5th failed attempt      | Lockout key set in Redis; `TooManyRequestsException` on 6th |
+| `login()` — locked account          | `TooManyRequestsException` even with correct credentials    |
+| `login()` — inactive user           | `UnauthorizedException`                                     |
+| `refresh()` — valid token           | New token issued; old jti deleted from Redis                |
+| `refresh()` — already-rotated token | Entire family revoked; `UnauthorizedException`              |
+| `refresh()` — expired token         | `UnauthorizedException`                                     |
+| `logout()` — valid                  | jti removed from Redis                                      |
+| `verifyOtp()` — correct OTP         | `is_verified` updated to true; OTP key deleted              |
+| `verifyOtp()` — wrong OTP           | Attempt counter incremented; OTP key preserved              |
+| `verifyOtp()` — expired OTP         | `UnprocessableEntityException` with `OTP_EXPIRED`           |
+| `resetPassword()` — valid token     | Password updated; all refresh tokens revoked                |
+| `resetPassword()` — expired token   | `UnprocessableEntityException`                              |
 
 ### 15.2 Integration Tests
 
 File: `test/auth.e2e-spec.ts` (using `@nestjs/testing` + `testcontainers` for real PostgreSQL and Redis)
 
-| Scenario | Steps |
-|---|---|
-| Full local auth flow | Register → verify OTP → login → access protected route → refresh → logout → verify refresh fails |
-| Brute force lockout | 5 failed logins → verify 429 → wait 15 min (mock TTL) → verify login succeeds |
-| Refresh token rotation | Login → refresh (get new tokens) → use old refresh → verify family revoked |
-| OAuth flow (mocked provider) | Mock Google callback → verify user created → tokens issued |
-| Password reset | Forgot → verify Redis key → reset → verify old refresh tokens revoked → login with new password |
-| Concurrent registration | 10 parallel register requests with same email → exactly 1 succeeds, 9 return 409 |
+| Scenario                     | Steps                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| Full local auth flow         | Register → verify OTP → login → access protected route → refresh → logout → verify refresh fails |
+| Brute force lockout          | 5 failed logins → verify 429 → wait 15 min (mock TTL) → verify login succeeds                    |
+| Refresh token rotation       | Login → refresh (get new tokens) → use old refresh → verify family revoked                       |
+| OAuth flow (mocked provider) | Mock Google callback → verify user created → tokens issued                                       |
+| Password reset               | Forgot → verify Redis key → reset → verify old refresh tokens revoked → login with new password  |
+| Concurrent registration      | 10 parallel register requests with same email → exactly 1 succeeds, 9 return 409                 |
 
 ### 15.3 Security Tests
 
-| Test | Tool | Assertion |
-|---|---|---|
-| SQL injection in login identifier | Manual / automated | Parameterized query; no error leakage |
+| Test                                  | Tool                             | Assertion                                                    |
+| ------------------------------------- | -------------------------------- | ------------------------------------------------------------ |
+| SQL injection in login identifier     | Manual / automated               | Parameterized query; no error leakage                        |
 | Brute force not blocked if Redis down | Integration test with Redis down | Login still works; lockout silently skipped with warning log |
-| Password not in response | Unit test | `@Exclude()` applied; no `password` field in any response |
-| Reset token not reusable | Integration test | Second use of same token returns 422 |
-| OTP not logged | Log output inspection | OTP value absent from all log entries |
+| Password not in response              | Unit test                        | `@Exclude()` applied; no `password` field in any response    |
+| Reset token not reusable              | Integration test                 | Second use of same token returns 422                         |
+| OTP not logged                        | Log output inspection            | OTP value absent from all log entries                        |
 
 ---
 
@@ -1130,13 +1162,13 @@ File: `test/auth.e2e-spec.ts` (using `@nestjs/testing` + `testcontainers` for re
 
 Based on dependency sequencing and risk prioritization:
 
-| Step | Tasks | Sprint |
-|---|---|---|
-| 1 | Register + login (local) + `JwtAuthGuard` global setup + `@Public()` decorator | Sprint 1 |
-| 2 | Token refresh + logout + Redis integration + brute-force lockout | Sprint 1 |
-| 3 | OTP send + verify + `is_verified` flag + MailService integration | Sprint 1 |
-| 4 | OAuth (Google first, GitHub second) + account linking | Sprint 5 |
-| 5 | Password forgot + reset flow | Sprint 5 |
+| Step | Tasks                                                                          | Sprint   |
+| ---- | ------------------------------------------------------------------------------ | -------- |
+| 1    | Register + login (local) + `JwtAuthGuard` global setup + `@Public()` decorator | Sprint 1 |
+| 2    | Token refresh + logout + Redis integration + brute-force lockout               | Sprint 1 |
+| 3    | OTP send + verify + `is_verified` flag + MailService integration               | Sprint 1 |
+| 4    | OAuth (Google first, GitHub second) + account linking                          | Sprint 5 |
+| 5    | Password forgot + reset flow                                                   | Sprint 5 |
 
 Steps 1–3 are foundational (Phase 0 in the execution plan). Steps 4–5 are Phase 5 (after core test management and evaluation are working).
 
