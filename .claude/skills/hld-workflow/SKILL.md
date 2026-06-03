@@ -24,6 +24,7 @@ Choose **one feature only**.
 Rules that must always remain true.
 
 > Examples:
+>
 > - User cannot join twice
 > - Test cannot exceed max participants
 > - User cannot submit after test ends
@@ -49,12 +50,12 @@ Rules that must always remain true.
 
 ## 6. Define API
 
-| Field         | Details         |
-| ------------- | --------------- |
-| Method        | GET / POST / …  |
-| Endpoint      | `/resource`     |
-| Query params  | `?key=value`    |
-| Route params  | `/:id`          |
+| Field        | Details        |
+| ------------ | -------------- |
+| Method       | GET / POST / … |
+| Endpoint     | `/resource`    |
+| Query params | `?key=value`   |
+| Route params | `/:id`         |
 
 ---
 
@@ -86,16 +87,19 @@ Rules that must always remain true.
 ## 10. Break Feature into Layers
 
 ### Controller
+
 - Handle HTTP request / response
 - Call service
 - Return formatted response
 
 ### Service
+
 - Contains business logic
 - Orchestrates feature flow
 - Module-to-module communication only through service
 
 ### Repository
+
 - Database queries only
 - No business logic
 
