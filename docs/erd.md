@@ -26,7 +26,7 @@ erDiagram
         boolean is_active
         boolean is_verified
         varchar oauth_provider "ENUM: GOOGLE, GITHUB, NULL"
-        varchar oauth_id "UNIQUE (oauth_provider, oauth_id)"
+        varchar oauth_id
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -35,6 +35,7 @@ erDiagram
     roles {
         int id PK
         varchar name "UNIQUE"
+        varchar key "UNIQUE"
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -49,13 +50,13 @@ erDiagram
 
     resources {
         int id PK
-        varchar key "UNIQUE (e.g. tests:create)"
+        varchar key "UNIQUE (e.g. assessments:create)"
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
     }
 
-    permissions {
+    role_permissions {
         int id PK
         int role_id FK "FK → roles.id"
         int resource_id FK "FK → resources.id"
@@ -65,7 +66,7 @@ erDiagram
         timestamp deleted_at
     }
 
-    tests {
+    assessments {
         int id PK
         varchar title
         text description
@@ -82,28 +83,34 @@ erDiagram
     questions {
         int id PK
         text question_text
-        varchar type "ENUM: MCQ, CODING, SUBJECTIVE"
         jsonb options
-        jsonb test_cases
-        int default_marks
+        int correct_option_id
         int created_by FK "FK → users.id"
         timestamp created_at
         timestamp updated_at
     }
 
-    tests_questions {
+    assessments_questions {
         int id PK
-        int test_id FK "FK → tests.id"
+        int assessment_id FK "FK → assessments.id"
         int question_id FK "FK → questions.id"
-        int marks
-        int negative_marks "marks deducted for wrong answer"
+
+        text question_text
+        jsonb options
+        int correct_option_id
+
+        decimal correct_marks
+        decimal incorrect_marks
+
         int order_index
+
+        timestamp created_at
     }
 
-    tests_participants {
+    assessments_participants {
         int id PK
         int user_id FK "FK → users.id"
-        int test_id FK "FK → tests.id"
+        int assessment_id FK "FK → assessments.id"
         varchar status "ENUM: NOT_STARTED, IN_PROGRESS, COMPLETED"
         timestamp started_at
         timestamp completed_at
@@ -111,35 +118,67 @@ erDiagram
         timestamp deleted_at
     }
 
-    submissions {
+
+    assessment_attempts {
         int id PK
-        int participant_id FK "FK → tests_participants.id"
-        int test_question_id FK "FK → tests_questions.id"
-        text answer
-        jsonb evaluated_result
-        int score
-        int attempt_no
+        int assessment_id FK "FK → assessments.id"
+        int user_id FK "FK → users.id"
+
+        timestamp started_at
         timestamp submitted_at
+
+        decimal score
+        int total_questions
+        int attempted_questions
+        int correct_responses
+        int incorrect_responses
+
+        varchar status "ENUM: IN_PROGRESS, SUBMITTED, EVALUATED"
+
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    assessment_attempt_responses {
+        int id PK
+        int attempt_id FK "FK → assessment_attempts.id"
+        int assessment_question_id FK "FK → assessments_questions.id"
+
+        int selected_option_id
+
+        boolean is_correct
+        decimal marks_awarded
+
+        timestamp answered_at
     }
 
     %% Auth relationships
     users ||--o{ users_roles : has
     roles ||--o{ users_roles : assigned_to
 
-    roles ||--o{ permissions : has
-    resources ||--o{ permissions : has
+    roles ||--o{ role_permissions : has
+    resources ||--o{ role_permissions : grants
 
-    %% Test relationships
-    users ||--o{ tests : creates
+    %% Question bank relationships
     users ||--o{ questions : creates
-    users ||--o{ tests_participants : participates
 
-    tests ||--o{ tests_participants : has
-    tests ||--o{ tests_questions : includes
+    %% assessment relationships
+    users ||--o{ assessments : creates
 
-    questions ||--o{ tests_questions : mapped_in
+    assessments ||--o{ assessments_questions : includes
+    questions ||--o{ assessments_questions : mapped_in
 
-    tests_participants ||--o{ submissions : makes
-    tests_questions ||--o{ submissions : answered_in
+    %% Participant relationships
+    users ||--o{ assessments_participants : participates
+    assessments ||--o{ assessments_participants : has
+
+
+
+    %% Attempt relationships
+    users ||--o{ assessment_attempts : makes
+    assessments ||--o{ assessment_attempts : attempted
+
+    assessment_attempts ||--o{ assessment_attempt_responses : contains
+    assessments_questions ||--o{ assessment_attempt_responses : answered_for
 
 ```
