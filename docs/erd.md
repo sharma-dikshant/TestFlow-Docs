@@ -182,3 +182,128 @@ erDiagram
     assessments_questions ||--o{ assessment_attempt_responses : answered_for
 
 ```
+
+## Subscription Design
+
+This diagram scopes the subscription and billing subsystem: plan versioning, active subscriptions, orders/payments, and per-feature usage tracking. `users` is shown trimmed to the fields relevant here; see [Latest Version](#latest-version) above for the full entity.
+
+```mermaid
+erDiagram
+
+    users {
+        int id PK
+        varchar full_name
+        varchar email
+        timestamp created_at
+    }
+
+    plans {
+        int id PK
+        varchar name "ENUM: FREE, PRO"
+        varchar code "UNIQUE"
+        text description
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    plan_versions {
+        int id PK
+        int plan_id FK "FK → plans.id"
+        int version "UNIQUE per plan"
+        decimal price
+        varchar currency
+        varchar billing_cycle "ENUM: MONTHLY, YEARLY"
+        boolean is_current "Only one current version per plan"
+        timestamp effective_from
+        timestamp effective_until
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    plan_features {
+        int id PK
+        int plan_version_id FK "FK → plan_versions.id"
+        varchar feature_name
+        varchar feature_value
+        int reset_period "Number of days before reset"
+        timestamp created_at
+    }
+
+    subscriptions {
+        int id PK
+        int user_id FK "FK → users.id"
+        int plan_version_id FK "FK → plan_versions.id"
+        varchar status "ENUM: PENDING, ACTIVE, PAST_DUE, CANCELLED, EXPIRED"
+        timestamp starts_at
+        timestamp expires_at
+        timestamp cancelled_at
+        boolean auto_renew
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    orders {
+        int id PK
+        int user_id FK "FK → users.id"
+        varchar item "ENUM: SUBSCRIPTION, AI_CREDITS"
+        decimal total_amount
+        varchar currency
+        varchar status "ENUM: PENDING, PAID, FAILED, CANCELLED"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    payments {
+        int id PK
+        int order_id FK "FK → orders.id"
+        decimal amount
+        varchar currency
+        varchar provider "ENUM: STRIPE, RAZORPAY"
+        varchar provider_order_id
+        varchar provider_payment_id
+        varchar status "ENUM: PENDING, SUCCESS, FAILED, REFUNDED"
+        text failure_reason
+        timestamp paid_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    user_feature_usage {
+        int id PK
+        int user_id FK "FK → users.id"
+        int plan_feature_id FK "FK → plan_features.id"
+        int used
+        date period_start
+        date period_end
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at
+    }
+
+    webhook_events {
+        int id PK
+        varchar provider
+        varchar event_id "UNIQUE"
+        varchar event_type
+        jsonb payload
+        boolean processed
+        timestamp processed_at
+        timestamp created_at
+    }
+
+    %% Subscription relationships
+    users ||--o{ subscriptions : purchases
+    plans ||--o{ plan_versions : has_versions
+    plan_versions ||--o{ plan_features : defines
+    plan_versions ||--o{ subscriptions : purchased_as
+
+    %% Billing relationships
+    users ||--o{ orders : places
+    orders ||--o{ payments : has
+
+    %% Usage relationships
+    users ||--o{ user_feature_usage : consumes
+    plan_features ||--o{ user_feature_usage : tracked_by
+
+```
