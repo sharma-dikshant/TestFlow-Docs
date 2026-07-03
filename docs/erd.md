@@ -243,20 +243,9 @@ erDiagram
         timestamp updated_at
     }
 
-    orders {
-        int id PK
-        int user_id FK "FK → users.id"
-        varchar item "ENUM: SUBSCRIPTION, AI_CREDITS"
-        decimal total_amount
-        varchar currency
-        varchar status "ENUM: PENDING, PAID, FAILED, CANCELLED"
-        timestamp created_at
-        timestamp updated_at
-    }
-
     payments {
         int id PK
-        int order_id FK "FK → orders.id"
+        int subscription_id FK "FK → subscriptions.id"
         decimal amount
         varchar currency
         varchar provider "ENUM: STRIPE, RAZORPAY"
@@ -299,8 +288,8 @@ erDiagram
     plan_versions ||--o{ subscriptions : purchased_as
 
     %% Billing relationships
-    users ||--o{ orders : places
-    orders ||--o{ payments : has
+    users ||--o{ subscriptions : purchases
+    subscriptions ||--o{ payments : payments
 
     %% Usage relationships
     users ||--o{ user_feature_usage : consumes
