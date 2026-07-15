@@ -1,262 +1,150 @@
 ---
 title: Data Access Patterns
-description: SQL query patterns for all database access scenarios in TestFlow Phase 1
-status: draft
-last_updated: 2026-05-05
+description: SQL query patterns for the TestFlow backend, matched to the current schema (see erd.md)
+status: stable
+last_updated: 2026-07-15
 ---
 
 # Data Access Patterns
 
+Query patterns below reflect the schema actually in place (see [ERD](erd.md)) — the previous version of this page described tables (`tests`, `test_participants`, `submissions`) that don't exist in this codebase; the real names are `assessments`, `assessments_participants`, `assessment_attempts`, `assessment_attempt_responses`.
+
+All soft-deletable tables use `deleted_at IS NULL` to exclude deleted rows — include this in every query unless intentionally including deleted rows (e.g. admin restore tooling).
+
 ## 👤 Users & Auth
 
-### Important Note:
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Get user by email | `SELECT * FROM users WHERE email = 'john@example.com' AND deleted_at IS NULL;` | |
+| Get user by username | `SELECT * FROM users WHERE username = 'john123' AND deleted_at IS NULL;` | |
+| Login lookup (email OR username) | `SELECT * FROM users WHERE (email = $1 OR username = $1) AND deleted_at IS NULL;` | `AuthService.login` resolves by whichever field the client supplied |
+| Check email/username/phone taken | `SELECT * FROM users WHERE (email = $1 OR username = $2 OR phone_number = $3) AND deleted_at IS NULL;` | `UsersService.create` runs one combined existence check, not three separate ones |
+| Get user by id (post-JWT-verify) | `SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL;` | |
+| Store refresh token (upsert-by-user) | `INSERT INTO refresh_tokens (token_hash, user_id, expires_at) VALUES ($1,$2,$3) ON CONFLICT ...` conceptually — actual code does a `findOne` by `user_id` (`withDeleted: true`) then either updates in place (clearing `deleted_at`) or inserts | One active refresh-token row per user, not per device |
+| Look up refresh token on rotation | `SELECT * FROM refresh_tokens WHERE user_id = $1 AND token_hash = $2 AND deleted_at IS NULL;` | Token hash is SHA-256 of the raw JWT — raw tokens are never stored |
+| Revoke refresh token (rotation or logout) | `UPDATE refresh_tokens SET deleted_at = NOW() WHERE token_hash = $1;` | Soft delete, not hard delete |
+| Get all users created in last 7 days | `SELECT * FROM users WHERE created_at >= NOW() - INTERVAL '7 DAYS' AND deleted_at IS NULL ORDER BY created_at DESC;` | Not currently exposed via any endpoint — `UsersService.findAll()` exists but has no controller route |
 
-- We use soft delete by having a `deleted_at` timestamp column. All queries should include `AND deleted_at IS NULL` to exclude soft-deleted records. `deleted_at` is used by admin to soft delete user accounts, allowing for potential restoration later. This approach ensures that deleted accounts are not permanently removed from the database, providing flexibility for account recovery if needed.
-- We supporting account activation/inactivation using a boolean flag `is_active`. Queries should include `AND is_active = true` to only consider active accounts.
+## 🔐 RBAC
 
-| Scenario                             | DQL                                                                                                                                                                                                        | Remark                                                 |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Get user by email                    | `SELECT * FROM users WHERE email = 'john@example.com' AND deleted_at IS NULL`                                                                                                                              |                                                        |
-| Get user by username                 | `SELECT * FROM users WHERE username = 'john123' AND deleted_at IS NULL AND is_active = true`                                                                                                               |                                                        |
-| Login user                           | `SELECT * FROM users WHERE (email = 'john@example.com' OR username = 'john123') AND deleted_at IS NULL AND is_active = true;`                                                                              |                                                        |
-| Check if email already exists        | `SELECT EXISTS (SELECT 1 FROM users WHERE email = 'john@example.com' AND deleted_at IS NULL);`                                                                                                             |                                                        |
-| Check if username already exists     | `SELECT EXISTS (SELECT 1 FROM users WHERE username = 'john123' AND deleted_at IS NULL);`                                                                                                                   |                                                        |
-| Get all active users                 | `SELECT * FROM users WHERE is_active = true AND deleted_at IS NULL;`                                                                                                                                       | Instead of enum status we use a boolean flag is_active |
-| Get all verified users               | `SELECT * FROM users WHERE is_verified = true AND deleted_at IS NULL AND is_active = true;`                                                                                                                |                                                        |
-| Get all users by role                | `SELECT u.* FROM users u JOIN user_roles ur ON ur.user_id = u.id JOIN roles r ON r.id = ur.role_id WHERE r.name = 'ADMIN' AND u.deleted_at IS NULL AND u.is_active = true;`                                |                                                        |
-| Get user profile with role           | `SELECT u.id, u.full_name, u.email, r.name AS role FROM users u JOIN user_roles ur ON ur.user_id = u.id JOIN roles r ON r.id = ur.role_id WHERE u.id = 1 AND u.deleted_at IS NULL AND u.is_active = true;` |                                                        |
-| Get recently registered users        | `SELECT * FROM users WHERE created_at >= NOW() - INTERVAL '24 HOURS' AND deleted_at IS NULL ORDER BY created_at DESC;`                                                                                     |                                                        |
-| Soft delete user                     | `UPDATE users SET deleted_at = NOW() WHERE id = 1 AND deleted_at IS NULL AND is_active = true;`                                                                                                            |                                                        |
-| Restore deleted user                 | `UPDATE users SET deleted_at = NULL WHERE id = 1 AND deleted_at IS NOT NULL;`                                                                                                                              |                                                        |
-| Inactive User account                | `UPDATE users SET is_active = false WHERE username = 'john123' AND deleted_at IS NULL AND is_active = true;`                                                                                               |                                                        |
-| Active User account                  | `UPDATE users SET is_active = true WHERE username = 'john123' AND deleted_at IS NULL AND is_active = false;`                                                                                               |                                                        |
-| Search users by name/email           | `SELECT * FROM users WHERE (full_name ILIKE '%john%' OR email ILIKE '%john%') AND deleted_at IS NULL AND is_active = true;`                                                                                |                                                        |
-| Get all users created in last 7 days | `SELECT * FROM users WHERE created_at >= NOW() - INTERVAL '7 DAYS' AND deleted_at IS NULL ORDER BY created_at DESC;`                                                                                       |                                                        |
-
-## 🔐 RBAC / Authorization
-
-| Scenario                                      | DQL                                                                                                                                                                                                                                                          | Remark |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
-| Get all roles                                 | `SELECT * FROM roles WHERE deleted_at IS NULL;`                                                                                                                                                                                                              |        |
-| Get all resources                             | `SELECT * FROM resources WHERE deleted_at IS NULL;`                                                                                                                                                                                                          |        |
-| Get all policies for a role                   | `SELECT p.* FROM policies p JOIN roles r ON r.id = p.role_id WHERE r.name = 'ADMIN' AND p.deleted_at IS NULL;`                                                                                                                                               |        |
-| Get all resources accessible by a role        | `SELECT res.* FROM resources res JOIN policies p ON p.resource_id = res.id JOIN roles r ON r.id = p.role_id WHERE r.name = 'ADMIN' AND res.deleted_at IS NULL;`                                                                                              |        |
-| Check whether role has access to resource     | `SELECT EXISTS ( SELECT 1 FROM policies p JOIN roles r ON r.id = p.role_id JOIN resources res ON res.id = p.resource_id WHERE r.name = 'ADMIN' AND res.key = 'tests:create' AND p.deleted_at IS NULL );`                                                     |        |
-| Get all users having a specific role          | `SELECT u.* FROM users u JOIN user_roles ur ON ur.user_id = u.id JOIN roles r ON r.id = ur.role_id WHERE r.name = 'ADMIN' AND u.deleted_at IS NULL;`                                                                                                         |        |
-| Get all roles using a specific resource       | `SELECT r.* FROM roles r JOIN policies p ON p.role_id = r.id JOIN resources res ON res.id = p.resource_id WHERE res.key = 'tests:create' AND r.deleted_at IS NULL;`                                                                                          |        |
-| Get all policies with role + resource details | `SELECT p.id, r.name AS role_name, res.key AS resource_key, p.description FROM policies p JOIN roles r ON r.id = p.role_id JOIN resources res ON res.id = p.resource_id WHERE p.deleted_at IS NULL;`                                                         |        |
-| Find unused resources                         | `SELECT res.* FROM resources res LEFT JOIN policies p ON p.resource_id = res.id WHERE p.id IS NULL AND res.deleted_at IS NULL;`                                                                                                                              |        |
-| Find roles without policies                   | `SELECT r.* FROM roles r LEFT JOIN policies p ON p.role_id = r.id WHERE p.id IS NULL AND r.deleted_at IS NULL;`                                                                                                                                              |        |
-| Get all permissions matrix for admin panel    | `SELECT r.name AS role_name, res.key AS resource_key, CASE WHEN p.id IS NOT NULL THEN true ELSE false END AS has_access FROM roles r CROSS JOIN resources res LEFT JOIN policies p ON p.role_id = r.id AND p.resource_id = res.id ORDER BY r.name, res.key;` |        |
-
-## 📝 Tests
-
-| Scenario                               | DQL                                                                                                                                                                                                                    | Remark |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Create test                            | `INSERT INTO tests (title, description, start_time, end_time, duration, created_by, created_at, updated_at) VALUES ('JavaScript Test', 'Basic JS assessment', NOW(), NOW() + INTERVAL '1 HOUR', 60, 1, NOW(), NOW());` |        |
-| Get test by id                         | `SELECT * FROM tests WHERE id = 1;`                                                                                                                                                                                    |        |
-| Get all tests                          | `SELECT * FROM tests ORDER BY created_at DESC;`                                                                                                                                                                        |        |
-| Get all upcoming tests                 | `SELECT * FROM tests WHERE start_time > NOW() ORDER BY start_time ASC;`                                                                                                                                                |        |
-| Get all ongoing tests                  | `SELECT * FROM tests WHERE start_time <= NOW() AND end_time >= NOW();`                                                                                                                                                 |        |
-| Get all completed tests                | `SELECT * FROM tests WHERE end_time < NOW();`                                                                                                                                                                          |        |
-| Get all tests created by a user        | `SELECT * FROM tests WHERE created_by = 1 ORDER BY created_at DESC;`                                                                                                                                                   |        |
-| Search tests by title                  | `SELECT * FROM tests WHERE title ILIKE '%javascript%';`                                                                                                                                                                |        |
-| Get test with creator details          | `SELECT t.*, u.id AS creator_id, u.full_name, u.email FROM tests t JOIN users u ON u.id = t.created_by WHERE t.id = 1;`                                                                                                |        |
-| Get tests between dates                | `SELECT * FROM tests WHERE start_time BETWEEN '2026-05-01' AND '2026-05-31';`                                                                                                                                          |        |
-| Get tests with participant count       | `SELECT t.id, t.title, COUNT(tp.id) AS participant_count FROM tests t LEFT JOIN test_participants tp ON tp.test_id = t.id GROUP BY t.id, t.title;`                                                                     |        |
-| Get tests with question count          | `SELECT t.id, t.title, COUNT(tq.id) AS question_count FROM tests t LEFT JOIN test_questions tq ON tq.test_id = t.id GROUP BY t.id, t.title;`                                                                           |        |
-| Get tests sorted by latest             | `SELECT * FROM tests ORDER BY created_at DESC;`                                                                                                                                                                        |        |
-| Get tests sorted by popularity         | `SELECT t.id, t.title, COUNT(tp.id) AS participant_count FROM tests t LEFT JOIN test_participants tp ON tp.test_id = t.id GROUP BY t.id, t.title ORDER BY participant_count DESC;`                                     |        |
-| Soft delete test                       | `UPDATE tests SET deleted_at = NOW() WHERE id = 1;`                                                                                                                                                                    |        |
-| Get tests available for a user         | `SELECT * FROM tests WHERE start_time > NOW() AND id NOT IN ( SELECT test_id FROM test_participants WHERE user_id = 1 );`                                                                                              |        |
-| Get tests user already participated in | `SELECT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1;`                                                                                                                         |        |
-| Get currently active tests             | `SELECT * FROM tests WHERE start_time <= NOW() AND end_time >= NOW();`                                                                                                                                                 |        |
-| Get tests ending soon                  | `SELECT * FROM tests WHERE end_time BETWEEN NOW() AND NOW() + INTERVAL '30 MINUTES';`                                                                                                                                  |        |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Get all roles | `SELECT * FROM roles WHERE deleted_at IS NULL;` | |
+| Get all resources | `SELECT * FROM resources WHERE deleted_at IS NULL;` | |
+| Get all resource keys granted to a role | `SELECT res.key FROM role_permissions rp JOIN roles r ON r.id = rp.role_id JOIN resources res ON res.id = rp.resource_id WHERE r.key = 'super_admin' AND rp.deleted_at IS NULL;` | |
+| Get a user's role keys (used by RolesGuard) | `SELECT r.key FROM users_roles ur JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = $1 AND ur.deleted_at IS NULL AND r.deleted_at IS NULL;` | |
+| Check permission (with wildcard fallback — used by PermissionGuard) | `SELECT 1 FROM users_roles ur JOIN roles r ON r.id = ur.role_id JOIN role_permissions rp ON rp.role_id = r.id JOIN resources res ON res.id = rp.resource_id WHERE ur.user_id = $1 AND (res.key = $2 OR res.key = '*:*') LIMIT 1;` | This is the actual runtime authorization check — note the `OR res.key = '*:*'` wildcard branch |
+| Strict access check (admin tooling, no wildcard) | `SELECT 1 FROM role_permissions rp JOIN roles r ON r.id = rp.role_id JOIN resources res ON res.id = rp.resource_id WHERE r.key = $1 AND res.key = $2 AND rp.deleted_at IS NULL;` | Backs `POST /v1/access-check` — deliberately does not apply the wildcard fallback |
+| Assign role to user | `INSERT INTO users_roles (user_id, role_id) VALUES ($1, $2);` | 409 if an active row already exists for this (user_id, role_id) |
+| Find roles without any granted permissions | `SELECT r.* FROM roles r LEFT JOIN role_permissions rp ON rp.role_id = r.id AND rp.deleted_at IS NULL WHERE rp.id IS NULL AND r.deleted_at IS NULL;` | Useful for spotting a misconfigured role |
+| Full permission matrix (admin panel) | `SELECT r.key AS role_key, res.key AS resource_key, (rp.id IS NOT NULL) AS has_access FROM roles r CROSS JOIN resources res LEFT JOIN role_permissions rp ON rp.role_id = r.id AND rp.resource_id = res.id AND rp.deleted_at IS NULL ORDER BY r.key, res.key;` | |
 
 ## ❓ Questions
 
-| Scenario                             | DQL                                                                                                                                                                                                                                                      | Remark                                                                   |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Create question                      | `INSERT INTO questions (question_text, type, options, test_cases, default_marks, created_by, created_at, updated_at) VALUES ('What is 2+2?', 'MCQ', '[{"text":"3","isCorrect":false},{"text":"4","isCorrect":true}]'::jsonb, NULL, 1, 1, NOW(), NOW());` | MCQ → fill `options`; CODING → fill `test_cases`; SUBJECTIVE → both NULL |
-| Get question by id                   | `SELECT * FROM questions WHERE id = 1;`                                                                                                                                                                                                                  |                                                                          |
-| Get all questions                    | `SELECT * FROM questions ORDER BY created_at DESC;`                                                                                                                                                                                                      |                                                                          |
-| Get questions by type                | `SELECT * FROM questions WHERE type = 'MCQ';`                                                                                                                                                                                                            |                                                                          |
-| Get questions created by a user      | `SELECT * FROM questions WHERE created_by = 1 ORDER BY created_at DESC;`                                                                                                                                                                                 |                                                                          |
-| Search questions by text             | `SELECT * FROM questions WHERE question_text ILIKE '%binary search%';`                                                                                                                                                                                   |                                                                          |
-| Get questions with default marks     | `SELECT * FROM questions WHERE default_marks = 5;`                                                                                                                                                                                                       |                                                                          |
-| Get questions used in tests          | `SELECT DISTINCT q.* FROM questions q JOIN test_questions tq ON tq.question_id = q.id;`                                                                                                                                                                  |                                                                          |
-| Get unused questions                 | `SELECT * FROM questions WHERE id NOT IN (SELECT question_id FROM test_questions);`                                                                                                                                                                      |                                                                          |
-| Get most frequently used questions   | `SELECT q.id, q.question_text, COUNT(tq.id) AS usage_count FROM questions q JOIN test_questions tq ON tq.question_id = q.id GROUP BY q.id, q.question_text ORDER BY usage_count DESC LIMIT 10;`                                                          |                                                                          |
-| Get coding questions only            | `SELECT * FROM questions WHERE type = 'CODING';`                                                                                                                                                                                                         |                                                                          |
-| Get MCQ questions only               | `SELECT * FROM questions WHERE type = 'MCQ';`                                                                                                                                                                                                            |                                                                          |
-| Get subjective questions only        | `SELECT * FROM questions WHERE type = 'SUBJECTIVE';`                                                                                                                                                                                                     |                                                                          |
-| Get question with all tests using it | `SELECT t.id, t.title FROM tests t JOIN test_questions tq ON tq.test_id = t.id WHERE tq.question_id = 1;`                                                                                                                                                |                                                                          |
-| Get recently created questions       | `SELECT * FROM questions ORDER BY created_at DESC LIMIT 10;`                                                                                                                                                                                             |                                                                          |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Create question | `INSERT INTO questions (question_text, options, correct_option_id, created_by) VALUES ($1, $2::jsonb, $3, $4);` | `options` is a jsonb array of `{id, text}` |
+| Get question by id | `SELECT * FROM questions WHERE id = $1 AND deleted_at IS NULL;` | |
+| Search questions by text | `SELECT * FROM questions WHERE question_text ILIKE '%' || $1 || '%' AND deleted_at IS NULL ORDER BY created_at DESC;` | Backs `GET /v1/questions?search=` |
+| Get questions created by a user | `SELECT * FROM questions WHERE created_by = $1 AND deleted_at IS NULL ORDER BY created_at DESC;` | |
+| Pull N random questions (assessment "generate") | `SELECT * FROM questions WHERE deleted_at IS NULL ORDER BY RANDOM() LIMIT $1;` | Backs `POST /v1/assessments/generate` — this is the entire "AI generation" today; there is no LLM call |
+| Soft delete question | `UPDATE questions SET deleted_at = NOW() WHERE id = $1;` | |
 
-## 🔗 Test Questions Mapping
+## 📝 Assessments
 
-| Scenario                            | DQL                                                                                                                                                                                                     | Remark                                                        |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| Add question to test                | `INSERT INTO test_questions (test_id, question_id, marks, order_index) VALUES (1, 10, 5, 1);`                                                                                                           | `marks` overrides `questions.default_marks` for this test     |
-| Get all questions for a test        | `SELECT q.*, tq.marks, tq.order_index FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.test_id = 1;`                                                                           |                                                               |
-| Get ordered questions for a test    | `SELECT q.*, tq.marks, tq.order_index FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.test_id = 1 ORDER BY tq.order_index ASC;`                                               |                                                               |
-| Get total marks of a test           | `SELECT SUM(marks) AS total_marks FROM test_questions WHERE test_id = 1;`                                                                                                                               |                                                               |
-| Get question count for a test       | `SELECT COUNT(*) AS question_count FROM test_questions WHERE test_id = 1;`                                                                                                                              |                                                               |
-| Get all tests containing a question | `SELECT t.* FROM tests t JOIN test_questions tq ON tq.test_id = t.id WHERE tq.question_id = 10;`                                                                                                        |                                                               |
-| Update question order in test       | `UPDATE test_questions SET order_index = 3 WHERE test_id = 1 AND question_id = 10;`                                                                                                                     |                                                               |
-| Update marks override in test       | `UPDATE test_questions SET marks = 10 WHERE test_id = 1 AND question_id = 10;`                                                                                                                          |                                                               |
-| Remove question from test           | `DELETE FROM test_questions WHERE test_id = 1 AND question_id = 10;`                                                                                                                                    |                                                               |
-| Find duplicate question mappings    | `SELECT test_id, question_id, COUNT(*) FROM test_questions GROUP BY test_id, question_id HAVING COUNT(*) > 1;`                                                                                          |                                                               |
-| Get first/last question of a test   | `SELECT * FROM test_questions WHERE test_id = 1 AND order_index IN ((SELECT MIN(order_index) FROM test_questions WHERE test_id = 1), (SELECT MAX(order_index) FROM test_questions WHERE test_id = 1));` |                                                               |
-| Get questions with custom marks     | `SELECT q.id, q.default_marks, tq.marks, tq.test_id FROM test_questions tq JOIN questions q ON q.id = tq.question_id WHERE tq.marks IS DISTINCT FROM q.default_marks;`                                  | Rows where the per-test override differs from `default_marks` |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Create assessment shell | `INSERT INTO assessments (description, start_time, end_time, duration, max_participants, max_total_questions, correct_marks, incorrect_marks, created_by) VALUES (...);` | `current_participants`/`curr_total_questions` default to 0 |
+| Get assessment by id | `SELECT * FROM assessments WHERE id = $1 AND deleted_at IS NULL;` | |
+| Get upcoming/ongoing/completed assessments | `SELECT * FROM assessments WHERE start_time > NOW() AND deleted_at IS NULL;` / `WHERE start_time <= NOW() AND end_time >= NOW();` / `WHERE end_time < NOW();` | Status is derived at query time (`AssessmentStatus` enum), never stored as a column |
+| Get assessments created by a user | `SELECT * FROM assessments WHERE created_by = $1 AND deleted_at IS NULL ORDER BY created_at DESC;` | Backs `GET /v1/assessments/me` |
+| Search assessments by description | `SELECT * FROM assessments WHERE description ILIKE '%' || $1 || '%' AND deleted_at IS NULL;` | |
+| Get assessments by popularity | `SELECT a.*, COUNT(ap.id) AS participant_count FROM assessments a LEFT JOIN assessments_participants ap ON ap.assessment_id = a.id AND ap.deleted_at IS NULL WHERE a.deleted_at IS NULL GROUP BY a.id ORDER BY participant_count DESC;` | Backs `?popular=true` |
+| Soft delete assessment (creator-only) | `UPDATE assessments SET deleted_at = NOW() WHERE id = $1 AND created_by = $2;` | Ownership check happens in the service before this runs, not via a WHERE-clause-only guard |
 
-## 👥 Test Participants
+## 🔗 Assessment Questions (snapshot mapping)
 
-| Scenario                               | DQL                                                                                                                                                                                                                                                                                                                                                                                                 | Remark                                                                                             |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Enroll user in test                    | `INSERT INTO test_participants (user_id, test_id, status, created_at) VALUES (1, 1, 'ENROLLED', NOW());`                                                                                                                                                                                                                                                                                            |                                                                                                    |
-| Get all participants of a test         | `SELECT u.id, u.full_name, u.email, tp.status FROM test_participants tp JOIN users u ON u.id = tp.user_id WHERE tp.test_id = 1;`                                                                                                                                                                                                                                                                    |                                                                                                    |
-| Get all tests participated by a user   | `SELECT DISTINCT t.* FROM tests t JOIN test_participants tp ON tp.test_id = t.id WHERE tp.user_id = 1 AND tp.status = 'COMPLETED';`                                                                                                                                                                                                                                                                 | Only counts completed attempts                                                                     |
-| Get participant status                 | `SELECT id AS participant_id, status FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at;`                                                                                                                                                                                                                                                                                 | One row per attempt                                                                                |
-| Get participants currently taking test | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'IN_PROGRESS'; sss`                                                                                                                                                                                                                                                                                                                 |                                                                                                    |
-| Get completed participants             | `SELECT * FROM test_participants WHERE test_id = 1 AND status = 'COMPLETED';`                                                                                                                                                                                                                                                                                                                       |                                                                                                    |
-| Get absent participants                | `SELECT tp.* FROM test_participants tp JOIN tests t ON t.id = tp.test_id WHERE tp.test_id = 1 AND t.end_time < NOW() AND tp.started_at IS NULL;`                                                                                                                                                                                                                                                    | Test window has ended and the participant never started                                            |
-| Get participant start/completion time  | `SELECT id, started_at, completed_at FROM test_participants WHERE id = 1;`                                                                                                                                                                                                                                                                                                                          |                                                                                                    |
-| Get average completion time            | `SELECT AVG(EXTRACT(EPOCH FROM (completed_at - started_at))) AS avg_seconds FROM test_participants WHERE test_id = 1 AND completed_at IS NOT NULL;`                                                                                                                                                                                                                                                 |                                                                                                    |
-| Count participants per test            | `SELECT test_id, COUNT(DISTINCT user_id) AS participant_count FROM test_participants GROUP BY test_id;`                                                                                                                                                                                                                                                                                             | Dedupes multiple attempts by the same user                                                         |
-| Count tests attempted by user          | `SELECT user_id, COUNT(DISTINCT test_id) AS tests_attempted FROM test_participants WHERE user_id = 1 GROUP BY user_id;`                                                                                                                                                                                                                                                                             |                                                                                                    |
-| Get leaderboard participation list     | `SELECT u.id AS user_id, u.full_name, COALESCE(SUM(s.score), 0) AS total_score FROM (SELECT DISTINCT ON (user_id) id, user_id FROM test_participants WHERE test_id = 1 AND status = 'COMPLETED' ORDER BY user_id, created_at ASC) first_tp JOIN users u ON u.id = first_tp.user_id LEFT JOIN submissions s ON s.participant_id = first_tp.id GROUP BY u.id, u.full_name ORDER BY total_score DESC;` | One row per user — first completed attempt only                                                    |
-| Get latest participants                | `SELECT * FROM test_participants ORDER BY created_at DESC LIMIT 10;`                                                                                                                                                                                                                                                                                                                                |                                                                                                    |
-| Check if user already joined test      | `SELECT EXISTS (SELECT 1 FROM test_participants WHERE user_id = 1 AND test_id = 1 AND status = 'IN_PROGRESS') AS already_joined;`                                                                                                                                                                                                                                                                   | "Already joined" = has an `IN_PROGRESS` attempt                                                    |
-| Get participant by user + test         | `SELECT * FROM test_participants WHERE user_id = 1 AND test_id = 1 ORDER BY created_at DESC;`                                                                                                                                                                                                                                                                                                       | Returns one row per attempt; segregated by `participant_id` (use `LIMIT 1` for the latest attempt) |
-| Get participants who never submitted   | `SELECT tp.* FROM test_participants tp LEFT JOIN submissions s ON s.participant_id = tp.id WHERE s.id IS NULL;`                                                                                                                                                                                                                                                                                     | Per attempt — a `participant_id` with no submissions                                               |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Add question to assessment (snapshot) | `INSERT INTO assessments_questions (assessment_id, question_id, question_text, options, correct_option_id, correct_marks, incorrect_marks, order_index) SELECT $1, q.id, q.question_text, q.options, q.correct_option_id, $2, $3, $4 FROM questions q WHERE q.id = $5;` | Denormalizes question content at add-time — later edits to `questions` do not retroactively change already-assigned assessment questions |
+| Get all questions for an assessment, ordered | `SELECT * FROM assessments_questions WHERE assessment_id = $1 ORDER BY order_index ASC;` | |
+| Get total marks available for an assessment | `SELECT SUM(correct_marks) AS max_marks FROM assessments_questions WHERE assessment_id = $1;` | |
+| Check for duplicate question in assessment | `SELECT 1 FROM assessments_questions WHERE assessment_id = $1 AND question_id = $2;` | DB also enforces this via a unique index on `(assessment_id, question_id)` |
+| Remaining capacity check before adding questions | `SELECT max_total_questions - curr_total_questions AS remaining FROM assessments WHERE id = $1;` | Compared against the incoming batch size in `AssessmentsService.addQuestions` |
 
-## 📤 Submissions
+## 👥 Assessment Participants
 
-| Scenario                                | DQL                                                                                                                                                                                                                                                                                                                                                                | Remark                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| Create submission                       | `INSERT INTO submissions (participant_id, test_question_id, answer, attempt_no, submitted_at) VALUES (1, 1, 'My answer', 1, NOW());`                                                                                                                                                                                                                               | `evaluated_result` and `score` filled later by evaluator            |
-| Get submission by id                    | `SELECT * FROM submissions WHERE id = 1;`                                                                                                                                                                                                                                                                                                                          |                                                                     |
-| Get all submissions of participant      | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;`                                                                                                                                                                                         | Only after the participant has completed                            |
-| Get all submissions for test            | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.test_id = 1 AND tp.status = 'COMPLETED';`                                                                                                                                                                       | Only completed participants                                         |
-| Get all submissions for question        | `SELECT s.* FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.question_id = 10 AND tp.status = 'COMPLETED';`                                                                                                                                                                  | Only completed participants                                         |
-| Get latest submission for question      | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND s.test_question_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.attempt_no DESC LIMIT 1;`                                                                                                                                                        |                                                                     |
-| Get highest scoring submission          | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.score DESC NULLS LAST LIMIT 1;`                                                                                                                                                                                                      |                                                                     |
-| Get submissions between dates           | `SELECT * FROM submissions WHERE submitted_at BETWEEN '2026-05-01' AND '2026-05-31';`                                                                                                                                                                                                                                                                              |                                                                     |
-| Count submissions per question          | `SELECT tq.question_id, COUNT(*) AS submission_count FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.question_id;`                                                                                                                         |                                                                     |
-| Count submissions per participant       | `SELECT s.participant_id, COUNT(*) AS submission_count FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY s.participant_id;`                                                                                                                                                                          |                                                                     |
-| Get unanswered questions                | `SELECT tq.* FROM test_questions tq WHERE tq.test_id = 1 AND tq.id NOT IN (SELECT test_question_id FROM submissions WHERE participant_id = 1);`                                                                                                                                                                                                                    | For a given participant in a test                                   |
-| Get evaluated submissions               | `SELECT * FROM submissions WHERE evaluated_result IS NOT NULL;`                                                                                                                                                                                                                                                                                                    |                                                                     |
-| Get pending evaluations                 | `SELECT * FROM submissions WHERE evaluated_result IS NULL;`                                                                                                                                                                                                                                                                                                        |                                                                     |
-| Get submissions with score > X          | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.score > 5 AND tp.status = 'COMPLETED';`                                                                                                                                                                                                                               |                                                                     |
-| Get submissions with failed test cases  | `SELECT * FROM submissions WHERE (evaluated_result->>'failed_count')::int > 0;`                                                                                                                                                                                                                                                                                    | Assumes evaluator stores `failed_count` in `evaluated_result` jsonb |
-| Get submissions sorted by latest        | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;`                                                                                                                                                                                                                  |                                                                     |
-| Get average score per question          | `SELECT tq.question_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.question_id;`                                                                                                                     |                                                                     |
-| Get average score per test              | `SELECT tq.test_id, AVG(s.score)::float AS avg_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' GROUP BY tq.test_id;`                                                                                                                             |                                                                     |
-| Get submission history for participant  | `SELECT s.*, tq.question_id FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.submitted_at DESC;`                                                                                                                    |                                                                     |
-| Get multiple attempts for same question | `SELECT s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND s.test_question_id = 1 AND tp.status = 'COMPLETED' ORDER BY s.attempt_no ASC;`                                                                                                                                                                 |                                                                     |
-| Get latest attempt only                 | `SELECT DISTINCT ON (s.participant_id, s.test_question_id) s.* FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE tp.status = 'COMPLETED' ORDER BY s.participant_id, s.test_question_id, s.attempt_no DESC;`                                                                                                                           | One row per (participant, question) — the highest `attempt_no`      |
-| Get total score of participant          | `SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_participants tp ON tp.id = s.participant_id WHERE s.participant_id = 1 AND tp.status = 'COMPLETED' GROUP BY s.participant_id;`                                                                                                                                                  | Each `participant_id` = one attempt, so plain SUM is correct        |
-| Get participant rank in test            | `SELECT participant_id, total_score, RANK() OVER (ORDER BY total_score DESC) AS rank FROM (SELECT s.participant_id, SUM(s.score) AS total_score FROM submissions s JOIN test_questions tq ON tq.id = s.test_question_id JOIN test_participants tp ON tp.id = s.participant_id WHERE tq.test_id = 1 AND tp.status = 'COMPLETED' GROUP BY s.participant_id) scores;` |                                                                     |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Register (enroll) | `INSERT INTO assessments_participants (user_id, assessment_id, status) VALUES ($1, $2, 'not_started'); UPDATE assessments SET current_participants = current_participants + 1 WHERE id = $2;` | Both statements run in one transaction |
+| Check enrollment | `SELECT * FROM assessments_participants WHERE user_id = $1 AND assessment_id = $2 AND deleted_at IS NULL;` | Backs `POST /v1/assessments/:id/check-enrollment` |
+| Unregister | `UPDATE assessments_participants SET deleted_at = NOW() WHERE user_id = $1 AND assessment_id = $2; UPDATE assessments SET current_participants = current_participants - 1 WHERE id = $2;` | |
+| Mark participant completed (on submit) | `UPDATE assessments_participants SET status = 'completed', completed_at = NOW() WHERE user_id = $1 AND assessment_id = $2;` | Called from `AttemptsService.submitAttempt()` via `AssessmentsService.markParticipantCompleted()` |
+| Get all participants of an assessment | `SELECT u.id, u.full_name, u.email, ap.status FROM assessments_participants ap JOIN users u ON u.id = ap.user_id WHERE ap.assessment_id = $1 AND ap.deleted_at IS NULL;` | |
+| Count participants per assessment | `SELECT assessment_id, COUNT(*) FROM assessments_participants WHERE deleted_at IS NULL GROUP BY assessment_id;` | Note: `current_participants` on `assessments` is a denormalized counter maintained by the app, not derived by this query at read time |
 
-## 📊 Analytics / Reporting
+## 🎯 Attempts & Responses
 
-> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Start attempt (check existing first) | `SELECT * FROM assessment_attempts WHERE user_id = $1 AND assessment_id = $2;` | If found, its `uid` is returned as-is (resume); DB also enforces one-per-user-per-assessment via a unique constraint |
+| Create attempt | `INSERT INTO assessment_attempts (assessment_id, user_id, started_at, total_questions, status) VALUES ($1, $2, NOW(), $3, 'IN_PROGRESS') RETURNING uid;` | `total_questions` is snapshotted from `assessments.curr_total_questions` at start time |
+| Get attempt by uid (ownership-checked) | `SELECT * FROM assessment_attempts WHERE uid = $1;` | `AttemptsService.resolveAttempt()` then compares `user_id` to the caller in application code (403 if mismatched), not in the WHERE clause |
+| Upsert a response | `SELECT * FROM assessment_attempt_responses WHERE attempt_id = $1 AND assessment_question_id = $2;` then `UPDATE ... SET selected_option_id, is_correct, marks_awarded, answered_at = NOW()` or `INSERT ...` | `is_correct`/`marks_awarded` are computed in application code by comparing `optionId` to `assessments_questions.correct_option_id`, then applying `correct_marks`/`incorrect_marks` |
+| Delete a response | `DELETE FROM assessment_attempt_responses WHERE attempt_id = $1 AND assessment_question_id = $2;` | Only allowed while `attempt.status = 'IN_PROGRESS'` and the assessment window is still open |
+| Submit attempt (guarded against double-submit) | `UPDATE assessment_attempts SET status = 'SUBMITTED', submitted_at = NOW() WHERE id = $1 AND status = 'IN_PROGRESS';` | Checks `affected = 0` to detect an already-submitted attempt and reject with 400 |
+| Evaluate (aggregate responses → attempt) | `SELECT COUNT(*) AS attempted, COUNT(*) FILTER (WHERE is_correct) AS correct, COUNT(*) FILTER (WHERE NOT is_correct) AS incorrect, SUM(marks_awarded) AS score FROM assessment_attempt_responses WHERE attempt_id = $1;` then `UPDATE assessment_attempts SET score=$2, attempted_questions=$3, correct_responses=$4, incorrect_responses=$5, status='EVALUATED' WHERE id = $1;` | Runs async/unawaited right after submit, inside `EvaluationService.evaluate()` |
+| Get evaluated result with per-question breakdown | `SELECT aq.*, r.selected_option_id, r.is_correct, r.marks_awarded FROM assessments_questions aq LEFT JOIN assessment_attempt_responses r ON r.assessment_question_id = aq.id AND r.attempt_id = $1 WHERE aq.assessment_id = $2 ORDER BY aq.order_index;` | Rejected with 400 unless the attempt's `status = 'EVALUATED'` |
+| List a user's attempts, filterable by status | `SELECT * FROM assessment_attempts WHERE user_id = $1 AND ($2::text IS NULL OR status = $2) ORDER BY created_at DESC;` | Backs `GET /v1/attempts/me` |
 
-| Scenario                    | DQL | Remark |
-| --------------------------- | --- | ------ |
-| Total users count           |     |        |
-| Total tests count           |     |        |
-| Total questions count       |     |        |
-| Total submissions count     |     |        |
-| Most active users           |     |        |
-| Most attempted tests        |     |        |
-| Most difficult questions    |     |        |
-| Highest scoring users       |     |        |
-| Lowest scoring questions    |     |        |
-| Average score per test      |     |        |
-| Average score per user      |     |        |
-| Average completion time     |     |        |
-| Test participation trends   |     |        |
-| Daily registrations         |     |        |
-| Daily submissions           |     |        |
-| Monthly platform activity   |     |        |
-| User growth statistics      |     |        |
-| Top creators by tests       |     |        |
-| Top creators by questions   |     |        |
-| Submission trends over time |     |        |
+## 💳 Commerce — Plans & Versions
 
-## 🧠 Evaluation / AI Related
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| List active plans with current version | `SELECT p.*, pv.* FROM plans p JOIN plan_versions pv ON pv.plan_id = p.id AND pv.is_current = true WHERE p.is_active = true AND p.deleted_at IS NULL;` | Backs `GET /v1/plans` — historical (non-current) versions are never returned here |
+| Resolve plan + version at checkout | `SELECT * FROM plans WHERE code = $1 AND deleted_at IS NULL;` then `SELECT * FROM plan_versions WHERE plan_id = $2 AND version = $3 AND deleted_at IS NULL;` | Two sequential lookups, both required before a checkout can proceed |
+| Check version still purchasable | `SELECT (effective_until IS NULL OR effective_until >= NOW()) AS purchasable FROM plan_versions WHERE id = $1;` | |
+| Demote current version, then insert new one | `UPDATE plan_versions SET is_current = false, effective_until = COALESCE(effective_until, $2) WHERE plan_id = $1 AND is_current = true;` then `INSERT INTO plan_versions (plan_id, version, is_current, ...) VALUES ($1, $3, true, ...);` | Both run in one transaction — the partial unique index on `(plan_id) WHERE is_current = true` is what makes this safe under concurrent writes |
+| Get features for a plan version | `SELECT * FROM plan_features WHERE plan_version_id = $1 AND deleted_at IS NULL;` | Table is `plan_features`, despite the TypeORM entity class being named `PlanVersionFeature` |
 
-> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+## 💰 Commerce — Subscriptions & Checkout
 
-| Scenario                                | DQL | Remark |
-| --------------------------------------- | --- | ------ |
-| Get submissions pending evaluation      |     |        |
-| Get submissions already evaluated       |     |        |
-| Get evaluation result for submission    |     |        |
-| Get failed test cases                   |     |        |
-| Get partially correct submissions       |     |        |
-| Re-evaluate submission                  |     |        |
-| Get evaluation statistics               |     |        |
-| Get average AI score confidence         |     |        |
-| Get submissions needing manual review   |     |        |
-| Compare multiple submission evaluations |     |        |
-| Find inconsistent evaluations           |     |        |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Check for an existing active subscription to a plan | `SELECT 1 FROM subscriptions s JOIN plan_versions pv ON pv.id = s.plan_version_id WHERE s.user_id = $1 AND s.status = 'ACTIVE' AND pv.plan_id = $2;` | Only blocks on `ACTIVE` — a `PENDING` subscription for the same plan doesn't block a second checkout |
+| Create pending subscription | `INSERT INTO subscriptions (user_id, plan_version_id, status, starts_at, expires_at, auto_renew) VALUES ($1, $2, 'PENDING', NOW(), $3, true);` | `expires_at` = now + 1 month or +1 year depending on `plan_versions.billing_cycle` |
+| Create pending order for the subscription | `INSERT INTO orders (user_id, resource_type, resource_id, total_amount, currency, provider, provider_order_id, status, expires_at) VALUES ($1, 'SUBSCRIPTION', $2, $3, $4, 'RAZORPAY', $5, 'PENDING', $6);` | `provider_order_id` is a placeholder (`chk_<uuid>`) until the real Razorpay order-create call happens |
+| Activate subscription on payment capture | `UPDATE subscriptions SET status = 'ACTIVE' WHERE id = $1;` | Executed directly from `PaymentsService`, not `SubscriptionsService` — a documented cross-module shortcut (see [ERD notes](erd.md#3-commerce--plans-subscriptions--usage)) |
+| Get a user's subscription history | `SELECT s.*, pv.version, p.code, p.name FROM subscriptions s JOIN plan_versions pv ON pv.id = s.plan_version_id JOIN plans p ON p.id = pv.plan_id WHERE s.user_id = $1 ORDER BY s.created_at DESC;` | Not currently exposed via any endpoint |
 
-## ⚡ Real-Time / Operational Scenarios
+## 🧾 Payments & Orders
 
-> **Status: Work in Progress** — DQL queries for this section are not yet defined.
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Load order for payment creation (ownership + status checks) | `SELECT * FROM orders WHERE id = $1;` | Service then checks `user_id = caller` (403), `status = 'PENDING'` (422 if not), `expires_at > NOW()` (422 if expired) |
+| Reuse an existing pending payment (idempotent create) | `SELECT * FROM payments WHERE order_id = $1 ORDER BY created_at DESC LIMIT 1;` | If `status = 'SUCCESS'` → 409; if `PENDING` with a `provider_order_id` set → reused as-is instead of calling Razorpay again |
+| Create payment row after Razorpay order-create | `INSERT INTO payments (order_id, amount, currency, provider, provider_order_id, status) VALUES ($1, $2, $3, 'RAZORPAY', $4, 'PENDING');` | |
+| Mark payment captured (webhook-driven) | `SELECT * FROM payments WHERE provider_order_id = $1;` then, in one transaction: `UPDATE payments SET status='SUCCESS', provider_payment_id=$2, paid_at=$3, failure_reason=NULL WHERE id=$4;` `UPDATE orders SET status='PAID' WHERE id=$5;` and conditionally the subscription-activation update above | No-ops silently (logs a warning) if no matching payment is found — webhook still returns 200 |
+| Mark payment failed | `UPDATE payments SET status='FAILED', provider_payment_id=$1, failure_reason=$2 WHERE id=$3;` | Does **not** touch `orders` or `subscriptions` — order remains `PENDING`, allowing retry until `expires_at` |
+| Webhook idempotency check | `SELECT processed FROM webhook_events WHERE event_id = $1;` | `event_id` is synthesized as `"{event}:{razorpayPaymentId}"`, not Razorpay's own webhook delivery ID |
+| Record webhook processed | `INSERT INTO webhook_events (provider, event_id, event_type, payload, processed, processed_at) VALUES ('RAZORPAY', $1, $2, $3::jsonb, true, NOW()) ON CONFLICT (event_id) DO UPDATE SET processed = true, processed_at = NOW();` | Conceptual — actual code does a find-then-update-or-insert, not a literal `ON CONFLICT` |
 
-| Scenario                            | DQL | Remark |
-| ----------------------------------- | --- | ------ |
-| Get users currently taking test     |     |        |
-| Auto-submit expired participants    |     |        |
-| Find tests starting in next 10 mins |     |        |
-| Find tests ending in next 10 mins   |     |        |
-| Detect inactive participants        |     |        |
-| Detect suspicious rapid submissions |     |        |
-| Detect duplicate submissions        |     |        |
-| Resume interrupted test session     |     |        |
-| Get live leaderboard                |     |        |
-| Get live submission feed            |     |        |
+## 📊 Usage Tracking
+
+> **Status: schema only, not implemented.** `user_feature_usage` and `plan_features.reset_period` exist and are ready to support quota tracking, but `UsageService` currently has zero methods. The query patterns below are the intended shape once it's built — not yet real code paths.
+
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Get current usage for a feature | `SELECT * FROM user_feature_usage WHERE user_id = $1 AND plan_feature_id = $2 AND period_end >= CURRENT_DATE;` | Not yet called anywhere |
+| Increment usage | `UPDATE user_feature_usage SET used = used + 1 WHERE user_id = $1 AND plan_feature_id = $2 AND period_end >= CURRENT_DATE;` | Not yet called anywhere |
+| Reset usage for a new period | `INSERT INTO user_feature_usage (user_id, plan_feature_id, used, period_start, period_end) VALUES ($1, $2, 0, $3, $3 + ($4 || ' days')::interval);` | `$4` = `plan_features.reset_period`; no scheduler/cron exists yet to trigger this |
 
 ## 🧹 Integrity / Validation Queries
 
-> **Status: Work in Progress** — DQL queries for this section are not yet defined.
-
-| Scenario                              | DQL | Remark |
-| ------------------------------------- | --- | ------ |
-| Find orphan submissions               |     |        |
-| Find orphan mappings                  |     |        |
-| Find users without roles              |     |        |
-| Find tests without questions          |     |        |
-| Find participants without submissions |     |        |
-| Find duplicate usernames              |     |        |
-| Find duplicate emails                 |     |        |
-| Find duplicate question orders        |     |        |
-| Validate policy mappings              |     |        |
-| Find soft deleted records             |     |        |
-| Find inconsistent timestamps          |     |        |
-
-## 🔍 Complex Business Queries
-
-> **Status: Work in Progress** — DQL queries for this section are not yet defined.
-
-| Scenario                                 | DQL | Remark |
-| ---------------------------------------- | --- | ------ |
-| Get tests a user can still attempt       |     |        |
-| Get tests user failed                    |     |        |
-| Get tests user passed                    |     |        |
-| Get strongest topic of user              |     |        |
-| Get weakest topic of user                |     |        |
-| Recommend questions based on performance |     |        |
-| Get users eligible for certificate       |     |        |
-| Get top N users in test                  |     |        |
-| Get percentile ranking                   |     |        |
-| Compare performance between users        |     |        |
-| Compare test difficulty                  |     |        |
-| Detect cheating patterns                 |     |        |
-| Detect unusually high scores             |     |        |
-| Find abandoned tests                     |     |        |
-| Get retry eligible participants          |     |        |
+| Scenario | DQL | Remark |
+| --- | --- | --- |
+| Find questions never used in any assessment | `SELECT q.* FROM questions q LEFT JOIN assessments_questions aq ON aq.question_id = q.id WHERE aq.id IS NULL AND q.deleted_at IS NULL;` | |
+| Find assessments with zero questions | `SELECT * FROM assessments WHERE curr_total_questions = 0 AND deleted_at IS NULL;` | |
+| Find attempts stuck `IN_PROGRESS` past the assessment window | `SELECT aa.* FROM assessment_attempts aa JOIN assessments a ON a.id = aa.assessment_id WHERE aa.status = 'IN_PROGRESS' AND a.end_time < NOW();` | No auto-submit job currently exists to clean these up |
+| Find orders past `expires_at` still `PENDING` | `SELECT * FROM orders WHERE status = 'PENDING' AND expires_at < NOW();` | No cleanup/expiry job currently marks these `FAILED` |
+| Find users without any role | `SELECT u.* FROM users u LEFT JOIN users_roles ur ON ur.user_id = u.id AND ur.deleted_at IS NULL WHERE ur.id IS NULL AND u.deleted_at IS NULL;` | Every non-admin user is expected to have at least one role assigned via `POST /v1/users/:username/roles` |

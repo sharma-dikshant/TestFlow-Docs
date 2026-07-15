@@ -9,6 +9,9 @@ last_updated: 2026-06-24
 
 **TestFlow** is a SaaS-based online assessment platform designed to streamline how organizations create, deliver, and evaluate tests at scale — and empower individuals to practice for any exam, anytime, on demand.
 
+!!! note "Implementation status"
+    This page describes the product vision. As of 2026-07-15, the backend implements assessment creation/scheduling, participant enrollment, timed attempts with automatic scoring, RBAC, and a Razorpay-backed subscription/checkout flow — see [Architecture](architecture.md) for what's actually built. **AI-powered question generation (below) is not yet implemented**: the "generate assessment" endpoint currently samples randomly from an existing question bank rather than calling an LLM. See [HLD — Assessments](hld-design/assessments.md#41-two-creation-paths) for detail.
+
 ---
 
 ## The Problem It Solves

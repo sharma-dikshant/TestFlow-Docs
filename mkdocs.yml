@@ -27,4 +27,7 @@ nav:
 
   - High Level Design:
       - Authentication: hld-design/auth.md
+      - RBAC: hld-design/rbac.md
+      - Assessments, Attempts & Questions: hld-design/assessments.md
+      - Commerce, Payments & Webhooks: hld-design/commerce.md
   - Claude Code Architecture: claude-agent-arch/arch.md
