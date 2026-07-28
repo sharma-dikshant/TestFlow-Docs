@@ -21,6 +21,7 @@ nav:
   - Overview: overview.md
   - Architecture: architecture.md
   - ERD: erd.md
+  - ERD (Workspace Draft): erd-organisation.md
   - Data Access Pattern: data-access-pattern.md
   - API Design:
       - v1.0: api-design/v1.md
