@@ -49,7 +49,6 @@ erDiagram
         varchar key "UNIQUE"
         varchar display_name
         text description
-        boolean is_system
         timestamp created_at
         timestamp updated_at
         timestamp deleted_at
@@ -219,29 +218,39 @@ erDiagram
         timestamp created_at
     }
 
-    assessment_invitations {
+    assessment_participants {
         int id PK
         int assessment_id FK
+        int user_id FK "nullable until user registers"
         varchar email
-        int invited_user_id FK "nullable"
+        varchar status "INVITED, ACCEPTED, STARTED, COMPLETED, EXPIRED, REMOVED"
+        timestamp accepted_at "nullable"
+        timestamp completed_at "nullable"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    assessment_invitations {
+        int id PK
+        int participant_id FK
+        varchar token
         varchar status "PENDING, ACCEPTED, EXPIRED, REVOKED"
-        timestamp expires_at
         int invited_by FK
+        timestamp expires_at
+        timestamp accepted_at
         timestamp created_at
     }
 
     assessment_attempts {
         int id PK
         uuid uid
-        int assessment_id FK
-        int invitation_id FK
-        int user_id FK
+        int participant_id FK
         decimal score
         int total_questions
         int attempted_questions
         int correct_responses
         int incorrect_responses
-        varchar status
+        varchar status "IN_PROGRESS, SUBMITTED, EVALUATED"
         timestamp started_at
         timestamp submitted_at
         timestamp created_at
@@ -266,17 +275,18 @@ erDiagram
     assessments ||--o{ assessment_questions : contains
     questions ||--o{ assessment_questions : snapshots
 
-    assessments ||--o{ assessment_invitations : sends
+    assessments ||--o{ assessment_participants : has
+    assessment_participants ||--o| assessment_invitations : invited_by
 
-    assessment_invitations ||--o| assessment_attempts : starts
+    users ||--o{ assessment_participants : participates
 
-    users ||--o{ assessment_attempts : makes
+    assessment_participants ||--o{ assessment_attempts : makes
 
     assessment_attempts ||--o{ assessment_attempt_answers : contains
     assessment_questions ||--o{ assessment_attempt_answers : answers
+
+    users ||--o{ assessment_invitations : sends
 ```
-
-
 ## 4. Commerce
 
 Plans/features/subscriptions carried over from the current model, but subscription ownership and feature-usage tracking move from `users` to `workspaces`.
