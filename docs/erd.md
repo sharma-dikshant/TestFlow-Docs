@@ -1,13 +1,13 @@
 ---
 title: Data Model (ERD)
-description: Every table in the TestFlow database, grouped by domain, with columns, keys, indexes, enums and jsonb shapes, checked against the entities and the 103 migrations
+description: Every table in the TestFlow database, grouped by domain, with columns, keys, indexes, enums and jsonb shapes, checked against the entities and the 108 migrations
 status: stable
-last_updated: 2026-10-27
+last_updated: 2026-10-29
 ---
 
 # Data Model (ERD)
 
-This page describes the **current** PostgreSQL schema of the TestFlow backend. It was built from every `*.entity.ts` file and checked against the migrations in `src/migrations` (103 files, the newest is `20261026000000-add-registration-window-to-assessments.ts`). A local database migrated to the latest version was also compared with the entities using `typeorm schema:log`. The few differences it found are listed in [Known schema gaps](#known-schema-gaps).
+This page describes the **current** PostgreSQL schema of the TestFlow backend. It was built from every `*.entity.ts` file and checked against the migrations in `src/migrations` (108 files, the newest is `20261029000000-backfill-order-statuses.ts`). A local database migrated to the latest version was also compared with the entities using `typeorm schema:log`. The few differences it found are listed in [Known schema gaps](#known-schema-gaps).
 
 It replaces three older pages: `erd.md`, `erd-organisation.md` (a draft "workspaces" design that was never built; the real design is the `organizations` tables below) and `complete-erd.md`.
 
@@ -66,7 +66,7 @@ A **soft delete** sets `deleted_at` to the current time instead of removing the 
 | `users`, `refresh_tokens`, `roles`, `permissions`, `role_permissions`, `users_roles` | `assessment_sections`, `assessments_questions`, `mcq_question_details`, `coding_question_details`, `descriptive_question_details` |
 | `organizations`, `organization_members` | `assessment_attempts`, `assessment_attempt_responses` |
 | `assessments`, `assessments_participants`, `questions`, `tags`, `assessment_prompts`, `assessment_prompt_tags`, `assessment_templates` | `jobs`, `llm_audit`, `ai_conversations`, `ai_conversation_messages` |
-| `plans`, `plan_versions`, `features`, `plan_features`, `subscriptions`, `user_feature_usage` | `orders`, `payments`, `webhook_events` |
+| `plans`, `plan_versions`, `features`, `plan_features`, `subscriptions`, `user_feature_usage`, `credit_packs`, `user_feature_credits` | `orders`, `payments`, `webhook_events` |
 | `ai_models`, `learning_roadmap_templates`, `newsletters`, `support_tickets` | `learning_roadmaps`, `learning_roadmap_nodes`, `learning_node_edges` |
 | | `feature_flags`, `feature_flag_roles` |
 
@@ -1032,9 +1032,9 @@ Timestamps: `created_at` only. Index `IDX_ai_conversation_messages_conversation_
 
 ---
 
-## 7. Commerce: plans, subscriptions, usage, orders, payments
+## 7. Commerce: plans, subscriptions, usage, orders, payments, credits
 
-A **plan** (for example Free or Pro) has **versions**. Each version has a price and a list of **features** with limits. A **subscription** links a user (or an organization) to one plan version. **Usage** rows count how much of a limited feature has been used in the current period. **Orders** and **payments** record checkout through Razorpay. Design: [Commerce](hld-design/commerce.md).
+A **plan** (for example Free or Pro) has **versions**. Each version has a price and a list of **features** with limits. A **subscription** links a user (or an organization) to one plan version. **Usage** rows count how much of a limited feature has been used in the current period. **Credit packs** are one-time purchases of extra usage, and **credit balances** hold what was bought. **Orders** and **payments** record checkout through Razorpay, for subscriptions and credit packs alike. Design: [Commerce](hld-design/commerce.md).
 
 ### 7a. Plans, features, subscriptions and usage
 
@@ -1262,17 +1262,26 @@ What the user is buying. Entity: `order.entity.ts`.
 |---|---|---|---|---|
 | `id` | int | no | auto | PK |
 | `user_id` | int | no | | FK, CASCADE. Indexed. |
-| `resource_type` | enum `OrderResourceType` | no | | `SUBSCRIPTION` or `AI_CREDITS` |
-| `resource_id` | int | no | | Id of the thing bought (a `subscriptions.id` today). **No FK**: it is polymorphic. |
+| `resource_type` | enum `OrderResourceType` | no | | `SUBSCRIPTION` or `CREDIT` (renamed from `AI_CREDITS` by `20261027000002`) |
+| `resource_id` | int | no | | Id of the thing bought: a `subscriptions.id`, or a `credit_packs.id` for `CREDIT`. **No FK**: it is polymorphic. |
 | `total_amount` | decimal(10,2) | no | | |
 | `currency` | varchar(3) | no | | |
 | `provider` | enum `PaymentProvider` | no | | `RAZORPAY` (in use), `STRIPE` (enum only, no integration) |
-| `provider_order_id` | varchar(255) | no | | Razorpay order id. `UQ_orders_provider_order_id` |
-| `status` | enum `OrderStatus` | no | | `PENDING`, `PAID`, `FAILED`, `FULFILLED` |
-| `metadata` | jsonb | yes | `null` | Free-form `Record<string, unknown>`. Currently written as `null`. |
+| `provider_order_id` | varchar(255) | no | | Our checkout reference `chk_<uuid>`; the Razorpay order id is on the payment. `UQ_orders_provider_order_id` |
+| `status` | enum `OrderStatus` | no | | `PENDING`, `PAID`, `FAILED`, `FULFILLED` (see below) |
+| `metadata` | jsonb | yes | `null` | `null` for `SUBSCRIPTION`. For `CREDIT`, `CreditOrderMetadata`: `{ creditPackId, featureId, quantity, aiModelCode }`, what the pack held at purchase. |
 | `expires_at` | timestamptz | no | | |
 
-Timestamps: `created_at`, `updated_at`. Index `IDX_orders_resource_type_resource_id` on `(resource_type, resource_id)`. Only `SUBSCRIPTION` orders are fulfilled today; `AI_CREDITS` has no handler yet (see the TODO in `src/commerce/payments/payments.service.ts`).
+Timestamps: `created_at`, `updated_at`. Index `IDX_orders_resource_type_resource_id` on `(resource_type, resource_id)`.
+
+| `status` | Set when |
+|---|---|
+| `PENDING` | Checkout created the order |
+| `PAID` | Its payment was captured. Moves on to `FULFILLED` in the same transaction; stays `PAID` only for a `CREDIT` order with no credit metadata. |
+| `FULFILLED` | What it bought was granted: the subscription activated, or the credits added |
+| `FAILED` | Its payment failed while the order was still `PENDING`. A later capture of the same Razorpay order still moves it to `PAID`. |
+
+`20261029000000-backfill-order-statuses.ts` brought older rows in line: captured subscription orders to `FULFILLED`, and pending orders whose latest payment failed to `FAILED`.
 
 #### `payments`
 
@@ -1293,7 +1302,7 @@ One payment try against an order. Entity: `payment.entity.ts`.
 
 Timestamps: `created_at`, `updated_at`.
 
-On a captured payment, in one transaction: the payment becomes `SUCCESS`, the order `PAID`, other active personal subscriptions `SUSPENDED`, and the ordered subscription `ACTIVE`. On a failed payment only the payment row changes; the order stays `PENDING` until `expires_at`.
+On a captured payment, in one transaction: the payment becomes `SUCCESS` and the order `PAID`. Then, for a subscription, other active personal subscriptions become `SUSPENDED`, the ordered one `ACTIVE`, and the order `FULFILLED`; for credits, the balance grows and the order becomes `FULFILLED`. On a failed payment, in one transaction: the payment becomes `FAILED`, and the order `FAILED` if it was still `PENDING`.
 
 #### `webhook_events`
 
@@ -1310,6 +1319,81 @@ A log of received payment webhooks, used to ignore repeats. Entity: `webhook-eve
 | `processed_at` | timestamptz | yes | `null` | |
 
 Timestamps: `created_at` only. No FK to payments; the link is through the payload.
+
+### 7c. Credit packs and purchased credits
+
+```mermaid
+erDiagram
+    credit_packs {
+        int id PK
+        varchar name
+        int feature_id FK
+        varchar ai_model_code "no FK"
+        int quantity
+        decimal price
+        boolean is_active
+        int sort_order
+    }
+    user_feature_credits {
+        int id PK
+        int user_id FK
+        int organization_id FK
+        int feature_id FK
+        varchar ai_model_code "no FK"
+        int granted
+        int used
+    }
+    features ||--o{ credit_packs : "sold as"
+    features ||--o{ user_feature_credits : "counted in"
+    users ||--o{ user_feature_credits : "holds"
+    credit_packs ||..o{ orders : "bought through (resource_id)"
+```
+
+Credits are extra usage on top of any plan. They are keyed by **feature**, not plan feature, so a balance survives plan changes, and they never reset or expire. `UsageService.consume` spends them only once the plan's own quota runs out. Design: [Commerce, section 7](hld-design/commerce.md#7-credit-packs).
+
+#### `credit_packs`
+
+The catalog of credits on sale, managed by admins. Entity: `credit-pack.entity.ts`.
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | int | no | auto | PK. Checkout takes this id. |
+| `name` | varchar(100) | no | | |
+| `description` | text | yes | `null` | |
+| `feature_id` | int | no | | FK `features.id`, CASCADE. `IDX_credit_packs_feature_id`. Never `AI_MODEL` or `ALLOWED_QUESTION_TYPES` (the API refuses settings). |
+| `ai_model_code` | varchar(150) | yes | `null` | The model the credits run on, by `ai_models.code`. `null` = the free plan's `AI_MODEL`. A code, not an FK: a removed model falls back to the default. |
+| `quantity` | int | no | | Units of the feature per pack |
+| `price` | decimal(10,2) | no | | |
+| `currency` | varchar(3) | no | | |
+| `is_active` | boolean | no | `true` | `false` takes the pack off sale. There is no delete endpoint. |
+| `sort_order` | int | no | `0` | `IDX_credit_packs_sort_order` |
+
+Timestamps: all three.
+
+#### `user_feature_credits`
+
+A purchased credit balance: one row per owner, feature and AI model. Entity: `user-feature-credit.entity.ts`.
+
+| Column | Type | Null | Default | Notes |
+|---|---|---|---|---|
+| `id` | int | no | auto | PK |
+| `user_id` | int | no | | FK, CASCADE. Indexed. |
+| `organization_id` | int | yes | `null` | FK, CASCADE. Indexed. Always `null` today: only personal credits are sold. |
+| `feature_id` | int | no | | FK, CASCADE. Indexed. |
+| `ai_model_code` | varchar(150) | yes | `null` | Copied from the pack. `null` = the free plan's model. |
+| `granted` | int | no | `0` | Bought in total |
+| `used` | int | no | `0` | Spent. `granted - used` is what is left. |
+
+Timestamps: all three. Four partial unique indexes keep one row per owner, feature and model, with separate indexes for a `null` and a named model (a plain unique index would let `null`-model rows repeat):
+
+| Index | Columns | Where |
+|---|---|---|
+| `UQ_user_feature_credits_user_id_feature_id` | `(user_id, feature_id)` | `organization_id IS NULL AND ai_model_code IS NULL` |
+| `UQ_user_feature_credits_user_id_feature_id_ai_model_code` | `(user_id, feature_id, ai_model_code)` | `organization_id IS NULL AND ai_model_code IS NOT NULL` |
+| `UQ_user_feature_credits_organization_id_feature_id` | `(organization_id, feature_id)` | `organization_id IS NOT NULL AND ai_model_code IS NULL` |
+| `UQ_user_feature_credits_org_id_feature_id_ai_model_code` | `(organization_id, feature_id, ai_model_code)` | `organization_id IS NOT NULL AND ai_model_code IS NOT NULL` |
+
+Grants are an `INSERT ... ON CONFLICT` on the matching index, so two first grants for the same user cannot both insert a row.
 
 ---
 
@@ -1597,7 +1681,8 @@ These links exist only in code. The database does not check them.
 | Link | Where it lives | Why no FK |
 |---|---|---|
 | Conversation → attempt or roadmap | `ai_conversations.context_type` + `context_id` | Polymorphic: points to different tables |
-| Order → subscription (or credits) | `orders.resource_type` + `resource_id` | Polymorphic |
+| Order → subscription or credit pack | `orders.resource_type` + `resource_id` | Polymorphic |
+| Credit pack or balance → AI model | `credit_packs.ai_model_code`, `user_feature_credits.ai_model_code` | By code, so a removed model falls back to the default |
 | Practice node → assessment | `learning_roadmap_nodes.meta.assessmentId` | Lives inside jsonb |
 | Job → assessment, attempt, roadmap, org | `jobs.payload` (`assessmentId`, `attemptId`, `orgUid` and so on) | Payload shape depends on job type |
 | Roadmap → its jobs per phase | `learning_roadmaps.meta.analysisJobId`, `generationJobId`, `modificationJobIds` | History kept in jsonb; `job_id` holds the latest |
@@ -1620,7 +1705,8 @@ These links exist only in code. The database does not check them.
 | `ai_models.capabilities` | `AiModelCapabilities` | `src/ai/interfaces/ai-model-capabilities.interface.ts` |
 | `learning_roadmaps.meta`, `learning_roadmap_nodes.meta`, `learning_node_edges.meta` | `RoadmapMeta`, `RoadmapNodeMeta`, `EdgeMeta` | `src/learning-roadmaps/interfaces/roadmap-meta.interface.ts` |
 | `jobs.payload`, `jobs.result` | Depends on `jobs.type` | See [Jobs](#5-jobs) |
-| `jobs.error`, `orders.metadata`, `webhook_events.payload` | `Record<string, unknown>` | none |
+| `orders.metadata` | `CreditOrderMetadata` for `CREDIT` orders, otherwise `null` | `src/commerce/credits/interfaces/credit-order-metadata.interface.ts` |
+| `jobs.error`, `webhook_events.payload` | `Record<string, unknown>` | none |
 
 ---
 
