@@ -1,221 +1,395 @@
 ---
-title: HLD — Authentication Module
-description: High Level Design for the TestFlow Authentication Module, verified against the current implementation
+title: Authentication and Users
+description: How people sign up, sign in, stay signed in and sign out, and how platform admins manage user accounts.
 status: stable
-last_updated: 2026-07-15
+last_updated: 2026-10-27
 ---
 
-# HLD — Authentication Module
-
-!!! note "Rewritten to match implementation"
-    An earlier draft of this document described Redis-backed tokens, an OTP verification module, Google OAuth, password-reset email flows, and brute-force lockout. **None of that exists in the current codebase.** The implementation is a much simpler DB-backed JWT scheme. This page reflects what is actually built as of 2026-07-15.
+# Authentication and Users
 
 ## 1. Purpose
 
-`AuthModule` owns identity verification: local signup/login, JWT access/refresh token issuance and rotation, and exposing the current user's profile. It is the sole source of the `JwtAuthGuard` applied globally to every route in the app.
+This module answers one question for every request: **"Who is calling, and can their account still be used?"**
 
-## 2. Scope
+It covers:
 
-### In Scope (implemented)
+- **Sign-up and sign-in**: email or username plus password, and Google sign-in.
+- **Email verification**: a link sent by email. An account must be verified before it can call any protected route.
+- **Password reset**: a "forgot password" email with a one-time link.
+- **Tokens**: a short-lived *access token* for API calls and a longer-lived *refresh token* to get new access tokens.
+- **The global auth guard**: it runs on every HTTP request and puts the caller on `request.user`.
+- **The current user's profile** (`GET /v1/auth/me`).
+- **Admin user management**: listing users and adding or removing platform roles.
 
-| Feature | Notes |
-| --- | --- |
-| Local signup / login | Email or username + password |
-| JWT access + refresh token issuance | Two separate secrets/expiries |
-| Refresh token rotation | Old token soft-deleted, new pair issued |
-| Logout | Soft-deletes the refresh token row |
-| `GET /me` | Returns caller's profile from the JWT `sub` claim |
+This module does not decide what a signed-in user is *allowed* to do. Roles and permissions do that. See [RBAC](rbac.md) and [Organizations](organizations.md).
 
-### Not Implemented (despite schema/dependency hints)
+!!! note "The old docs were wrong"
+    Earlier versions of this page said there was no Google sign-in, no email verification and no password reset. All three exist now. Auth does **not** use Redis. Refresh tokens are stored in Postgres. Redis is used by the rate limiter (see [Platform services](platform-services.md)).
 
-| Feature | Evidence it's not built |
-| --- | --- |
-| OAuth login (Google/GitHub) | `users.oauth_provider`/`oauth_id` columns exist and `OAuthProvider` enum is defined, but no OAuth controller, service, or Passport strategy exists anywhere in `src/` |
-| OTP / email verification | No OTP module, no mail service, no SMTP dependency |
-| Password reset | No forgot/reset endpoints or tokens |
-| Redis-backed sessions/lockout | No Redis client dependency; refresh tokens are DB rows, not Redis keys |
-| Brute-force lockout | No failed-attempt counter or lockout logic anywhere in `AuthService` |
-| Passport JWT strategy | `passport` and `passport-jwt` are installed as dependencies but unused — `JwtAuthGuard` hand-verifies tokens via `JwtService.verify()` directly, no `*.strategy.ts` file exists |
+## 2. Key terms
 
-These are natural next steps, not current behavior — treat any reference to them elsewhere as aspirational unless this page is updated to say otherwise.
+| Term | Meaning |
+|---|---|
+| **JWT** | JSON Web Token. A signed string that carries a small JSON payload. The server can check the signature without calling the database. |
+| **Access token** | A JWT sent as `Authorization: Bearer <token>` on every API call. Signed with `JWT_ACCESS_SECRET`. |
+| **Refresh token** | A JWT used only on `POST /v1/auth/refresh` to get a new token pair. Signed with `JWT_REFRESH_SECRET`. Its SHA-256 hash is stored in `refresh_tokens`. |
+| **Token payload** | `{ sub, email, username }`. `sub` is the user id. The type is `JwtPayload` in `src/identity/auth/guards/jwt-auth.guard.ts`. |
+| **Verified account** | `users.is_verified = true`. The user clicked the email link, or signed in with Google. |
+| **Active account** | `users.is_active = true`. A token for an inactive (deactivated) account is rejected. |
+| **Placeholder account** | An unverified account the system creates for someone invited to an organization who has no account yet. Its username starts with `invited_`. See [Organizations](organizations.md#5-invitations). |
+| **`mustChangePassword`** | A flag on the user. It is set when the system generated the password (Google sign-in). Login returns it so the client can ask the user to pick a new password. |
+| **`@Public()`** | A decorator that tells the global auth guard to skip a route. In `src/common/decorators/public.decorator.ts`. |
+| **`@CurrentUser()`** | A parameter decorator that returns `request.user` (the `JwtPayload`). In `src/identity/auth/decorators/current-user.decorator.ts`. |
 
-## 3. Module Architecture
+## 3. Data it uses
+
+See the [ERD](../erd.md) for the full table definitions. This module reads and writes:
+
+| Table | Used for |
+|---|---|
+| `users` | Account details, bcrypt password hash (cost 10), `is_active`, `is_verified`, `must_change_password`, `oauth_provider` / `oauth_id`, and the verification email counters (`total_verification_email`, `last_verification_email_sent_at`). |
+| `refresh_tokens` | `token_hash`, `user_id`, `expires_at`, `deleted_at`. **One row per user** (see rule 6). |
+| `users_roles`, `roles` | Platform roles. The admin user endpoints read and write them. |
+| `subscriptions` | A free subscription is created when an account becomes verified (see [Commerce](commerce.md)). |
+
+Uniqueness rules on `users`:
+
+- `email` and `username` are unique among rows that are not soft-deleted.
+- `(oauth_provider, oauth_id)` is unique when `oauth_id` is set.
+- `phone_number` is unique.
+
+## 4. Configuration
+
+| Env var | Meaning |
+|---|---|
+| `JWT_ACCESS_SECRET`, `JWT_ACCESS_EXPIRY` | Access token secret and lifetime **in seconds**. |
+| `JWT_REFRESH_SECRET`, `JWT_REFRESH_EXPIRY` | Refresh token secret and lifetime **in seconds**. |
+| `JWT_EMAIL_VERIFICATION_SECRET`, `JWT_EMAIL_VERIFICATION_EXPIRY` | Verification link token. Example: `86400` (1 day). |
+| `JWT_PASSWORD_RESET_SECRET`, `JWT_PASSWORD_RESET_EXPIRY` | Reset link token. Example: `900` (15 minutes). |
+| `GOOGLE_OAUTH2_CLIENT_ID` | Google client id. Google ID tokens must have this as their `audience`. |
+| `FRONTEND_URL` | Base URL for email links (`/verify-email?token=...`, `/reset-password?token=...`). |
+
+The code reads every expiry with `+value`. So each one **must be a plain number of seconds**. See Known gaps for the problem with `.env.example`.
+
+## 5. Main flows
+
+### 5.1 Sign-up and email verification
+
+1. The client calls `POST /v1/auth/signup` with first name, last name, username, email, password and an optional phone number.
+2. `UsersService.create` checks the email:
+    - **No account** has that email: it checks that the username and phone are free, then creates a new user.
+    - **An unverified account** has that email (an unfinished sign-up, or a placeholder made by an org invite): it **takes over that row**. It replaces the name, username, phone and password. The row keeps its id, so any org invitation waiting on it stays attached.
+    - **A verified account** has that email: `409 Conflict`.
+3. The server signs a token pair and stores the refresh token. It returns the tokens, but they **cannot be used yet**, because the guard rejects unverified accounts.
+4. The server sends a verification email. It does not wait for the send to finish (fire-and-forget). The link holds a JWT with `{ email }`. The send time and a counter are saved on the user.
+5. The user clicks the link. The frontend calls `GET /v1/auth/verify-email?token=...`.
+6. In one transaction, the user is marked verified and a **free subscription** is created. Then a welcome email is sent.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant A as AuthController
+    participant S as AuthService
+    participant U as UsersService
+    participant DB as Postgres
+    participant M as EmailService
+    C->>A: POST /v1/auth/signup
+    A->>S: signup(dto)
+    S->>U: create(dto)
+    U->>DB: find user by email
+    alt no user or unverified user
+        U->>DB: insert new user or take over unverified row
+    else verified user exists
+        U-->>C: 409 Conflict
+    end
+    S->>S: sign access and refresh tokens
+    S->>DB: upsert refresh_tokens row with hash
+    S-->>M: send verification email, not awaited
+    S->>DB: bump verification counter and timestamp
+    S-->>C: 200 with tokens
+    Note over C: Tokens fail on protected routes until verified
+    C->>A: GET /v1/auth/verify-email?token=...
+    A->>S: verifyEmail(token)
+    S->>S: verify JWT with email verification secret
+    S->>DB: BEGIN, set is_verified, create free subscription, COMMIT
+    S-->>M: send welcome email, not awaited
+    S-->>C: 200 Email verified successfully
+```
+
+### 5.2 Login with password
+
+1. The client calls `POST /v1/auth/login` with **either** `email` **or** `username`, plus `password`.
+2. The server looks up the user. A missing user and a wrong password return the same error: `401 Invalid credentials`.
+3. If the account is **not verified**, the server may send a fresh verification email. Then it returns `401 Please verify your email before logging in`. It only sends a new email when the last one has expired (it is older than `JWT_EMAIL_VERIFICATION_EXPIRY`). This stops people from using login to spam someone's inbox.
+4. Otherwise, the server signs a token pair and saves the refresh token hash.
+5. If `mustChangePassword` is true, the response also contains `mustChangePassword: true`.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    participant M as EmailService
+    C->>S: POST /v1/auth/login with email or username and password
+    S->>DB: find user
+    alt user missing or bcrypt compare fails
+        S-->>C: 401 Invalid credentials
+    else not verified
+        opt last verification email has expired
+            S-->>M: send new verification email
+        end
+        S-->>C: 401 Please verify your email
+    else ok
+        S->>S: sign access and refresh tokens
+        S->>DB: upsert the user's single refresh_tokens row
+        S-->>C: 200 accessToken, refreshToken, maybe mustChangePassword
+    end
+```
+
+Login does not check `is_active`. A deactivated user can still get tokens, but the guard rejects them on the first protected call.
+
+### 5.3 Google sign-in
+
+The frontend uses Google's sign-in button to get a **Google ID token** and sends it to the backend. The backend has no redirect flow and no Passport strategy.
+
+1. The client calls `POST /v1/auth/google` with `{ idToken }`.
+2. `GoogleOAuthService.verifyIdToken` checks the token with `google-auth-library`. The audience must equal `GOOGLE_OAUTH2_CLIENT_ID`, and Google must say the email is verified. Otherwise the server returns `401`.
+3. Inside one transaction, the server finds the user by email and takes one of three paths:
+
+| Case | What happens |
+|---|---|
+| **No account** | Create a user. The name comes from Google. The username is made from the email prefix and is unique. The password is a random 8-character one, with `mustChangePassword = true` and `isVerified = true`. The Google ids are saved. A free subscription is created. |
+| **Unverified account** (unfinished sign-up or org placeholder) | "Claim" it. Replace the name and any placeholder username. Set a **new random password**. Mark it verified and link Google. **Revoke all its refresh tokens.** Create a free subscription. This blocks *account pre-hijacking*: someone who signed up with your email but never verified it cannot keep a password on your account. |
+| **Verified account** | Link Google to it (save `oauth_provider` and `oauth_id`) if it is not linked yet. The password stays the same. |
+
+4. The server signs a token pair.
+5. In the first two cases only, the server sends a welcome email **with the username and generated password**, so the user can also log in with a password later. The password is never logged and never returned in the API response.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as Google
+    participant S as AuthService
+    participant O as GoogleOAuthService
+    participant DB as Postgres
+    participant M as EmailService
+    C->>G: Sign in with Google button
+    G-->>C: Google ID token
+    C->>S: POST /v1/auth/google with idToken
+    S->>O: verifyIdToken
+    O->>G: check signature and audience
+    O-->>S: googleId, email, first and last name
+    S->>DB: BEGIN, find user by email
+    alt new user
+        S->>DB: insert verified user with random password
+        S->>DB: create free subscription
+    else unverified user
+        S->>DB: claim row, new password, revoke refresh tokens
+        S->>DB: create free subscription
+    else verified user
+        S->>DB: link Google ids if needed
+    end
+    S->>DB: COMMIT
+    S->>DB: upsert refresh token row
+    opt account created or claimed
+        S-->>M: welcome email with username and password
+    end
+    S-->>C: 200 accessToken and refreshToken
+```
+
+### 5.4 Token refresh (rotation)
+
+Each refresh token works **once**. Using it returns a new pair and kills the old token. This is called *rotation*.
+
+1. The client calls `POST /v1/auth/refresh` with `{ refreshToken }`. The route is `@Public()`.
+2. The server verifies the JWT with `JWT_REFRESH_SECRET`.
+3. It hashes the token with SHA-256 and looks for a live row with that `user_id` and `token_hash`. If there is no row, or `expires_at` has passed, it returns `401`.
+4. It soft-deletes the row, signs a new pair, and stores the new hash. Storing the hash brings the same row back with the new hash and expiry.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    C->>S: POST /v1/auth/refresh with refreshToken
+    S->>S: verify JWT with refresh secret
+    S->>S: sha256 of the token
+    S->>DB: find live row by user id and hash
+    alt not found or expired
+        S-->>C: 401 Invalid or expired refresh token
+    else found
+        S->>DB: soft delete row
+        S->>S: sign new access and refresh tokens
+        S->>DB: restore row with new hash and new expiry
+        S-->>C: 200 new token pair
+    end
+```
+
+### 5.5 Logout
+
+1. The client calls `POST /v1/auth/logout` with `{ refreshToken }`. The route is `@Public()`, so it works even when the access token has expired.
+2. The server hashes the token and soft-deletes any row with that hash.
+3. It always returns `200`, even if it did not know the token.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    C->>S: POST /v1/auth/logout with refreshToken
+    S->>S: sha256 of the token
+    S->>DB: soft delete refresh_tokens where token_hash matches
+    S-->>C: 200 Logged out successfully
+    Note over C,S: The access token still works until it expires
+```
+
+### 5.6 Forgot and reset password
+
+1. The client calls `POST /v1/auth/forgot-password` with `{ email }`. The response is **always the same message**, so nobody can use this route to find out which emails have accounts.
+2. If the account exists and is active, the server emails a reset link. The link holds a JWT with `{ sub: userId }`.
+3. The JWT is signed with `JWT_PASSWORD_RESET_SECRET` **plus the user's current password hash**. When the password changes, the key changes, so every older reset link stops working. This makes the link single-use without storing it anywhere.
+4. The client calls `POST /v1/auth/reset-password` with `{ token, password }`. The server reads `sub` from the token, loads that user, and then verifies the token with that user's key. Every failure returns the same error: `401 Invalid or expired password reset token`.
+5. In one transaction, the server saves the new password, clears `mustChangePassword`, and **revokes all the user's refresh tokens**.
+
+### 5.7 How a request is authenticated
+
+`JwtAuthGuard` (`src/identity/auth/guards/jwt-auth.guard.ts`) is the **first** global guard in `src/app.module.ts`. The full order is:
+
+`JwtAuthGuard` → `RateLimitGuard` → `RolesGuard` → `OrgContextGuard` → `PermissionGuard`
+
+Steps inside `JwtAuthGuard`:
+
+1. If the route or its controller has `@Public()`, let the request through.
+2. Read the `Authorization: Bearer <token>` header. If it is missing: `401 Missing access token`.
+3. Verify the JWT with `JWT_ACCESS_SECRET`. If it is bad or expired: `401`.
+4. Load the account status from the database with `UsersService.findAccountStatusById`. It selects only `id`, `is_active` and `is_verified`. This runs **on every authenticated request**. Then:
+    - user deleted: `401 Account no longer exists`
+    - not active: `401 Account has been deactivated`
+    - not verified: `401 Please verify your email before continuing`
+5. Set `request.user = payload` (`{ sub, email, username }`).
+
+Controllers read the caller with `@CurrentUser() user: JwtPayload`. They usually use `user.sub` as the user id.
 
 ```mermaid
 flowchart TD
-    client["Client"]
-
-    subgraph AuthModule
-        ctrl["AuthController\n/v1/auth/*"]
-        svc["AuthService"]
-        guard["JwtAuthGuard\n(global APP_GUARD)"]
-        jwtSvc["JwtService\n(@nestjs/jwt)"]
-    end
-
-    subgraph UsersModule
-        usersSvc["UsersService"]
-    end
-
-    db[("PostgreSQL\nusers, refresh_tokens")]
-
-    client -->|HTTP| ctrl
-    ctrl --> svc
-    svc --> jwtSvc
-    svc --> usersSvc
-    svc --> db
-    guard --> jwtSvc
-    guard --> db
+    R["Incoming HTTP request"] --> P{"Route marked Public?"}
+    P -- yes --> OK["Continue to next guard"]
+    P -- no --> H{"Bearer token present?"}
+    H -- no --> E1["401 Missing access token"]
+    H -- yes --> V{"JWT valid?"}
+    V -- no --> E2["401 Invalid or expired"]
+    V -- yes --> D["Load is_active and is_verified from DB"]
+    D --> S{"Account usable?"}
+    S -- no --> E3["401 deleted, deactivated or unverified"]
+    S -- yes --> U["Set request.user to the payload"] --> OK
 ```
 
-| Component | Responsibility |
-| --- | --- |
-| `AuthController` | Exposes `/v1/auth/*`; validates DTOs |
-| `AuthService` | Login, signup (delegates user creation to `UsersService`), refresh (rotation), logout, `getMe` |
-| `JwtService` | Signs/verifies both access and refresh JWTs (two distinct secrets) |
-| `JwtAuthGuard` | Global guard; skips `@Public()` routes; verifies Bearer token against `JWT_ACCESS_SECRET`; attaches `request.user = {sub, email, username}` |
-| `CurrentUser` decorator | Returns `request.user` as populated by the guard |
-| `RefreshToken` entity | DB-backed refresh token store (table `refresh_tokens`) |
+RabbitMQ consumers are also marked `@Public()`. The global guard runs for them too, and they have no HTTP request to read a token from.
 
-## 4. Data Model
+## 6. Business rules and edge cases
 
-AuthModule owns the `refresh_tokens` table and reads/writes the `users` table (via `UsersService`).
+1. **Password policy** (`IsStrongPassword` in `src/identity/auth/decorators/is-strong-password.decorator.ts`): 8 to 255 characters, with at least one lowercase letter, one uppercase letter, one digit and one special character. Sign-up and reset use it. Login only checks that the password has at least 8 characters.
+2. **Username**: 3 to 100 characters, using only letters, digits and `_`. First and last names may use only letters, spaces, `-` and `'`.
+3. **Login identifier**: send `email` or `username`. If both are sent, email is used.
+4. **Unverified accounts cannot call protected routes**, even with a valid token.
+5. **Verification email throttle**: login sends a new link only after the previous link has expired.
+6. **One refresh token per user.** `storeRefreshToken` keeps exactly one `refresh_tokens` row per user and overwrites it on every login, sign-up, Google sign-in and refresh. So logging in on a second device makes the first device's refresh token stop working. This comes from how the code is written. No setting changes it.
+7. **Logout only revokes the refresh token.** There is no access token denylist. The access token keeps working until it expires. The exception is a deactivated or deleted account, because the guard checks those on every call.
+8. **Resetting the password logs the user out everywhere** (all refresh tokens are revoked). Claiming an unverified account through Google does the same.
+9. **Google requires `email_verified`.** If a verified TestFlow account has the same email, Google is linked to it automatically.
+10. **Generated passwords** (`generateDefaultPassword` in `src/identity/helpers/default-password.helper.ts`) use `crypto.randomInt`. They have at least one character from each class and leave out characters that look alike.
+11. **The free subscription** is created only when an account becomes verified (email link or Google), never at sign-up.
+12. **Emails are fire-and-forget.** A failed send is logged and does not fail the request.
+13. **Email matching is case-sensitive** in login, sign-up and Google sign-in (`findByEmail` compares with `=`). Only the org invite lookup lowercases emails.
 
-```mermaid
-erDiagram
-    refresh_tokens {
-        int id PK
-        varchar token_hash "SHA-256 hex of raw JWT"
-        int user_id FK
-        timestamp expires_at
-        timestamp created_at
-        timestamp deleted_at
-    }
-```
+## 7. Endpoints summary
 
-There is exactly **one active refresh token row per user** — `AuthService.storeRefreshToken()` looks up any existing row for the user (including soft-deleted ones) and overwrites it (clearing `deleted_at`) rather than inserting a new row per session/device. Logging in from a second device invalidates the first device's refresh token.
+The [API reference](../api-design/v1.md) has the full details.
 
-## 5. Flows
+### Auth (`/v1/auth`, `src/identity/auth/auth.controller.ts`)
 
-### 5.1 Signup
+| Method and path | Auth | Rate limit | Purpose |
+|---|---|---|---|
+| `POST /login` | Public | CLASS_A | Password login |
+| `POST /signup` | Public | CLASS_A | Create an account and send the verification email |
+| `GET /verify-email?token=` | Public | CLASS_A, own bucket | Verify the email and create the free plan |
+| `POST /forgot-password` | Public | CLASS_A, own bucket | Send the reset email |
+| `POST /reset-password` | Public | CLASS_A, own bucket | Set a new password with a reset token |
+| `GET /check-username?username=` | Public | CLASS_A, own bucket | Returns `{ exists }` |
+| `POST /google` | Public | CLASS_A | Google sign-in with an ID token |
+| `POST /refresh` | Public | CLASS_A | Rotate the token pair |
+| `POST /logout` | Public | CLASS_A | Revoke the refresh token |
+| `GET /me` | Bearer | CLASS_C | Profile, current plan, allowed question types and enabled feature flags |
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client
-    participant Ctrl as AuthController
-    participant Svc as AuthService
-    participant Users as UsersService
-    participant DB as PostgreSQL
+`GET /me` makes four reads at the same time: the profile (`UsersService.getMe`), the current plan and the allowed question types (`SubscriptionsService`), and the enabled feature flags (`FeatureFlagsService`). If the feature flag read fails, it uses the defaults from code instead of failing.
 
-    C->>Ctrl: POST /v1/auth/signup {firstName, lastName, username, email, password, phoneNumber?}
-    Ctrl->>Svc: signup(dto)
-    Svc->>Users: create(dto)
-    Users->>DB: SELECT WHERE email=$1 OR username=$2 OR phone_number=$3
-    alt any match found
-        Users-->>Svc: ConflictException (409)
-    end
-    Users->>Users: bcrypt.hash(password, 10)
-    Users->>DB: INSERT INTO users (...)
-    Users-->>Svc: user
-    Svc->>Svc: sign accessToken + refreshToken
-    Svc->>DB: upsert refresh_tokens row
-    Svc-->>Ctrl: {accessToken, refreshToken}
-    Ctrl-->>C: 200 {success, message, data: {accessToken, refreshToken}}
-```
+### Admin users (`/v1/admin`, `src/identity/users/admin.controller.ts`)
 
-### 5.2 Login
+All of these use the CLASS_C rate limit and need a platform permission (see [RBAC](rbac.md)).
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client
-    participant Ctrl as AuthController
-    participant Svc as AuthService
-    participant DB as PostgreSQL
+| Method and path | Permission | Purpose |
+|---|---|---|
+| `GET /users` | `users:read` | Cursor-paged list, newest first. Filters: `search` (name, username, email), `role`, `isActive`, `isVerified`. Each user includes their platform role keys. `meta` has `nextCursor` and `total`. |
+| `GET /users/:username/roles` | `users:read` | A user's platform roles |
+| `POST /users/:username/roles` | `users:create` | Add a platform role. Body: `{ roleKey }`. |
+| `DELETE /users/:username/roles/:roleKey` | `users:delete` | Remove a platform role (soft delete) |
 
-    C->>Ctrl: POST /v1/auth/login {email|username, password}
-    Ctrl->>Svc: login(dto)
-    Svc->>DB: SELECT WHERE email=$1 OR username=$1
-    alt not found or no password set
-        Svc-->>Ctrl: UnauthorizedException (401)
-    end
-    Svc->>Svc: bcrypt.compare(password, user.password)
-    alt mismatch
-        Svc-->>Ctrl: UnauthorizedException (401)
-    end
-    Svc->>Svc: sign accessToken {sub, email, username} + refreshToken {sub, jti-less}
-    Svc->>DB: upsert refresh_tokens row (token_hash = sha256(refreshToken))
-    Svc-->>Ctrl: {accessToken, refreshToken}
-    Ctrl-->>C: 200
-```
+Admin rules (`src/identity/users/admin.service.ts`):
 
-No brute-force lockout exists — repeated failed attempts are not rate-limited or counted anywhere.
+- You cannot change **your own** roles (`403`).
+- You can only add roles with scope `platform` here. Org roles come from org membership (`400`).
+- Adding a role the user already has returns `409`.
 
-### 5.3 Token Refresh (rotation)
+## 8. Async work, emails and events
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant C as Client
-    participant Ctrl as AuthController
-    participant Svc as AuthService
-    participant DB as PostgreSQL
+This module uses no queues and no websocket events. It sends these emails through `EmailService` (see [Notifications](notifications.md)):
 
-    C->>Ctrl: POST /v1/auth/refresh {refreshToken}
-    Ctrl->>Svc: refresh(dto)
-    Svc->>Svc: jwtService.verify(refreshToken, JWT_REFRESH_SECRET)
-    alt invalid/expired signature
-        Svc-->>Ctrl: 401
-    end
-    Svc->>Svc: hash = sha256(refreshToken)
-    Svc->>DB: SELECT * FROM refresh_tokens WHERE user_id=$1 AND token_hash=$2 AND deleted_at IS NULL
-    alt not found or expires_at < now
-        Svc-->>Ctrl: 401
-    end
-    Svc->>DB: soft-delete old row
-    Svc->>Svc: sign new accessToken + refreshToken
-    Svc->>DB: upsert new refresh_tokens row
-    Svc-->>Ctrl: {accessToken, refreshToken}
-```
+| Email | When |
+|---|---|
+| Verification | On sign-up, and on login when the last link has expired |
+| Welcome | After email verification. After a Google sign-up or claim, it also includes the username and generated password. |
+| Password reset | On `POST /forgot-password` for an active account |
 
-### 5.4 Logout
+## 9. Bootstrapping the first admin
 
-`POST /v1/auth/logout` is `@Public()` — no access token required, only the refresh token in the body. Hashes the token and soft-deletes any matching `refresh_tokens` row. Always returns 200 regardless of whether a match was found.
+`npm run bootstrap-admin -- --email <email> --password <password>` runs `src/scripts/bootstrap-admin.ts`:
 
-## 6. JWT Design
+1. The `super_admin` role must already exist, so run `npm run seed` first.
+2. If any user already has `super_admin`, the script stops. It prints "already bootstrapped" if that user has the same email, and fails otherwise. **This script can only create one super admin.** You can add more later with `POST /v1/admin/users/:username/roles`.
+3. In one transaction, it creates a verified, active user with username `system` and the given email and password, and gives that user `super_admin`.
 
-**Access token** and **refresh token** share the same payload shape: `{ sub: userId, email, username, iat, exp }`. They differ only in secret and expiry:
+The script does not check the password policy and does not create a subscription.
 
-| Token | Secret env var | Expiry env var |
-| --- | --- | --- |
-| Access | `JWT_ACCESS_SECRET` | `JWT_ACCESS_EXPIRY` |
-| Refresh | `JWT_REFRESH_SECRET` | `JWT_REFRESH_EXPIRY` |
+## 10. Where the code lives
 
-Both secrets are read via `ConfigService.getOrThrow(...)` — the app fails to boot if either is missing. There is no `jti` claim and no third "verification token" secret (no OTP flow exists to need one).
+| Path | What |
+|---|---|
+| `src/identity/auth/auth.controller.ts` | Auth routes |
+| `src/identity/auth/auth.service.ts` | All auth flows, plus token signing and storage |
+| `src/identity/auth/google/google-oauth.service.ts` | Google ID token check |
+| `src/identity/auth/guards/jwt-auth.guard.ts` | Global auth guard and `JwtPayload` |
+| `src/identity/auth/decorators/` | `@CurrentUser()`, `@IsStrongPassword()` |
+| `src/common/decorators/public.decorator.ts` | `@Public()` |
+| `src/identity/helpers/` | Generated passwords and the placeholder username prefix |
+| `src/identity/users/users.service.ts` | User reads and writes used by auth and organizations |
+| `src/identity/users/admin.controller.ts`, `admin.service.ts` | Admin user and role routes |
+| `src/scripts/bootstrap-admin.ts` | Creates the first super admin |
+| `tests/unit/identity/` | Unit tests (`auth/`, `users/`, `helpers/`) |
 
-**Storage**: raw refresh tokens are never persisted — only their SHA-256 hash (`refresh_tokens.token_hash`). The raw refresh token is returned to the client in the response body; there is no `httpOnly` cookie mechanism (no `cookie-parser` dependency) — the client is expected to store and resend it explicitly.
+## 11. Known gaps and TODOs
 
-## 7. Security Notes
-
-| Concern | Implementation |
-| --- | --- |
-| Password hashing | `bcrypt`, cost factor 10 |
-| Plaintext exposure | Never logged or returned; `password` column nullable (reserved for future OAuth-only accounts) |
-| Token replay after rotation | Old refresh token row is soft-deleted on rotation, so it can't be reused — but there is no "family revocation" concept; a stolen-then-used-again old token simply gets a 401, without proactively invalidating the current valid token |
-| Transport | No CORS allowlist — `app.enableCors({ origin: true, credentials: true })` reflects any origin; no HSTS/Helmet configured |
-| Rate limiting | Not implemented anywhere in the app |
-
-## 8. Open Gaps (for future work, not current behavior)
-
-1. No password reset flow — a user who forgets their password has no self-service recovery path today.
-2. No brute-force protection on `/login` — worth adding before production traffic.
-3. `passport`/`passport-jwt` dependencies are installed but dead weight — either wire up a real Passport strategy (e.g. for OAuth) or remove them.
-4. Single-refresh-token-per-user model means logging in on a new device silently logs out all others — confirm this is the intended UX before adding multi-device support.
-5. OAuth columns (`oauth_provider`, `oauth_id`) exist on `users` with no consumer — either build the OAuth flow or remove the columns to avoid confusion.
-
-## 9. Related Pages
-
-- [Architecture](../architecture.md)
-- [ERD](../erd.md#1-identity--rbac)
-- [API Design v1 — Auth Module](../api-design/v1.md#auth-module-v1auth)
-- [HLD — RBAC](rbac.md)
+1. **The expiry values in `.env.example` do not work.** It has `JWT_ACCESS_EXPIRY=15m` and `JWT_REFRESH_EXPIRY=7d`, but the code does `+value`, which turns `15m` into `NaN`. Use seconds instead, for example `900` and `604800`.
+2. **There is no endpoint for users to update their profile or change their password.** `UsersService.update` and `remove` exist, but no controller calls them. A user with `mustChangePassword` can only change the password through the reset flow.
+3. **The API cannot deactivate or delete a user.** `is_active` is checked everywhere, but nothing sets it to false.
+4. **Only one refresh token per user** (rule 6), so a user cannot stay signed in on several devices.
+5. **`POST /refresh` does not check `is_active` or `is_verified`.** The guard still rejects the new access token, so the risk is low.
+6. **The guard reads the database on every request.** Nothing is cached.
+7. **`request.user.email` and `request.user.username` come from the token.** They can be out of date until the token expires.
+8. **Sign-up can take over an unverified row** with the same email and replace its password. The real owner still has to click the verification link. If they do click it, the password the other person chose stays on the account.
+9. **`OAuthProvider.GITHUB`** is in the enum, but there is no GitHub sign-in.
+10. **Emails are case-sensitive** (rule 13), so `A@x.com` and `a@x.com` can be two accounts. The unique index is on the raw value.

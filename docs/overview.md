@@ -1,96 +1,98 @@
 ---
-title: TestFlow — Business Overview
-description: Business overview of TestFlow — what it is, who it's for, core value propositions, and major use cases
+title: Business Overview
+description: What TestFlow is, who it is for, its core value, and what the backend has built today
 status: stable
-last_updated: 2026-06-24
+last_updated: 2026-10-27
 ---
 
 # TestFlow — Business Overview
 
-**TestFlow** is a SaaS-based online assessment platform designed to streamline how organizations create, deliver, and evaluate tests at scale — and empower individuals to practice for any exam, anytime, on demand.
-
-!!! note "Implementation status"
-    This page describes the product vision. As of 2026-07-15, the backend implements assessment creation/scheduling, participant enrollment, timed attempts with automatic scoring, RBAC, and a Razorpay-backed subscription/checkout flow — see [Architecture](architecture.md) for what's actually built. **AI-powered question generation (below) is not yet implemented**: the "generate assessment" endpoint currently samples randomly from an existing question bank rather than calling an LLM. See [HLD — Assessments](hld-design/assessments.md#41-two-creation-paths) for detail.
+**TestFlow** is a SaaS online assessment platform. It helps organizations create, deliver, and score tests at scale. It also lets any individual practice for an exam, a certification, or an interview on demand, by typing a single prompt.
 
 ---
 
-## The Problem It Solves
+## The problem it solves
 
-Organizations — whether hiring companies, educational institutions, or training providers — spend significant time and resources manually creating assessments, distributing them, and scoring results. At the same time, individuals preparing for competitive exams, certifications, or interviews struggle to find realistic, on-demand practice environments. TestFlow solves both problems on a single platform.
+Hiring teams, schools, and training providers spend a lot of time writing tests, sending them out, and marking them by hand. At the same time, people preparing for competitive exams or interviews struggle to find realistic practice that fits their exact topic. TestFlow solves both problems on one platform.
 
----
+## Who it is for
 
-## Who It's For
-
-- **Recruiters & HR teams** — screening candidates through skill assessments
-- **Educators & training providers** — evaluating learners across courses or programs
-- **Enterprises** — running internal certifications, compliance tests, or performance evaluations
-- **Individual learners** — anyone preparing for an exam, certification, or interview on their own
-
----
-
-## Core Value Propositions
-
-**1. AI-Powered Question Generation**
-Instead of manually writing questions, test creators describe what they want to assess and the platform generates questions automatically using an LLM. This drastically reduces the time-to-assessment.
-
-**2. Flexible Assessment Configuration**
-Creators have full control over: question types (MCQ), number of questions, per-question marking schemes (positive/negative marking), time limits, scheduling windows, and participant caps.
-
-**3. Automated Evaluation & Scoring**
-Once a participant submits, the platform scores responses instantly — tracking correct answers, marks awarded, and overall performance — with no manual intervention required.
-
-**4. Participant Management**
-The platform tracks who has enrolled in an assessment, their attempt status (not started, in progress, completed), and maintains a full audit trail of every response submitted.
-
-**5. Secure, Role-Based Access**
-A granular permission system ensures the right people have the right access — test creators can build assessments, participants can only take them, and admins can manage the platform — all backed by OAuth (Google, GitHub) for frictionless login.
-
-**6. Subscription-Based Monetization**
-TestFlow is designed around a subscription model, allowing different tiers of access — enabling the business to serve individuals, small teams, and large enterprises at different price points.
+| Audience                         | What they use TestFlow for                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Recruiters and HR teams          | Screening candidates with skill tests (MCQ, coding, written answers).                                   |
+| Educators and training providers | Testing learners across a course or program.                                                            |
+| Enterprises                      | Internal certifications, compliance tests, and performance reviews, run inside an organization account. |
+| Individual learners              | Practicing any topic on demand and following an AI learning roadmap.                                    |
 
 ---
 
-## Major Use Case: Prompt-to-Practice — Instant Exam Simulation for Individuals
+## Core value
 
-> *"I want to practice for UPSC Prelims. Give me a 100-question mock test right now."*
-
-This is one of TestFlow's most powerful differentiators. Any individual — without any admin setup, pre-built question bank, or external resource — can walk into the platform, type a single prompt describing what they want to practice, and immediately sit inside a fully simulated exam environment.
-
-**How it works:**
-
-1. **Describe the exam** — The user types a natural-language prompt: *"GATE Computer Science"*, *"AWS Solutions Architect mock test"*, *"JEE Mains Physics — Thermodynamics"*, *"Python coding interview prep"*, or even something niche like *"Medieval Indian history — 30 questions, moderate difficulty"*.
-2. **Instant test generation** — The LLM generates a complete, contextually accurate assessment: questions, answer options, correct answers, and a recommended marking scheme — all tailored to the topic and difficulty.
-3. **Authentic exam environment** — The test is served in the exact same timed, scored, distraction-free interface used for formal assessments. The experience mirrors a real exam — not a flashcard or quiz widget.
-4. **Instant results & feedback** — On submission, the user gets their score, a breakdown of correct vs. incorrect responses, and marks awarded — giving immediate, actionable feedback on where they stand.
-
-**Why this matters for the business:**
-
-- Unlocks a massive **B2C growth channel** — any student, job seeker, or professional becomes a potential user without needing an organization to onboard first
-- Creates **high repeat usage** — individuals return to practice across different topics, driving retention and subscription upgrades
-- Positions TestFlow as a **universal practice platform**, not just an enterprise testing tool
-- Generates a **rich data moat** — aggregated performance data across topics and domains becomes a future asset for adaptive learning and benchmarking features
+1. **AI-powered test creation.** The creator describes what to test. An LLM writes the questions, answer options, correct answers, and coding test cases.
+2. **Flexible configuration.** Creators choose question types (MCQ, coding, descriptive), sections, question counts, difficulty, positive and negative marks, duration, time windows, and participant limits.
+3. **Automatic scoring.** MCQs are scored by rule, coding answers are run against test cases in a sandbox, and descriptive answers are graded by an LLM. All of it happens in the background after submission.
+4. **Participant management.** Invite people by email, let them register, track each attempt, review responses, reject a suspicious attempt, and show a leaderboard.
+5. **Teams and roles.** Organizations with owners, admins, and members. A permission system controls who can do what, both platform-wide and inside each organization.
+6. **Subscription model.** Plans and quotas decide how many AI assessments and roadmaps a user can generate, which question types they can use, and which AI model they get.
 
 ---
 
-## Business Model
+## Key use case: prompt to practice
 
-TestFlow follows a **B2B/B2C SaaS model**. Revenue is generated through tiered subscription plans that gate features like the number of assessments, participant limits, AI question generation credits, individual practice sessions, and advanced analytics.
+> _"I want to practice for UPSC Prelims. Give me a mock test right now."_
+
+Any individual can type a prompt and sit a full, timed exam a few moments later. No admin setup or question bank is needed.
+
+```mermaid
+flowchart LR
+    A["Learner types a prompt"] --> B["Backend plans sections and starts background jobs"]
+    B --> C["LLM writes questions per section"]
+    C --> D["Assessment becomes ready"]
+    D --> E["Learner takes a timed attempt"]
+    E --> F["Background evaluation scores it"]
+    F --> G["Result, analytics, and AI chat about the attempt"]
+```
+
+**Why it matters for the business**
+
+- It opens a large **B2C channel**. Any student or job seeker can become a user without an organization.
+- It drives **repeat usage**. Learners come back for new topics, which supports retention and plan upgrades.
+- It makes TestFlow a **universal practice platform**, not only an enterprise testing tool.
+- It builds a **data asset**. Performance data across topics can power adaptive learning later.
+
+## Business model
+
+TestFlow is a **B2B and B2C SaaS**. Revenue comes from tiered plans. A plan version lists features with limits, such as `AI_ASSESSMENT` (AI assessments per period), `AI_LEARNING_ROADMAP`, `AI_MODEL` (which LLM you get), and `ALLOWED_QUESTION_TYPES`. Payments go through **Razorpay**. See [Commerce](hld-design/commerce.md).
 
 ---
 
-## Phase 1: Architecture Design and Planning
+## What is built today
 
-This is the first phase of the project. In this phase, we will focus on the following tasks:
+This table reflects the backend code as of the date at the top of this page.
 
-1. **Architecture Design** — Design the overall architecture of the system, including the components, their interactions, and the data flow.
-2. **Microservices Identification** — Identify the microservices that will be part of the system and define their responsibilities.
-3. **Communication Protocols** — Decide on the communication protocols that will be used in the inter-service communication.
+| Area                                   | Status                | Notes                                                                                                                                                                                                           |
+| -------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Email + password auth                  | Built                 | Signup, email verification, login, refresh tokens, logout, forgot and reset password. See [Auth](hld-design/auth.md).                                                                                           |
+| Google sign-in                         | Built                 | `POST /v1/auth/google` verifies a Google ID token. GitHub exists only as an enum value; there is no GitHub login flow.                                                                                          |
+| RBAC                                   | Built                 | Platform roles (`super_admin`, `beta_tester`) and org roles (`org_owner`, `org_admin`, `org_member`) share one permission catalog. See [RBAC](hld-design/rbac.md).                                              |
+| Organizations                          | Built                 | Create an org, invite members one by one or by CSV upload (processed in the background), manage roles, suspend orgs (admin). See [Organizations](hld-design/organizations.md).                                  |
+| Manual assessments                     | Built                 | Create, edit, add questions, publish, invite, register, and manage participants. See [Assessments](hld-design/assessments.md).                                                                                  |
+| AI assessment generation               | **Built**             | LLM-backed, through RabbitMQ. Auto or manual section layout, one job per section, retries, idempotency keys, and quota refunds on failure. See [AI Assessment Generation](hld-design/assessment-generation.md). |
+| Question types                         | Built                 | MCQ, coding (with test cases), and descriptive. See [Questions & Tags](hld-design/questions-and-tags.md).                                                                                                       |
+| Assessment templates and saved prompts | Built                 | Reusable section layouts and public or private prompts with tags.                                                                                                                                               |
+| Attempts                               | Built                 | Start, answer, change answers, submit, results, analytics, leaderboard, and creator review or reject. See [Attempts](hld-design/attempts.md).                                                                   |
+| Evaluation                             | Built                 | Background scoring split into MCQ, coding, and descriptive child jobs. See [Evaluation](hld-design/evaluation.md).                                                                                              |
+| Code execution                         | Built                 | Live "run code" over WebSocket and judging at evaluation time, on Piston (self-hosted) or OnlineCompiler.io. See [Code Execution](hld-design/code-execution.md).                                                |
+| Multiple LLM providers                 | Built                 | OpenAI, Anthropic, and Google through LangChain. Models live in the `ai_models` table and are picked per plan. See [AI Layer](hld-design/ai.md).                                                                |
+| AI assistant                           | Built                 | Chat over WebSocket with read-only tools for assessments, attempts, roadmaps, and the user's profile. See [AI Assistant](hld-design/ai-assistant.md).                                                           |
+| Learning roadmaps                      | Built                 | Intent analysis, requirement questions, graph generation, graph edits by prompt, node progress, notes, and node practice tests. See [Learning Roadmaps](hld-design/learning-roadmaps.md).                       |
+| Plans, subscriptions, usage            | Built                 | Plan versions with features and limits, checkout, and usage counters.                                                                                                                                           |
+| Payments                               | Built (Razorpay only) | Razorpay orders and signed webhooks. `STRIPE` and `AI_CREDITS` exist in enums but have no flow yet.                                                                                                             |
+| Email                                  | Built                 | SMTP via Nodemailer, with admin template previews. See [Notifications](hld-design/notifications.md).                                                                                                            |
+| Platform services                      | Built                 | Rate limiting, feature flags, health checks, admin stats, newsletters (cron), support tickets, and S3 storage. See [Platform Services](hld-design/platform-services.md).                                        |
 
-### Key Feature Considerations While Designing the Initial Architecture
+### Not built yet
 
-1. Test creation using test description.
-2. Test customisation including type (MCQ, coding, etc.), number of questions, marking scheme, timing schema.
-3. Test evaluation and scoring.
-4. Payment integration for different subscription plans.
-5. User management including authentication and authorization.
+- GitHub login.
+- Stripe payments and buying AI credits as a one-time order.
+- Adaptive learning on top of performance data (a product idea, not code).

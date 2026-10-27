@@ -1,6 +1,11 @@
 site_name: TestFlow | Docs
 theme:
   name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - content.code.copy
   palette:
     # Palette toggle for light mode
     - scheme: default
@@ -13,22 +18,46 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
 plugins:
   - search
   - mermaid2
 nav:
   - Home: index.md
   - Overview: overview.md
+  - Getting Started: getting-started.md
   - Architecture: architecture.md
-  - ERD: erd.md
-  - ERD (Workspace Draft): erd-organisation.md
-  - Data Access Pattern: data-access-pattern.md
-  - API Design:
-      - v1.0: api-design/v1.md
-
-  - High Level Design:
-      - Authentication: hld-design/auth.md
-      - RBAC: hld-design/rbac.md
-      - Assessments, Attempts & Questions: hld-design/assessments.md
+  - Data:
+      - ERD (Data Model): erd.md
+      - Data Access Patterns: data-access-pattern.md
+  - API Reference:
+      - v1: api-design/v1.md
+  - Feature Design:
+      - Identity:
+          - Authentication & Users: hld-design/auth.md
+          - RBAC: hld-design/rbac.md
+          - Organizations: hld-design/organizations.md
+      - Assessment Engine:
+          - Assessments: hld-design/assessments.md
+          - Questions & Tags: hld-design/questions-and-tags.md
+          - AI Assessment Generation: hld-design/assessment-generation.md
+          - Attempts: hld-design/attempts.md
+          - Evaluation: hld-design/evaluation.md
+          - Code Execution: hld-design/code-execution.md
+      - AI:
+          - AI Layer (LLMs & Graphs): hld-design/ai.md
+          - AI Assistant & Tools: hld-design/ai-assistant.md
       - Commerce, Payments & Webhooks: hld-design/commerce.md
+      - Learning Roadmaps: hld-design/learning-roadmaps.md
+      - Platform:
+          - Realtime Events (WebSocket): hld-design/realtime-events.md
+          - Jobs & Schedulers: hld-design/jobs-and-schedulers.md
+          - Notifications & Email: hld-design/notifications.md
+          - Platform Services: hld-design/platform-services.md
   - Claude Code Architecture: claude-agent-arch/arch.md
