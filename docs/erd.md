@@ -735,6 +735,7 @@ erDiagram
         int incorrect_responses
         enum status
         int rejected_by FK
+        jsonb next_assessment_suggestion
     }
     assessment_attempt_responses {
         int id PK
@@ -776,6 +777,7 @@ Entity: `assessment-attempt.entity.ts`.
 | `rejected_at` | timestamptz | yes | `null` | |
 | `rejected_by` | int | yes | `null` | FK `users.id`, SET NULL |
 | `rejection_reason` | text | yes | `null` | |
+| `next_assessment_suggestion` | jsonb | yes | `null` | The AI-suggested next assessment, shaped like a template: `name`, `title`, `description`, `prompt`, `duration`, `maxTotalQuestions`, `sections[]`, `generatedAt`. Written once by `POST /v1/attempts/:uid/next-assessment`, only while `null`. Migration `20261030000001`. See [Attempts](hld-design/attempts.md#57-next-assessment-suggestion). |
 
 Timestamps: `created_at`, `updated_at` (no soft delete).
 Unique: `UQ_assessment_attempts_user_assessment` on `(user_id, assessment_id)`, so **one attempt per user per assessment**. It was created by migration `20260618000004` and is not declared on the entity. `AttemptsService.startAttempt()` returns the existing attempt if there is one.

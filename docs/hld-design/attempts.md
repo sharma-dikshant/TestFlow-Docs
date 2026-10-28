@@ -2,7 +2,7 @@
 title: Attempts
 description: How a participant starts, answers, runs code in, and submits an assessment attempt, plus review, rejection and the leaderboard
 status: stable
-last_updated: 2026-10-27
+last_updated: 2026-10-28
 ---
 
 # Attempts
@@ -39,7 +39,7 @@ The code lives in `src/assessments/attempts/`. The rules (what may happen in whi
 
 See [ERD: Assessment Engine](../erd.md) for full table definitions. This feature reads and writes:
 
-- `assessment_attempts`: status, `started_at`, `submitted_at`, `score`, counters (`total_questions`, `attempted_questions`, `correct_responses`, `incorrect_responses`), and rejection fields (`rejected_at`, `rejected_by`, `rejection_reason`). A unique constraint `UQ_assessment_attempts_user_assessment` on `(user_id, assessment_id)` enforces one attempt per user.
+- `assessment_attempts`: status, `started_at`, `submitted_at`, `score`, counters (`total_questions`, `attempted_questions`, `correct_responses`, `incorrect_responses`), rejection fields (`rejected_at`, `rejected_by`, `rejection_reason`), and `next_assessment_suggestion` (jsonb, section 5.7). A unique constraint `UQ_assessment_attempts_user_assessment` on `(user_id, assessment_id)` enforces one attempt per user.
 - `assessment_attempt_responses`: `answer` (jsonb: the MCQ option or descriptive text), `language` and `source_code` (coding), `evaluation_status`, `code_verdict`, `is_correct`, `marks_awarded`, `evaluation_result` (jsonb), `answered_at`, `evaluated_at`.
 - `jobs`: the submit step creates an `EVALUATE_ATTEMPT` job row. See [jobs and schedulers](jobs-and-schedulers.md).
 - Reads `assessments`, `assessment_sections`, `assessment_questions` and `assessment_participants`.
@@ -195,7 +195,8 @@ Rules (`src/assessments/attempts/code-run/code-run.service.ts`):
 
 | Endpoint | Available when | Notes |
 | --- | --- | --- |
-| `GET /v1/attempts/:uid/result` | `evaluated` | Full per-question breakdown: chosen and correct option, explanation, submitted code, test-case results (hidden cases show only pass/fail and a generic message), descriptive checkpoint results, marks, and per-section breakdown. `rejected` gives 409 with the reason. Any other status gives 400. |
+| `GET /v1/attempts/:uid/result` | `evaluated` | Full per-question breakdown: chosen and correct option, explanation, submitted code, test-case results (hidden cases show only pass/fail and a generic message), descriptive checkpoint results, marks, and per-section breakdown. Also `nextAssessmentSuggestion`: the stored suggestion, or `null` (see 5.7). `rejected` gives 409 with the reason. Any other status gives 400. |
+| `POST /v1/attempts/:uid/next-assessment` | `evaluated` | Suggests the next assessment to take and stores it on the attempt. See 5.7. |
 | `GET /v1/attempts/:uid/analytics` | any status | Score, accuracy, negative marks, a timeline in buckets of `intervalMinutes` (1 to 60, default 5), topic and section stats. A live attempt is recomputed on every call. |
 | `POST /v1/attempts/:uid/conversations` | `evaluated` | Opens (or returns) an AI conversation about this attempt. Blocked earlier so the bot cannot leak answers mid-test. See [AI assistant](ai-assistant.md). |
 | `GET /v1/attempts` | any | The caller's attempts, newest first, filterable by `status` and `assessmentId`, paginated. |
@@ -248,6 +249,66 @@ Effects of a rejection:
 5. `meta.me` is the caller's own entry wherever it falls, or `null` if they have no evaluated attempt.
 6. Access: for a personal assessment, the creator and **active** participants only (invited or revoked users get 403). Inside an organization, members whose role grants `org_assessments:read`, and the assessment must belong to that organization.
 
+### 5.7 Next-assessment suggestion
+
+After an attempt is evaluated, the user can ask for the **next assessment** to take. The AI reads how they did and designs a follow-up test that targets their weak sections and topics, at a difficulty set by their accuracy. The suggestion is shaped like an [assessment template](assessments.md), so the client starts it the same way as a template: as a manual-mode generate request.
+
+The suggestion is **not** saved as a template. It is a JSON object stored on the attempt, in `assessment_attempts.next_assessment_suggestion`. Each attempt has at most one.
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant API as AttemptsController
+    participant S as AttemptSuggestionService
+    participant U as UsageService
+    participant AI as AssessmentSuggestionAiService
+    participant DB as Postgres
+
+    C->>API: POST /v1/attempts/:uid/next-assessment
+    API->>S: suggestNext(attemptUid, userId)
+    S->>DB: load attempt (must be the caller's, status evaluated)
+    S->>U: getFeatureValue(AI_ASSESSMENT_SUGGESTION)
+    alt plan does not include it
+        S-->>C: 403
+    end
+    alt attempt already has a suggestion
+        S-->>C: 200 stored suggestion (no LLM call)
+    end
+    S->>DB: attempt analytics, assessment, sections
+    S->>U: getFeatureValue(ALLOWED_QUESTION_TYPES)
+    S->>AI: suggestNextAssessment(performance, default model)
+    AI-->>S: name, title, description, prompt, duration, sections
+    S->>DB: UPDATE assessment_attempts SET next_assessment_suggestion WHERE id AND next_assessment_suggestion IS NULL
+    S-->>C: 200 suggestion
+```
+
+**What the model gets:** the assessment taken (title, description, duration), the overall result, one row per section (question type, difficulty, accuracy, correct, incorrect and unanswered counts, score) and one row per topic. These come from the same analytics as `GET /analytics`. It also gets the question types the user's plan allows.
+
+**What it returns** (and what is stored):
+
+| Field | Notes |
+| --- | --- |
+| `name`, `title`, `description` | `title` is what the new assessment is created with. `description` tells the user why this test, from their result. |
+| `prompt` | What the whole assessment covers. |
+| `duration` | Minutes, 5 to 180. |
+| `maxTotalQuestions` | The sections' question counts summed (computed, not from the model). |
+| `sections[]` | 1 to 3, in order. Each has `title`, `prompt`, `questionType`, `questionCount`, `difficulty` (1–5), `positiveMark`, `negativeMark`. |
+| `generatedAt` | ISO time it was made. |
+
+**Rules:**
+
+1. **Plan feature.** Generating needs `AI_ASSESSMENT_SUGGESTION` on the user's **personal** plan, with any non-blank value. Without it, 403. It is a setting, not a quota: nothing is consumed. See [Commerce](commerce.md).
+2. **Evaluated only.** The same check as `GET /result`: `rejected` gives 409, any other status gives 400.
+3. **One per attempt, generated once.** A `POST` on an attempt that already has a suggestion returns it with no LLM call. The plan is still checked first.
+4. **Two requests at once.** Both may call the model, but the write only lands while the column is `null`. The second request reads back and returns the first one's suggestion.
+5. **Default model.** The call always uses the registry's default model, not the plan's `AI_MODEL`.
+6. **Generation limits are enforced on the output.** Section count, per-section and per-assessment question limits, and the plan's allowed question types are checked in the `parse` step. A violation is sent back to the model as a repair turn (up to 3 calls in all).
+7. **Difficulty rule** (in the prompt, not enforced in code): accuracy below 40% → one level easier; 40–75% → same level; above 75% → one level harder.
+8. **Marks are not the model's choice.** Each section reuses the marks of the first section of the same question type in the attempted assessment. A type that assessment did not have gets +1 / −0.
+9. **Starting it costs a normal generation.** The suggestion only describes the assessment. Starting it is a manual-mode `POST /v1/assessments/generate`, which spends `AI_ASSESSMENT` like any other generation. `maxParticipants` is not stored; a personal assessment uses its fixed default.
+
+**Reading it back.** `GET /v1/attempts/:uid/result` returns `nextAssessmentSuggestion` (the stored object, or `null`). The client shows the suggestion when it is there, and a "Suggest my next test" button when it is `null`. The result is cached in Redis once evaluated (section 5.4), but the suggestion is **not** part of the cached entry. It is read from the attempt on every call, so a suggestion made after the first read still appears.
+
 ## 6. Business rules and edge cases
 
 1. **One attempt per user per assessment.** This is enforced by the unique constraint and by `startAttempt` returning the existing attempt. There is no "max attempts" setting and no retake.
@@ -278,6 +339,7 @@ Full request and response shapes are in [API v1](../api-design/v1.md).
 | GET | `/v1/attempts/:attemptUid/result` | owner | Graded result |
 | GET | `/v1/attempts/:attemptUid/analytics` | owner | Analytics |
 | POST | `/v1/attempts/:attemptUid/conversations` | owner | Open the AI conversation |
+| POST | `/v1/attempts/:attemptUid/next-assessment` | owner, plan `AI_ASSESSMENT_SUGGESTION` | Suggest the next assessment (stored on the attempt) |
 | GET | `/v1/assessments/:id/leaderboard` | creator, participants, org members | Ranked board |
 | GET | `/v1/assessments/:id/attempts` | org: `assessment_attempts:read` | List attempts (org) |
 | GET | `/v1/assessments/:id/attempts/:attemptUid/responses` | org: `assessment_attempt_responses:read` | Read answers (org) |
@@ -286,7 +348,7 @@ Full request and response shapes are in [API v1](../api-design/v1.md).
 | GET | `/v1/admin/assessments/:id/attempts/:attemptUid/responses` | platform: `assessment_attempt_responses:read` | Read answers (admin) |
 | POST | `/v1/admin/assessments/:id/attempts/:attemptUid/reject` | platform: `assessment_attempts:update` | Reject (admin) |
 
-Rate limits: most routes use policy `CLASS_C`. `start`, `submit` and `conversations` use the stricter `CLASS_B`. See [platform services](platform-services.md).
+Rate limits: most routes use policy `CLASS_C`. `start`, `submit`, `conversations` and `next-assessment` use the stricter `CLASS_B`. See [platform services](platform-services.md).
 
 ## 8. Async events, queues and WebSocket events
 
@@ -306,12 +368,13 @@ No WebSocket event or email is sent when an attempt is submitted, evaluated or r
 | --- | --- |
 | `src/assessments/attempts/attempts.controller.ts` / `attempts.service.ts` | Participant routes: start, questions, responses, submit, result, conversation |
 | `src/assessments/attempts/analytics.service.ts` | Attempt analytics SQL |
+| `src/assessments/attempts/attempt-suggestion.service.ts` | Next-assessment suggestion: plan check, analytics to prompt input, store on the attempt |
 | `src/assessments/attempts/leaderboard.controller.ts` / `leaderboard.service.ts` | Leaderboard (raw SQL with `RANK()`) |
 | `src/assessments/attempts/attempt-review.controller.ts` / `attempt-review.service.ts` | Org reviewer routes and shared review logic |
 | `src/assessments/attempts/admin.controller.ts` / `admin.service.ts` | Platform-admin wrappers over the review service |
 | `src/assessments/attempts/code-run/` | Live code runs (service, DTO, socket event shapes) |
 | `src/assessments/attempts/section-breakdown.helper.ts` | Per-section stats for the result |
-| `src/assessments/attempts/serializers/attempts.serializer.ts` | Response shaping |
+| `src/assessments/attempts/serializers/attempts.serializer.ts` | Response shaping, including `serializeNextAssessmentSuggestion` |
 | `src/assessments/domain/attempt-*.ts`, `response-*.ts`, `participant-invariants.ts`, `assessment-invariants.ts` | State machines and rules |
 | `src/events/events.gateway.ts` | Socket.IO `code.run` handler |
 | `src/common/helpers/question-content.helper.ts` | Candidate-safe views of questions and grades |

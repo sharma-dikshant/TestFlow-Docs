@@ -96,6 +96,7 @@ A plan feature has a `type` (`PlanFeatureType` in `src/common/enums/commerce.enu
 | `AI_LEARNING_ROADMAP` | `limit` | Learning roadmaps | How many AI roadmaps per period. |
 | `AI_MODEL` | `enum` | `src/ai/ai-model-selector.service.ts` | Which LLM model the user's AI calls use. Missing means the default model. |
 | `ALLOWED_QUESTION_TYPES` | `enum` | `src/assessments/generation/generation-entitlement.service.ts` | Comma-separated question types, e.g. `mcq,coding`. Missing or empty means `mcq` only (`src/commerce/plans/allowed-question-types.ts`). |
+| `AI_ASSESSMENT_SUGGESTION` | `enum` | `src/assessments/attempts/attempt-suggestion.service.ts` | On/off. Any non-blank value (e.g. `enabled`) lets the plan's users ask for a next-assessment suggestion after an evaluated attempt. Missing or blank means `403`. Personal plan only. Added by migration `20261030000000`, attached to no plan by default. |
 
 "Number of participants" and "number of assessments" are **not** metered features. Participant caps live on the assessment itself (see [Assessments](assessments.md)).
 
@@ -121,7 +122,7 @@ Two plans are special. Code finds them **by name**, so they must exist and be ac
 | `FREE` | `FREEPLAN` | individual | `MONTHLY` | 0 USD | `AI_ASSESSMENT` = 2, reset every 1 day | Every user, when their account is verified |
 | `ORG_TRIAL` | `ORGTRIAL` | organization | `ONE_TIME`, 7 days | 0 USD | `AI_ASSESSMENT` = 2, reset every 1 day | Every new organization |
 
-- `npm run seed` runs `src/seeders/feature.seeder.ts` (creates the four features) and then `src/seeders/plan.seeder.ts` (creates each plan only if no plan with that name exists yet).
+- `npm run seed` runs `src/seeders/feature.seeder.ts` (creates the five features) and then `src/seeders/plan.seeder.ts` (creates each plan only if no plan with that name exists yet).
 - Because code looks these plans up by name, admins **cannot rename or deactivate** `FREE` or `ORG_TRIAL` (`CommerceAdminService.updatePlan` returns `409`). Hiding, re-describing or re-ordering them is fine.
 - Paid plans (for example `PRO`) are not seeded. Admins create them through the admin API (section 9).
 - Admin-created plans get a random 10-character `code` from an alphabet without look-alike characters (no `I`, `O`, `0`, `1`).
@@ -343,6 +344,7 @@ Details:
 | Older single-shot generate, used for roadmap node assessments | `src/assessments/assessments.service.ts` `generate`, called from `src/learning-roadmaps/learning-roadmap-assessment.service.ts` | `AI_ASSESSMENT` | Consumes 1. No release on failure. |
 | Create a learning roadmap | `src/learning-roadmaps/learning-roadmaps.service.ts` `create` | `AI_LEARNING_ROADMAP` (personal only) | Consumes 1. No release. |
 | Pick the LLM | `src/ai/ai-model-selector.service.ts` | `AI_MODEL` (read, personal only) | Not counted. |
+| Next-assessment suggestion | `src/assessments/attempts/attempt-suggestion.service.ts` `suggestNext` | `AI_ASSESSMENT_SUGGESTION` and `ALLOWED_QUESTION_TYPES` (read, personal only) | Not counted. `403` without the feature. Starting the suggested assessment is a normal generation and spends `AI_ASSESSMENT`. |
 | Profile (`GET /v1/auth/me`) | `src/identity/auth/auth.service.ts` | Current plan and allowed question types | Read only (`getCurrentPlan`, `getAllowedQuestionTypes`). |
 
 See [Assessment generation](assessment-generation.md) and [Learning roadmaps](learning-roadmaps.md) for the rest of those flows.

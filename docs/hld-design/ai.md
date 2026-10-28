@@ -2,7 +2,7 @@
 title: AI Layer (LLM, Structured Output, LangGraph)
 description: How TestFlow picks a model, calls it, forces JSON out of it, runs its LangGraph pipelines, and records the cost of every call
 status: stable
-last_updated: 2026-10-27
+last_updated: 2026-10-28
 ---
 
 # AI Layer — LLM, Structured Output and LangGraph
@@ -49,6 +49,7 @@ flowchart LR
         TW["CodingProblemToolWriter"]
         AIS["AiService"]
         RAI["RoadmapAiService"]
+        SUG["AssessmentSuggestionAiService"]
         AUD["LlmAuditService"]
         ADM["AiAdminController + AiAdminService"]
         CONV["AiConversationsService + controller"]
@@ -59,6 +60,7 @@ flowchart LR
     AIS --> CG
     AIS --> SO
     RAI --> SO
+    SUG --> SO
     QG --> SO
     CG --> SO
     CG --> TW
@@ -84,6 +86,7 @@ flowchart LR
 | `src/ai/llm/concurrency.util.ts` | `mapWithConcurrency` — run at most N calls at once. |
 | `src/ai/ai.service.ts` | Public entry for question generation and descriptive grading. |
 | `src/ai/roadmap-ai.service.ts` | Public entry for the three roadmap prompts. |
+| `src/ai/assessment-suggestion-ai.service.ts` | Suggests the next assessment from an attempt's result. Checks the output against the generation limits and the plan's question types. |
 | `src/ai/llm-audit.service.ts` | Writes one `llm_audit` row per provider call (tokens and cost). |
 | `src/ai/admin.controller.ts`, `admin.service.ts` | Admin API for models and audits. |
 | `src/ai/schemas/*` | Zod schemas for every JSON output. |
@@ -258,6 +261,7 @@ All in `src/ai/prompts/`, re-exported from `index.ts`.
 | `DESCRIPTIVE_GRADING_SYSTEM_PROMPT` | Read the answer and return only the ids of the checkpoints it completes. Marks are computed in code. |
 | `ROADMAP_ANALYSIS_SYSTEM_PROMPT` | Name the learning goal and ask the fewest questions (3–6) that would change the roadmap. |
 | `ROADMAP_GENERATION_SYSTEM_PROMPT` | Build a personalised DAG of `knowledge` and `practice` nodes, using `ref` numbers and `fromRef`/`toRef` edges. |
+| `ASSESSMENT_SUGGESTION_SYSTEM_PROMPT` | Act as a tutor. From one attempt's result (overall, per section, per topic), design one follow-up assessment: weak areas first, difficulty by accuracy (<40% easier, 40–75% same, >75% harder), only the allowed question types, within the generation limits. |
 | `ROADMAP_MODIFICATION_SYSTEM_PROMPT` | Change an existing roadmap from a plain-language instruction. Return a **diff** (`added`, `updated`, `removed`, `edges`) so surviving nodes keep their ids and progress. |
 | `CONVERSATION_ASSISTANT_SYSTEM_PROMPT` | The chat assistant's rules: ground every fact in a tool result, never reveal answers before evaluation, keep replies short. See [AI assistant](ai-assistant.md). |
 | `buildConversationContextPrompt()` | Second system message for chat: current date and what the conversation is attached to. |
@@ -395,6 +399,7 @@ Limits: max **8** model turns (the last turn offers only `submit_problem`), max 
 | `RoadmapGenerationConsumer` | `RoadmapAiService.generateRoadmap` | 1 structured call, temp 0 | roadmap job type |
 | `RoadmapModificationConsumer` | `RoadmapAiService.modifyRoadmapGraph` | 1 structured call, temp 0 | roadmap job type |
 | `ConversationAssistantService.answer` | (own loop) | Assistant graph | `ASSISTANT_REPLY` |
+| `AttemptSuggestionService.suggestNext` (inline, on `POST /v1/attempts/:uid/next-assessment`) | `AssessmentSuggestionAiService.suggestNextAssessment` | 1 structured call (Zod schema `assessment_suggestion`), up to 3 attempts, **always the default model** | `ASSESSMENT_SUGGESTION` |
 
 In the `testing` environment (`NODE_ENV=testing`) `QuestionsService` skips the LLM entirely and returns banked or fixed questions.
 
