@@ -1,0 +1,1908 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How the TestFlow backend reads and writes data - repositories, queries, transactions, locking, pagination, soft delete, Redis caching and the migration workflow" name="description"/>
+<link href="../erd/" rel="prev"/>
+<link href="../api-design/v1/" rel="next"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Data Access Patterns - TestFlow | Docs</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#data-access-patterns">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Data Access Patterns
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-big-picture">
+<span class="md-ellipsis">
+      
+        The big picture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entities-and-registration">
+<span class="md-ellipsis">
+      
+        Entities and registration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#repositories">
+<span class="md-ellipsis">
+      
+        Repositories
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reading-data-find-options-querybuilder-or-raw-sql">
+<span class="md-ellipsis">
+      
+        Reading data: find options, QueryBuilder or raw SQL
+      
+    </span>
+</a>
+<nav aria-label="Reading data: find options, QueryBuilder or raw SQL" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules-that-keep-queries-fast">
+<span class="md-ellipsis">
+      
+        Rules that keep queries fast
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#writing-data-and-transactions">
+<span class="md-ellipsis">
+      
+        Writing data and transactions
+      
+    </span>
+</a>
+<nav aria-label="Writing data and transactions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#transaction-rules-from-the-nestjs-transactions-skill">
+<span class="md-ellipsis">
+      
+        Transaction rules (from the nestjs-transactions skill)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sharing-one-transaction-across-services">
+<span class="md-ellipsis">
+      
+        Sharing one transaction across services
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#publish-to-rabbitmq-only-after-the-commit">
+<span class="md-ellipsis">
+      
+        Publish to RabbitMQ only after the commit
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#concurrency-locks-and-other-guards">
+<span class="md-ellipsis">
+      
+        Concurrency: locks and other guards
+      
+    </span>
+</a>
+<nav aria-label="Concurrency: locks and other guards" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-row-locks-pessimistic_write">
+<span class="md-ellipsis">
+      
+        1. Row locks (pessimistic_write)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-for-update-skip-locked-work-queue-claim">
+<span class="md-ellipsis">
+      
+        2. FOR UPDATE SKIP LOCKED (work queue claim)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-unique-indexes-as-the-final-guard">
+<span class="md-ellipsis">
+      
+        3. Unique indexes as the final guard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-atomic-counters">
+<span class="md-ellipsis">
+      
+        4. Atomic counters
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-state-checks-in-domain-files">
+<span class="md-ellipsis">
+      
+        5. State checks in domain/ files
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-gaps">
+<span class="md-ellipsis">
+      
+        Known gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pagination">
+<span class="md-ellipsis">
+      
+        Pagination
+      
+    </span>
+</a>
+<nav aria-label="Pagination" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cursor-keyset-pagination-the-standard">
+<span class="md-ellipsis">
+      
+        Cursor (keyset) pagination: the standard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#offset-pagination-older-endpoints">
+<span class="md-ellipsis">
+      
+        Offset pagination: older endpoints
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#soft-delete-in-practice">
+<span class="md-ellipsis">
+      
+        Soft delete in practice
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caching-in-redis">
+<span class="md-ellipsis">
+      
+        Caching in Redis
+      
+    </span>
+</a>
+<nav aria-label="Caching in Redis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-cached-and-why-it-is-safe">
+<span class="md-ellipsis">
+      
+        What is cached, and why it is safe
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#migrations">
+<span class="md-ellipsis">
+      
+        Migrations
+      
+    </span>
+</a>
+<nav aria-label="Migrations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#where-and-how-they-are-named">
+<span class="md-ellipsis">
+      
+        Where and how they are named
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#commands">
+<span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-for-a-schema-change">
+<span class="md-ellipsis">
+      
+        Workflow for a schema change
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules">
+<span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#seeds">
+<span class="md-ellipsis">
+      
+        Seeds
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-questions-where-the-answer-lives">
+<span class="md-ellipsis">
+      
+        Common questions → where the answer lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#checklist-for-new-data-code">
+<span class="md-ellipsis">
+      
+        Checklist for new data code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-big-picture">
+<span class="md-ellipsis">
+      
+        The big picture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entities-and-registration">
+<span class="md-ellipsis">
+      
+        Entities and registration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#repositories">
+<span class="md-ellipsis">
+      
+        Repositories
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reading-data-find-options-querybuilder-or-raw-sql">
+<span class="md-ellipsis">
+      
+        Reading data: find options, QueryBuilder or raw SQL
+      
+    </span>
+</a>
+<nav aria-label="Reading data: find options, QueryBuilder or raw SQL" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules-that-keep-queries-fast">
+<span class="md-ellipsis">
+      
+        Rules that keep queries fast
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#writing-data-and-transactions">
+<span class="md-ellipsis">
+      
+        Writing data and transactions
+      
+    </span>
+</a>
+<nav aria-label="Writing data and transactions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#transaction-rules-from-the-nestjs-transactions-skill">
+<span class="md-ellipsis">
+      
+        Transaction rules (from the nestjs-transactions skill)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sharing-one-transaction-across-services">
+<span class="md-ellipsis">
+      
+        Sharing one transaction across services
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#publish-to-rabbitmq-only-after-the-commit">
+<span class="md-ellipsis">
+      
+        Publish to RabbitMQ only after the commit
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#concurrency-locks-and-other-guards">
+<span class="md-ellipsis">
+      
+        Concurrency: locks and other guards
+      
+    </span>
+</a>
+<nav aria-label="Concurrency: locks and other guards" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-row-locks-pessimistic_write">
+<span class="md-ellipsis">
+      
+        1. Row locks (pessimistic_write)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-for-update-skip-locked-work-queue-claim">
+<span class="md-ellipsis">
+      
+        2. FOR UPDATE SKIP LOCKED (work queue claim)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-unique-indexes-as-the-final-guard">
+<span class="md-ellipsis">
+      
+        3. Unique indexes as the final guard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-atomic-counters">
+<span class="md-ellipsis">
+      
+        4. Atomic counters
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-state-checks-in-domain-files">
+<span class="md-ellipsis">
+      
+        5. State checks in domain/ files
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-gaps">
+<span class="md-ellipsis">
+      
+        Known gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pagination">
+<span class="md-ellipsis">
+      
+        Pagination
+      
+    </span>
+</a>
+<nav aria-label="Pagination" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cursor-keyset-pagination-the-standard">
+<span class="md-ellipsis">
+      
+        Cursor (keyset) pagination: the standard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#offset-pagination-older-endpoints">
+<span class="md-ellipsis">
+      
+        Offset pagination: older endpoints
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#soft-delete-in-practice">
+<span class="md-ellipsis">
+      
+        Soft delete in practice
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#caching-in-redis">
+<span class="md-ellipsis">
+      
+        Caching in Redis
+      
+    </span>
+</a>
+<nav aria-label="Caching in Redis" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-cached-and-why-it-is-safe">
+<span class="md-ellipsis">
+      
+        What is cached, and why it is safe
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#migrations">
+<span class="md-ellipsis">
+      
+        Migrations
+      
+    </span>
+</a>
+<nav aria-label="Migrations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#where-and-how-they-are-named">
+<span class="md-ellipsis">
+      
+        Where and how they are named
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#commands">
+<span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-for-a-schema-change">
+<span class="md-ellipsis">
+      
+        Workflow for a schema change
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rules">
+<span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#seeds">
+<span class="md-ellipsis">
+      
+        Seeds
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-questions-where-the-answer-lives">
+<span class="md-ellipsis">
+      
+        Common questions → where the answer lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#checklist-for-new-data-code">
+<span class="md-ellipsis">
+      
+        Checklist for new data code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="data-access-patterns">Data Access Patterns<a class="headerlink" href="#data-access-patterns" title="Permanent link">¶</a></h1>
+<p>This page explains <strong>how the code talks to the database</strong>. The tables themselves are described in the <a href="../erd/">Data model (ERD)</a>.</p>
+<p>The rules here come from two places: the project skills in <code>.claude/skills/</code> (<code>query-optimization</code>, <code>nestjs-transactions</code>, <code>nestjs-pagination</code>, <code>typeorm-entity-patterns</code>, <code>typeorm-migrations</code>) and what the code actually does today. Where the two differ, this page says so.</p>
+<h2 id="the-big-picture">The big picture<a class="headerlink" href="#the-big-picture" title="Permanent link">¶</a></h2>
+<div class="mermaid">flowchart LR
+    C["Controller"] --&gt; S["Service"]
+    S --&gt;|"find / QueryBuilder"| R["Repository&amp;lt;Entity&amp;gt;"]
+    S --&gt;|"dataSource.transaction"| M["EntityManager"]
+    S --&gt;|"raw SQL for reports"| DS["DataSource.query"]
+    R --&gt; PG[("PostgreSQL")]
+    M --&gt; PG
+    DS --&gt; PG
+    S --&gt;|"safeGet / safeSet"| RH["RedisHelper"]
+    RH --&gt; RD[("Redis cache")]
+    S --&gt;|"publish after commit"| MQ[["RabbitMQ"]]
+</div>
+<ul>
+<li><strong>Services own the data.</strong> Controllers never touch a repository. A service returns entities; the controller turns them into JSON with the module's serializer.</li>
+<li><strong>One module owns each table.</strong> When another module needs that data, it calls the owning service. For example, <code>AttemptsService</code> calls <code>AssessmentsService.findOne()</code> instead of reading <code>assessments</code> itself.</li>
+<li><strong>Postgres is the source of truth.</strong> Redis only holds short-lived copies of some reads.</li>
+</ul>
+<h2 id="entities-and-registration">Entities and registration<a class="headerlink" href="#entities-and-registration" title="Permanent link">¶</a></h2>
+<p>All 44 entities live in <code>src/common/entities/</code> and are exported from <code>src/common/entities/index.ts</code>. A new entity must be added in <strong>four</strong> places:</p>
+<ol>
+<li><code>src/common/entities/index.ts</code> (export it).</li>
+<li>The <code>entities</code> array in <code>src/config/database/database.module.ts</code> (used by the running app).</li>
+<li>The <code>entities</code> array in <code>src/config/database/data-source.ts</code> (used by the TypeORM CLI for migrations).</li>
+<li><code>TypeOrmModule.forFeature([...])</code> in every module that injects its repository.</li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">The skills show old paths</p>
+<p>The <code>typeorm-entity-patterns</code> and <code>typeorm-migrations</code> skills mention <code>src/database/...</code>. The real files are <code>src/config/database/database.module.ts</code>, <code>src/config/database/data-source.ts</code> and <code>src/migrations/</code>.</p>
+</div>
+<p><code>synchronize</code> is <code>false</code> in every environment. The schema only changes through migrations (see <a href="#migrations">Migrations</a>).</p>
+<h2 id="repositories">Repositories<a class="headerlink" href="#repositories" title="Permanent link">¶</a></h2>
+<p>TestFlow uses <strong>TypeORM's built-in <code>Repository&lt;T&gt;</code></strong>. There are no custom repository classes. (The folder <code>src/assessments/repositories/</code> exists but is empty.)</p>
+<table>
+<thead>
+<tr>
+<th>How</th>
+<th>When</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@InjectRepository(Entity) private readonly repo: Repository&lt;Entity&gt;</code></td>
+<td>Normal reads and single writes</td>
+<td><code>JobsService</code>, <code>TagsService</code>, <code>WebhooksService</code></td>
+</tr>
+<tr>
+<td><code>this.dataSource.getRepository(Entity)</code></td>
+<td>A service that already holds <code>DataSource</code> and needs a quick read</td>
+<td><code>UsageService.consume()</code> reads <code>Feature</code></td>
+</tr>
+<tr>
+<td><code>manager.find(Entity, ...)</code>, <code>manager.save(...)</code></td>
+<td>Inside a transaction</td>
+<td>Every <code>dataSource.transaction(...)</code> callback</td>
+</tr>
+</tbody>
+</table>
+<p>Inject <code>DataSource</code> with no decorator. It is provided globally by <code>TypeOrmModule.forRootAsync()</code>.</p>
+<h2 id="reading-data-find-options-querybuilder-or-raw-sql">Reading data: find options, QueryBuilder or raw SQL<a class="headerlink" href="#reading-data-find-options-querybuilder-or-raw-sql" title="Permanent link">¶</a></h2>
+<p>Pick the simplest tool that does the job:</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+<th>Real example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One row by id or a unique column</td>
+<td><code>repo.findOne({ where })</code>, then throw <code>NotFoundException</code> if null</td>
+<td><code>AttemptsService.resolveAttempt()</code></td>
+</tr>
+<tr>
+<td>A simple list with plain filters</td>
+<td><code>repo.find({ where, order, take })</code></td>
+<td><code>JobsService.findSections()</code></td>
+</tr>
+<tr>
+<td>"Does it exist?"</td>
+<td><code>repo.exists()</code> or QueryBuilder <code>.getExists()</code></td>
+<td><code>SubscriptionsService.checkout()</code> (already has an active plan?)</td>
+</tr>
+<tr>
+<td>Joins with conditions, dynamic filters, sorting, paging, counts</td>
+<td><code>createQueryBuilder()</code></td>
+<td><code>AssessmentsService.paginateList()</code>, <code>AccessControlService.userHasPermission()</code></td>
+</tr>
+<tr>
+<td>Window functions, CTEs, heavy reports</td>
+<td><code>dataSource.query(sql, params)</code></td>
+<td>Leaderboard ranking, attempt analytics, admin stats</td>
+</tr>
+</tbody>
+</table>
+<p>Raw SQL is used in only a few files: <code>src/assessments/attempts/leaderboard.service.ts</code>, <code>src/assessments/attempts/analytics.service.ts</code>, <code>src/stats/admin.service.ts</code>, <code>src/learning-roadmaps/learning-roadmap-assessment.service.ts</code>, <code>src/newsletters/newsletters-dispatch.service.ts</code> and the health check. Always pass values as <code>$1, $2</code> parameters, never by string building.</p>
+<h3 id="rules-that-keep-queries-fast">Rules that keep queries fast<a class="headerlink" href="#rules-that-keep-queries-fast" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Never query inside a loop</strong> (the "N+1" problem). Load related rows with <code>relations: { ... }</code> or <code>leftJoinAndSelect</code>, or fetch them all at once with <code>In([...ids])</code>.</li>
+<li><strong>Never use <code>eager: true</code></strong> on a relation. Load relations explicitly in the query that needs them.</li>
+<li><strong>Select only what a list needs.</strong> Use <code>select: { ... }</code>. Large columns can be hidden by default: <code>learning_roadmaps.notepad</code> has <code>select: false</code>, so only the notepad endpoints load it.</li>
+<li><strong>Index what you filter or sort by</strong>, and declare the index on the entity with a name such as <code>@Index('IDX_&lt;table&gt;_&lt;column&gt;')</code>.</li>
+<li><strong>Run independent reads in parallel</strong> with <code>Promise.all</code>, as <code>AuthService.getMe()</code> and <code>LeaderboardService.getLeaderboard()</code> do.</li>
+<li><strong>Escape user text in <code>LIKE</code> searches</strong> with <code>likeContains()</code> from <code>src/common/helpers/like.helper.ts</code>. It escapes <code>%</code>, <code>_</code> and <code>\</code>.</li>
+<li><strong>Turn <code>decimal</code> values into numbers.</strong> The <code>pg</code> driver returns <code>decimal</code> columns as strings. Use <code>Number(row.score)</code> before doing maths.</li>
+</ul>
+<h2 id="writing-data-and-transactions">Writing data and transactions<a class="headerlink" href="#writing-data-and-transactions" title="Permanent link">¶</a></h2>
+<p>A <strong>transaction</strong> groups several writes so they all succeed or all fail. TestFlow uses one pattern only: the callback form of <code>DataSource.transaction()</code>.</p>
+<pre><code class="language-ts">return this.dataSource.transaction(async (manager: EntityManager) =&gt; {
+  const attempt = await manager.findOne(AssessmentAttempt, { where: { assessmentId, userId } });
+  // ... more reads and writes, all through `manager`
+});
+</code></pre>
+<p>If the callback throws, TypeORM rolls everything back. There is <strong>no</strong> <code>createQueryRunner()</code> / <code>startTransaction()</code> in application code; <code>QueryRunner</code> only appears inside migrations. A few services use <code>this.repo.manager.transaction(...)</code>, which is the same thing.</p>
+<h3 id="transaction-rules-from-the-nestjs-transactions-skill">Transaction rules (from the <code>nestjs-transactions</code> skill)<a class="headerlink" href="#transaction-rules-from-the-nestjs-transactions-skill" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use a transaction for two or more writes that must succeed together</td>
+<td>A half-finished change leaves bad data</td>
+</tr>
+<tr>
+<td>Inside the callback, use <strong>only</strong> <code>manager</code></td>
+<td><code>this.someRepository</code> runs outside the transaction</td>
+</tr>
+<tr>
+<td>Reads that decide a write also go through <code>manager</code></td>
+<td>So they see the same snapshot and hold the same locks</td>
+</tr>
+<tr>
+<td>Let errors propagate. Do not catch inside the callback unless you rethrow.</td>
+<td>The throw is what triggers the rollback. <code>NotFoundException</code> and friends work fine.</td>
+</tr>
+<tr>
+<td>Do not nest transactions</td>
+<td>One transaction per service call</td>
+</tr>
+<tr>
+<td>Single writes and pure reads need no transaction</td>
+<td>Extra cost for nothing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sharing-one-transaction-across-services">Sharing one transaction across services<a class="headerlink" href="#sharing-one-transaction-across-services" title="Permanent link">¶</a></h3>
+<p>When one service must write as part of another service's transaction, its method takes an <strong>optional <code>manager</code></strong> argument. If a manager is passed, it joins that transaction; if not, it opens its own. Examples:</p>
+<ul>
+<li><code>SubscriptionsService.createFreeSubscription(userId, manager)</code> is called inside <code>AuthService.verifyEmail()</code> and <code>UsageService.consume()</code>.</li>
+<li><code>UsageService.release(..., manager?)</code> gives back a usage unit inside the caller's transaction, so the refund commits together with whatever caused it.</li>
+<li><code>UsersService.markEmailVerified(userId, manager)</code>.</li>
+</ul>
+<h3 id="publish-to-rabbitmq-only-after-the-commit">Publish to RabbitMQ only after the commit<a class="headerlink" href="#publish-to-rabbitmq-only-after-the-commit" title="Permanent link">¶</a></h3>
+<p>When a request creates a job, the job rows are written in a transaction first, and the message is published <strong>after</strong> the transaction commits. <code>GenerationOrchestratorService</code> does this: <code>createJobs()</code> runs in <code>dataSource.transaction</code>, then <code>publishSections()</code> runs. This way a worker never receives a message for a row that was rolled back. If the publish fails, the job row still exists and can be retried through <code>JobsService.retry()</code>, which republishes <code>{ jobId, ...payload }</code>.</p>
+<p>Usage that is charged before such a transaction is given back with <code>UsageService.release()</code> if the transaction fails.</p>
+<h2 id="concurrency-locks-and-other-guards">Concurrency: locks and other guards<a class="headerlink" href="#concurrency-locks-and-other-guards" title="Permanent link">¶</a></h2>
+<p>Several requests or workers can touch the same row at the same time. TestFlow uses these tools, from strongest to lightest:</p>
+<h3 id="1-row-locks-pessimistic_write">1. Row locks (<code>pessimistic_write</code>)<a class="headerlink" href="#1-row-locks-pessimistic_write" title="Permanent link">¶</a></h3>
+<p><code>SELECT ... FOR UPDATE</code> locks a row until the transaction ends, so a second transaction waits. It is used where a read-then-write must not interleave:</p>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Locked row</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UsageService.consume()</code> and <code>release()</code></td>
+<td>The <code>user_feature_usage</code> row</td>
+<td>Two generations must not both pass the quota check</td>
+</tr>
+<tr>
+<td><code>EvaluationOrchestratorService.claim()</code></td>
+<td>The <code>EVALUATE_ATTEMPT</code> job and the attempt</td>
+<td>Only one worker may claim an evaluation</td>
+</tr>
+<tr>
+<td><code>EvaluationAggregatorService.onChildSettled()</code></td>
+<td>The parent job</td>
+<td>Children finish in parallel; only one may close the parent</td>
+</tr>
+<tr>
+<td><code>GenerationAggregatorService</code></td>
+<td>The <code>GENERATE_ASSESSMENT</code> parent job</td>
+<td>Same, for section generation</td>
+</tr>
+<tr>
+<td><code>GenerationOrchestratorService.reopen()</code></td>
+<td>The parent job</td>
+<td>Two retry clicks must not both reopen it</td>
+</tr>
+</tbody>
+</table>
+<p>Pattern: <code>manager.createQueryBuilder(Job, 'job').setLock('pessimistic_write').where('job.id = :id', { id }).getOne()</code>, always inside <code>dataSource.transaction</code>.</p>
+<h3 id="2-for-update-skip-locked-work-queue-claim">2. <code>FOR UPDATE SKIP LOCKED</code> (work queue claim)<a class="headerlink" href="#2-for-update-skip-locked-work-queue-claim" title="Permanent link">¶</a></h3>
+<p><code>NewslettersDispatchService.claimDueNewsletters()</code> moves due newsletters from <code>SCHEDULED</code> to <code>SENDING</code> in one <code>UPDATE ... WHERE id IN (SELECT ... FOR UPDATE SKIP LOCKED) RETURNING id</code>. Two app instances running the cron at the same time split the rows instead of sending the same newsletter twice.</p>
+<h3 id="3-unique-indexes-as-the-final-guard">3. Unique indexes as the final guard<a class="headerlink" href="#3-unique-indexes-as-the-final-guard" title="Permanent link">¶</a></h3>
+<p>Sometimes it is simpler to try the insert and let Postgres reject the duplicate:</p>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>Unique index</th>
+<th>What the code does on a clash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Random short uid collides</td>
+<td><code>UQ_organizations_uid</code>, <code>UQ_assessment_templates_uid</code>, <code>UQ_learning_roadmap_templates_uid</code></td>
+<td>Retries with a new uid (<code>isUniqueViolation()</code> in <code>src/common/db-errors.ts</code>)</td>
+</tr>
+<tr>
+<td>Two requests open the same AI conversation</td>
+<td><code>UQ_ai_conversations_context</code></td>
+<td>The loser re-reads and returns the winner's row (<code>AiConversationsService.getOrCreate()</code>)</td>
+</tr>
+<tr>
+<td>Same generate request sent twice with an <code>Idempotency-Key</code></td>
+<td><code>UQ_jobs_created_by_idempotency_key</code></td>
+<td>Returns the first request's result (<code>GenerationOrchestratorService</code>)</td>
+</tr>
+<tr>
+<td>Same webhook delivered twice</td>
+<td><code>UQ_webhook_events_event_id</code></td>
+<td>Already processed, so ignored (<code>WebhooksService</code>)</td>
+</tr>
+<tr>
+<td>One attempt per user per assessment</td>
+<td><code>UQ_assessment_attempts_user_assessment</code></td>
+<td><code>startAttempt()</code> returns the existing attempt</td>
+</tr>
+</tbody>
+</table>
+<p><code>isUniqueViolation(error, 'UQ_name')</code> checks Postgres error code <code>23505</code> and the constraint name, so you can react to one specific index.</p>
+<h3 id="4-atomic-counters">4. Atomic counters<a class="headerlink" href="#4-atomic-counters" title="Permanent link">¶</a></h3>
+<p>Counters are changed in SQL, not read-modify-write in JavaScript, so parallel updates do not lose each other:</p>
+<ul>
+<li><code>manager.increment(Assessment, { id }, 'currentParticipants', delta)</code> for seats.</li>
+<li><code>manager.increment(Assessment, { id }, 'currTotalQuestions', n)</code> when questions are written.</li>
+<li><code>{ totalVerificationEmail: () =&gt; '"total_verification_email" + 1' }</code> in <code>UsersService</code>.</li>
+<li><code>LearningRoadmapNode.positionIndex</code> is shifted with one <code>increment</code> during the two-phase reindex in <code>RoadmapGraphService</code>, so the unique <code>(learning_roadmap_id, position_index)</code> never clashes mid-update.</li>
+</ul>
+<h3 id="5-state-checks-in-domain-files">5. State checks in <code>domain/</code> files<a class="headerlink" href="#5-state-checks-in-domain-files" title="Permanent link">¶</a></h3>
+<p>Status changes go through small functions in each module's <code>domain/</code> folder (for example <code>claimEvaluation()</code>, <code>assertAnswerable()</code>, <code>reopenJob()</code> in <code>src/assessments/domain/</code> and <code>src/jobs/domain/</code>). They throw when a move is not allowed, such as answering a submitted attempt. Combined with a row lock, this stops two workers from moving the same row twice.</p>
+<h3 id="known-gaps">Known gaps<a class="headerlink" href="#known-gaps" title="Permanent link">¶</a></h3>
+<ul>
+<li>Saving an answer (<code>AttemptsService.upsertResponse()</code>) is find-then-insert with no unique index on <code>(attempt_id, assessment_question_id)</code>. Two parallel saves of the same question could create two rows.</li>
+<li>The usage lock only covers an existing <code>user_feature_usage</code> row. The very first consume for a feature inserts without a unique index to stop a twin row.</li>
+</ul>
+<p>See <a href="../erd/#known-schema-gaps">ERD → Known schema gaps</a>.</p>
+<h2 id="pagination">Pagination<a class="headerlink" href="#pagination" title="Permanent link">¶</a></h2>
+<p>Two styles exist side by side. <strong>New list endpoints should use cursor pagination</strong>, as the <code>nestjs-pagination</code> skill requires.</p>
+<h3 id="cursor-keyset-pagination-the-standard">Cursor (keyset) pagination: the standard<a class="headerlink" href="#cursor-keyset-pagination-the-standard" title="Permanent link">¶</a></h3>
+<p>A <strong>cursor</strong> is the id of the last row the client saw. The next page asks for rows "after" that id. It stays fast on large tables because Postgres jumps straight to the cursor using the index, instead of counting past skipped rows.</p>
+<ul>
+<li>Query DTO: <code>PaginationDto</code> in <code>src/common/dto/pagination.dto.ts</code> (<code>cursor?: number</code>, <code>limit</code> 1 to 50, default 20). The skill says <code>cursor</code> is a UUID; the code uses an integer because every primary key is an <code>int</code>.</li>
+<li>Response: <code>PaginatedResponseDto&lt;T&gt;</code> in <code>src/common/dto/paginated-response.dto.ts</code>: <code>{ data, nextCursor, total }</code>. <code>nextCursor: null</code> means the last page.</li>
+<li>Recipe: order by the sort column plus <code>id</code> as a tie-breaker, fetch <code>limit + 1</code> rows, and if you got the extra row, drop it and return the last id as <code>nextCursor</code>. <code>total</code> is a separate count for display only.</li>
+</ul>
+<p>Used by: user admin lists, organizations and members, assessment participants, learning roadmaps and roadmap templates, AI conversation messages, and the leaderboard. The leaderboard (<code>LeaderboardService.getLeaderboard()</code>) is a good model for a complex order: it keysets on <code>(score DESC, time_taken_ms ASC, id ASC)</code> in raw SQL.</p>
+<h3 id="offset-pagination-older-endpoints">Offset pagination: older endpoints<a class="headerlink" href="#offset-pagination-older-endpoints" title="Permanent link">¶</a></h3>
+<p><code>page</code> and <code>limit</code> with <code>qb.skip((page - 1) * limit).take(limit)</code> and <code>getManyAndCount()</code>. The response meta has <code>page</code>, <code>limit</code>, <code>total</code> and <code>totalPages</code>.</p>
+<p>Still used by: assessment lists (<code>AssessmentsService.paginateList()</code>), my attempts, attempt review, tags, assessment prompts, assessment templates, question admin, plans, commerce admin, newsletters admin, AI admin and support tickets admin. These are fine for small, admin-sized tables. Do not copy this style into new user-facing lists.</p>
+<p>Either way: an empty page is <code>data: []</code>, never a 404.</p>
+<h2 id="soft-delete-in-practice">Soft delete in practice<a class="headerlink" href="#soft-delete-in-practice" title="Permanent link">¶</a></h2>
+<p>The tables that soft-delete are listed in the <a href="../erd/#soft-delete">ERD</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Soft delete</td>
+<td><code>repo.softDelete({ id })</code> or <code>manager.softDelete(...)</code>. Do not set <code>deletedAt</code> by hand.</td>
+</tr>
+<tr>
+<td>Normal reads</td>
+<td>Nothing to do. <code>find*</code> and QueryBuilder add <code>deleted_at IS NULL</code> for you.</td>
+</tr>
+<tr>
+<td>Read deleted rows too</td>
+<td><code>withDeleted: true</code>. Example: <code>AuthService.storeRefreshToken()</code> finds the user's soft-deleted token row and reuses it.</td>
+</tr>
+<tr>
+<td>Raw SQL</td>
+<td>Add <code>"deleted_at" IS NULL</code> yourself (the newsletter claim does).</td>
+</tr>
+<tr>
+<td>Uniqueness</td>
+<td>Use a partial unique index <code>WHERE deleted_at IS NULL</code>, so a deleted row does not block a new one.</td>
+</tr>
+</tbody>
+</table>
+<p>Many "removals" are status changes instead of deletes: a participant becomes <code>revoked</code>, an attempt becomes <code>rejected</code>, a member can be <code>suspended</code>. Tables without <code>deleted_at</code> (attempts, responses, jobs, audit rows, orders, payments) are either kept forever or hard-deleted.</p>
+<h2 id="caching-in-redis">Caching in Redis<a class="headerlink" href="#caching-in-redis" title="Permanent link">¶</a></h2>
+<p>Redis caches a few expensive reads. Postgres stays the source of truth.</p>
+<ul>
+<li><strong>Helper:</strong> <code>RedisHelper</code> in <code>src/common/helpers/redis.helper.ts</code>, with <code>safeGet&lt;T&gt;(key)</code> and <code>safeSet(key, value, ttlSeconds)</code>.</li>
+<li><strong>Fail-open:</strong> if Redis is down, a read counts as a miss and a write is skipped. A Redis problem never fails a request.</li>
+<li><strong>Keys</strong> are prefixed with <code>cache:v1:</code> (<code>src/config/redis/redis.constants.ts</code>). Each key also carries its own version, for example <code>attempts:result:v8:a&lt;uid&gt;:u&lt;userId&gt;</code>. When the cached shape changes, bump that version so old entries are never read.</li>
+<li><strong>TTLs</strong> live in one place: <code>CACHE_TTL_SECONDS</code> in <code>src/config/redis/cache-ttl.constants.ts</code>. A TTL is required on every write.</li>
+</ul>
+<h3 id="what-is-cached-and-why-it-is-safe">What is cached, and why it is safe<a class="headerlink" href="#what-is-cached-and-why-it-is-safe" title="Permanent link">¶</a></h3>
+<p>There is <strong>no explicit invalidation</strong>. Instead, each cached read is safe for one of two reasons:</p>
+<table>
+<thead>
+<tr>
+<th>Read</th>
+<th>Key (after <code>cache:v1:</code>)</th>
+<th>TTL</th>
+<th>Why it cannot go badly stale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attempt result</td>
+<td><code>attempts:result:v8:a{uid}:u{user}</code></td>
+<td>1 hour</td>
+<td>Only cached once the attempt is evaluated or rejected, which are final</td>
+</tr>
+<tr>
+<td>Attempt question list</td>
+<td><code>attempts:questions:v4:a{uid}:u{user}</code></td>
+<td>1 hour</td>
+<td>Only cached once the attempt is settled</td>
+</tr>
+<tr>
+<td>One attempt question</td>
+<td><code>attempts:question:v3:a{uid}:q{id}:u{user}</code></td>
+<td>1 hour</td>
+<td>Question snapshots do not change after publish</td>
+</tr>
+<tr>
+<td>Attempt analytics</td>
+<td><code>attempts:analytics:v2:a{uid}:u{user}:i{minutes}</code></td>
+<td>1 hour</td>
+<td>Settled attempts only</td>
+</tr>
+<tr>
+<td>Assistant attempt detail</td>
+<td><code>attempts:assistant:detail:v2:a{uid}:u{user}</code></td>
+<td>1 hour</td>
+<td>Settled attempts only</td>
+</tr>
+<tr>
+<td>Assistant attempt list</td>
+<td><code>attempts:assistant:list:v2:u{user}:l{limit}:s{status}</code></td>
+<td>60 s</td>
+<td>Short TTL: may include a live attempt</td>
+</tr>
+<tr>
+<td>Assistant assessment list and detail</td>
+<td>built in <code>AssessmentsService</code></td>
+<td>60 s</td>
+<td>Short TTL: counts may lag by up to a minute</td>
+</tr>
+</tbody>
+</table>
+<p>Rule of thumb: <strong>cache only data that can no longer change, or accept a short, bounded staleness.</strong> If you add a cache, put the TTL in <code>CACHE_TTL_SECONDS</code> with a comment that explains why it is safe.</p>
+<p>Other Redis users have their own connections and are covered elsewhere: the rate limiter (<code>src/rate-limiter/</code>) and the health check. There is also one small in-memory cache: <code>AiModelRegistryService</code> keeps built chat-model clients in a <code>Map</code>.</p>
+<h2 id="migrations">Migrations<a class="headerlink" href="#migrations" title="Permanent link">¶</a></h2>
+<p>A <strong>migration</strong> is a TypeScript file that changes the schema in a controlled, reversible way. Every schema change must have one. Never use <code>synchronize: true</code> and never run SQL by hand on a shared database.</p>
+<h3 id="where-and-how-they-are-named">Where and how they are named<a class="headerlink" href="#where-and-how-they-are-named" title="Permanent link">¶</a></h3>
+<ul>
+<li>Folder: <code>src/migrations/</code>.</li>
+<li>File name: <code>&lt;YYYYMMDDHHmmss&gt;-&lt;kebab-description&gt;.ts</code>, for example <code>20261026000000-add-registration-window-to-assessments.ts</code>. For several on the same day, bump the last digits (<code>...000001</code>, <code>...000002</code>).</li>
+<li>Class name: PascalCase description plus the same timestamp, for example <code>AddJobIdToAssessments20260902000001</code>.</li>
+<li>One logical change per file.</li>
+</ul>
+<h3 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm run migration:show</code></td>
+<td>Lists applied <code>[X]</code> and pending <code>[ ]</code> migrations. Run this first.</td>
+</tr>
+<tr>
+<td><code>npm run migration:run</code></td>
+<td>Applies pending migrations</td>
+</tr>
+<tr>
+<td><code>npm run migration:revert</code></td>
+<td>Rolls back the last applied migration</td>
+</tr>
+<tr>
+<td><code>npm run migration:generate -- src/migrations/&lt;name&gt;</code></td>
+<td>Writes a migration from the difference between the entities and your local database</td>
+</tr>
+<tr>
+<td><code>npm run migration:run:prod</code>, <code>migration:show:prod</code>, <code>migration:revert:prod</code></td>
+<td>Same, against the compiled <code>dist/</code> data source</td>
+</tr>
+</tbody>
+</table>
+<p>All of them use <code>src/config/database/data-source.ts</code>, which reads <code>DATABASE_*</code> from <code>.env</code>.</p>
+<h3 id="workflow-for-a-schema-change">Workflow for a schema change<a class="headerlink" href="#workflow-for-a-schema-change" title="Permanent link">¶</a></h3>
+<div class="mermaid">flowchart TD
+    A["Change the entity&lt;br/&gt;(column, index, relation)"] --&gt; B["npm run migration:show&lt;br/&gt;local DB fully migrated?"]
+    B --&gt; C["Write the migration&lt;br/&gt;(or generate, then trim)"]
+    C --&gt; D["Name every index, FK and check&lt;br/&gt;IDX_ / UQ_ / FK_ / CHK_"]
+    D --&gt; E["Write down() in reverse order"]
+    E --&gt; F["npm run migration:run"]
+    F --&gt; G["npm run migration:revert&lt;br/&gt;then run again"]
+    G --&gt; H["Commit entity + migration together"]
+</div>
+<h3 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every migration has a working <code>down()</code> that undoes <code>up()</code> in reverse order (drop FKs, then indexes, then the table)</td>
+<td>So a bad deploy can be rolled back. If a change truly cannot be undone, <code>down()</code> throws with a clear message.</td>
+</tr>
+<tr>
+<td>Name every constraint: <code>IDX_&lt;table&gt;_&lt;col&gt;</code>, <code>UQ_&lt;table&gt;_&lt;cols&gt;</code>, <code>FK_&lt;table&gt;_&lt;col&gt;</code>, <code>CHK_&lt;table&gt;_&lt;rule&gt;</code></td>
+<td>Readable errors, and the name must match the entity's <code>@Index('...')</code></td>
+</tr>
+<tr>
+<td>Never edit a migration that has already run on staging or production</td>
+<td>Other databases already applied the old version. Write a new migration instead.</td>
+</tr>
+<tr>
+<td>Data changes go in the migration: add the column as nullable, backfill with <code>UPDATE</code>, then make it <code>NOT NULL</code></td>
+<td>Existing rows must be valid. See the <code>20261014000006</code> to <code>20261014000011</code> series, which split MCQ data into <code>mcq_question_details</code> this way.</td>
+</tr>
+<tr>
+<td>New "kinds" that will grow (question types, verdicts) can be <code>varchar</code> with a <code>CHECK</code>, not a Postgres enum</td>
+<td>Adding a Postgres enum value needs an <code>ALTER TYPE</code> migration</td>
+</tr>
+<tr>
+<td>New tables: <code>int</code> auto-increment <code>id</code>, <code>created_at</code> / <code>updated_at</code> with <code>now()</code> default, and <code>deleted_at</code> if the table soft-deletes</td>
+<td>Matches every other table</td>
+</tr>
+<tr>
+<td>Index every foreign key column</td>
+<td>Joins and parent deletes stay fast</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Always review <code>migration:generate</code> output</p>
+<p>Many existing foreign keys and unique constraints were created with readable names (<code>FK_assessments_created_by</code>) while the entities let TypeORM pick hashed names. So <code>migration:generate</code> produces dozens of <code>DROP CONSTRAINT</code> / <code>ADD CONSTRAINT</code> lines that change nothing. It also tries to drop things that exist only in migrations, such as <code>UQ_assessment_attempts_user_assessment</code> and two <code>CHECK</code> constraints. Keep only the lines for your change, or write the migration by hand with <code>queryRunner.addColumn</code>, <code>createIndex</code> and <code>createForeignKey</code>, as most existing migrations do. Full list: <a href="../erd/#known-schema-gaps">ERD → Known schema gaps</a>.</p>
+</div>
+<h3 id="seeds">Seeds<a class="headerlink" href="#seeds" title="Permanent link">¶</a></h3>
+<p>Reference data is filled by seeders in <code>src/seeders/</code> (roles, permissions, features, plans, feature flags, AI models), run with <code>npm run seed</code>. Templates have their own scripts: <code>npm run seed:assessment-templates</code> and <code>npm run seed:roadmap-templates</code>. The first super admin is created with <code>npm run bootstrap-admin</code>.</p>
+<h2 id="common-questions-where-the-answer-lives">Common questions → where the answer lives<a class="headerlink" href="#common-questions-where-the-answer-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Tables</th>
+<th>Service method</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Who is this user, and what plan and flags do they have?</td>
+<td><code>users</code>, <code>subscriptions</code>, <code>plan_versions</code>, <code>plans</code>, <code>feature_flags</code></td>
+<td><code>AuthService.getMe()</code></td>
+<td>Four independent reads in <code>Promise.all</code></td>
+</tr>
+<tr>
+<td>Can this user do <code>questions:update</code>?</td>
+<td><code>users_roles</code>, <code>roles</code>, <code>role_permissions</code>, <code>permissions</code></td>
+<td><code>AccessControlService.userHasPermission()</code> (called by <code>PermissionGuard</code>)</td>
+<td>QueryBuilder join, <code>getCount() &gt; 0</code>, exact key match</td>
+</tr>
+<tr>
+<td>Can this org member do it?</td>
+<td><code>organization_members</code> → <code>role_permissions</code></td>
+<td><code>AccessControlService.roleHasPermission()</code></td>
+<td>Same join, starting from the member's <code>role_id</code></td>
+</tr>
+<tr>
+<td>What is the user's org context for <code>/v1/orgs/:orgUid/...</code>?</td>
+<td><code>organizations</code>, <code>organization_members</code></td>
+<td><code>OrganizationMembersService.resolveContext()</code></td>
+<td>One <code>findOne</code> on the user's <code>active</code> membership, joined to the organization by <code>uid</code>; a suspended org is refused</td>
+</tr>
+<tr>
+<td>Which assessments can I see?</td>
+<td><code>assessments</code>, <code>assessments_participants</code></td>
+<td><code>AssessmentsService.findAll()</code> → <code>paginateList()</code></td>
+<td>QueryBuilder, phase filters on the attempt window, offset paging</td>
+</tr>
+<tr>
+<td>Is this assessment open to me?</td>
+<td><code>assessments</code>, <code>assessments_participants</code></td>
+<td><code>AssessmentsService.findParticipantByAssessmentAndUser()</code> + <code>participantState()</code></td>
+<td>Rules in <code>src/assessments/domain/</code></td>
+</tr>
+<tr>
+<td>Start or resume my attempt</td>
+<td><code>assessment_attempts</code></td>
+<td><code>AttemptsService.startAttempt()</code></td>
+<td>Transaction; returns the existing attempt (unique per user and assessment)</td>
+</tr>
+<tr>
+<td>Save my answer</td>
+<td><code>assessment_attempt_responses</code></td>
+<td><code>AttemptsService.upsertResponse()</code></td>
+<td>Transaction; find, then update or insert, reset to <code>pending</code></td>
+</tr>
+<tr>
+<td>Submit and grade</td>
+<td><code>assessment_attempts</code>, <code>jobs</code>, responses</td>
+<td><code>AttemptsService.submitAttempt()</code> → <code>EvaluationOrchestratorService</code></td>
+<td>Opens an <code>EVALUATE_ATTEMPT</code> job; workers lock and grade</td>
+</tr>
+<tr>
+<td>My result</td>
+<td>attempts, responses, <code>assessments_questions</code></td>
+<td><code>AttemptsService.getAttemptResult()</code></td>
+<td>Cached in Redis once final</td>
+</tr>
+<tr>
+<td>Leaderboard</td>
+<td><code>assessment_attempts</code>, <code>users</code></td>
+<td><code>LeaderboardService.getLeaderboard()</code></td>
+<td>Raw SQL with ranking, keyset cursor, plus "my row"</td>
+</tr>
+<tr>
+<td>Review or reject attempts (creator)</td>
+<td>attempts, responses</td>
+<td><code>AttemptReviewService.listAttempts()</code>, <code>getResponses()</code>, <code>reject()</code></td>
+<td>Offset paging; reject in a transaction</td>
+</tr>
+<tr>
+<td>Is generation done?</td>
+<td><code>jobs</code></td>
+<td><code>JobsService.findOne()</code>, <code>findSections()</code></td>
+<td>Ownership checked against <code>payload.userId</code></td>
+</tr>
+<tr>
+<td>Do I have quota left?</td>
+<td><code>subscriptions</code>, <code>plan_features</code>, <code>user_feature_usage</code></td>
+<td><code>UsageService.consume()</code>, <code>getSubscriptionUsage()</code></td>
+<td>Transaction with a row lock; resets the period when it has passed</td>
+</tr>
+<tr>
+<td>What can my plan generate?</td>
+<td><code>plan_features</code> (<code>ALLOWED_QUESTION_TYPES</code>)</td>
+<td><code>SubscriptionsService.getAllowedQuestionTypes()</code></td>
+<td>Reads the enum feature value</td>
+</tr>
+<tr>
+<td>Did the payment go through?</td>
+<td><code>payments</code>, <code>orders</code>, <code>subscriptions</code>, <code>webhook_events</code></td>
+<td><code>WebhooksService</code> → <code>PaymentsService.markPaymentCaptured()</code></td>
+<td>Idempotent by <code>event_id</code>; one transaction</td>
+</tr>
+<tr>
+<td>Show my roadmap graph</td>
+<td><code>learning_roadmaps</code>, nodes, edges</td>
+<td><code>LearningRoadmapsService.getGraph()</code></td>
+<td>Edges load by <code>roadmap_id</code> in one query</td>
+</tr>
+<tr>
+<td>My roadmap list with progress</td>
+<td>roadmaps, nodes</td>
+<td><code>LearningRoadmapsService.list()</code></td>
+<td>Cursor paging; one grouped count over all roadmaps on the page (never one count per roadmap), served by the <code>(learning_roadmap_id, status)</code> index</td>
+</tr>
+<tr>
+<td>Chat history with the assistant</td>
+<td><code>ai_conversations</code>, <code>ai_conversation_messages</code></td>
+<td><code>AiConversationsService.getMessagesPage()</code></td>
+<td>Cursor paging by message <code>id</code> (ids are unique and always increase, so a cursor never lands between two equal timestamps)</td>
+</tr>
+<tr>
+<td>What did the LLM calls cost?</td>
+<td><code>llm_audit</code>, <code>ai_models</code></td>
+<td><code>src/ai/admin.service.ts</code></td>
+<td>Admin reports over the append-only audit table</td>
+</tr>
+<tr>
+<td>Is this feature flag on for me?</td>
+<td><code>feature_flags</code>, <code>feature_flag_roles</code>, <code>users_roles</code></td>
+<td><code>FeatureFlagsService.enabledFor()</code></td>
+<td>Off, on for all, or on for listed roles</td>
+</tr>
+<tr>
+<td>Platform numbers for admins</td>
+<td>many</td>
+<td><code>src/stats/admin.service.ts</code></td>
+<td>Raw SQL aggregates</td>
+</tr>
+</tbody>
+</table>
+<h2 id="checklist-for-new-data-code">Checklist for new data code<a class="headerlink" href="#checklist-for-new-data-code" title="Permanent link">¶</a></h2>
+<ul>
+<li>[ ] Reads use find options unless you need joins, paging or aggregates.</li>
+<li>[ ] No query inside a loop. No <code>eager</code> relations.</li>
+<li>[ ] Two or more writes are in one <code>dataSource.transaction</code>, using only <code>manager</code>.</li>
+<li>[ ] Read-then-write races are covered by a row lock or a unique index.</li>
+<li>[ ] New lists use cursor pagination with <code>PaginationDto</code> and <code>PaginatedResponseDto</code>.</li>
+<li>[ ] Raw SQL uses <code>$n</code> parameters and filters <code>deleted_at IS NULL</code>.</li>
+<li>[ ] Any cache has a TTL in <code>CACHE_TTL_SECONDS</code>, a versioned key, and a reason it is safe.</li>
+<li>[ ] Schema changes come with a named, reversible migration that was run and reverted locally.</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

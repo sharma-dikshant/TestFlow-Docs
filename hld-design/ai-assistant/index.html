@@ -1,0 +1,1475 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="The chat assistant that answers a learner's questions over Socket.IO, using read-only tools scoped to that learner" name="description"/>
+<link href="../ai/" rel="prev"/>
+<link href="../commerce/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>AI Assistant and Tools - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ai-assistant-and-tools">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              AI Assistant and Tools
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-key-terms">
+<span class="md-ellipsis">
+      
+        1. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        2. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-conversations-and-messages">
+<span class="md-ellipsis">
+      
+        3. Conversations and messages
+      
+    </span>
+</a>
+<nav aria-label="3. Conversations and messages" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-storage">
+<span class="md-ellipsis">
+      
+        3.1 Storage
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-opening-a-conversation">
+<span class="md-ellipsis">
+      
+        3.2 Opening a conversation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-reading-messages-over-http">
+<span class="md-ellipsis">
+      
+        3.3 Reading messages over HTTP
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-one-assistant-turn">
+<span class="md-ellipsis">
+      
+        4. One assistant turn
+      
+    </span>
+</a>
+<nav aria-label="4. One assistant turn" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-transport-socketio-requestreply-no-streaming">
+<span class="md-ellipsis">
+      
+        4.1 Transport: Socket.IO, request/reply, no streaming
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-sequence">
+<span class="md-ellipsis">
+      
+        4.2 Sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-step-by-step">
+<span class="md-ellipsis">
+      
+        4.3 Step by step
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-the-tool-loop-graph">
+<span class="md-ellipsis">
+      
+        4.4 The tool loop graph
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-tools">
+<span class="md-ellipsis">
+      
+        5. Tools
+      
+    </span>
+</a>
+<nav aria-label="5. Tools" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-how-a-tool-call-is-executed">
+<span class="md-ellipsis">
+      
+        5.1 How a tool call is executed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-limits-that-keep-prompts-small">
+<span class="md-ellipsis">
+      
+        5.2 Limits that keep prompts small
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-safety-and-authorization">
+<span class="md-ellipsis">
+      
+        6. Safety and authorization
+      
+    </span>
+</a>
+<nav aria-label="6. Safety and authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-rate-limits-and-usage-limits">
+<span class="md-ellipsis">
+      
+        6.1 Rate limits and usage limits
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-adding-a-new-tool">
+<span class="md-ellipsis">
+      
+        7. Adding a new tool
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-key-terms">
+<span class="md-ellipsis">
+      
+        1. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        2. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-conversations-and-messages">
+<span class="md-ellipsis">
+      
+        3. Conversations and messages
+      
+    </span>
+</a>
+<nav aria-label="3. Conversations and messages" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-storage">
+<span class="md-ellipsis">
+      
+        3.1 Storage
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-opening-a-conversation">
+<span class="md-ellipsis">
+      
+        3.2 Opening a conversation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-reading-messages-over-http">
+<span class="md-ellipsis">
+      
+        3.3 Reading messages over HTTP
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-one-assistant-turn">
+<span class="md-ellipsis">
+      
+        4. One assistant turn
+      
+    </span>
+</a>
+<nav aria-label="4. One assistant turn" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-transport-socketio-requestreply-no-streaming">
+<span class="md-ellipsis">
+      
+        4.1 Transport: Socket.IO, request/reply, no streaming
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-sequence">
+<span class="md-ellipsis">
+      
+        4.2 Sequence
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-step-by-step">
+<span class="md-ellipsis">
+      
+        4.3 Step by step
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-the-tool-loop-graph">
+<span class="md-ellipsis">
+      
+        4.4 The tool loop graph
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-tools">
+<span class="md-ellipsis">
+      
+        5. Tools
+      
+    </span>
+</a>
+<nav aria-label="5. Tools" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-how-a-tool-call-is-executed">
+<span class="md-ellipsis">
+      
+        5.1 How a tool call is executed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-limits-that-keep-prompts-small">
+<span class="md-ellipsis">
+      
+        5.2 Limits that keep prompts small
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-safety-and-authorization">
+<span class="md-ellipsis">
+      
+        6. Safety and authorization
+      
+    </span>
+</a>
+<nav aria-label="6. Safety and authorization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-rate-limits-and-usage-limits">
+<span class="md-ellipsis">
+      
+        6.1 Rate limits and usage limits
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-adding-a-new-tool">
+<span class="md-ellipsis">
+      
+        7. Adding a new tool
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ai-assistant-and-tools">AI Assistant and Tools<a class="headerlink" href="#ai-assistant-and-tools" title="Permanent link">¶</a></h1>
+<p>The AI assistant is a chat bot inside TestFlow. A learner opens a conversation about an <strong>evaluated assessment attempt</strong> and asks questions like "Why did I get question 4 wrong?" or "What should I study next?". The assistant answers in short prose. To look up the learner's data it calls <strong>tools</strong> — small read-only functions that wrap our domain services.</p>
+<p>This page covers the assistant loop, the tools, how conversations are stored, and the safety rules. For the model layer underneath (registry, providers, auditing) see <a href="../ai/">AI layer</a>.</p>
+<h2 id="1-key-terms">1. Key terms<a class="headerlink" href="#1-key-terms" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Conversation</strong></td>
+<td>One chat thread, attached to one <em>context</em> (an assessment attempt or a roadmap). Table <code>ai_conversations</code>.</td>
+</tr>
+<tr>
+<td><strong>Message</strong></td>
+<td>One turn in a conversation. Role <code>user</code> (the learner) or <code>bot</code> (the assistant). Table <code>ai_conversation_messages</code>.</td>
+</tr>
+<tr>
+<td><strong>Tool</strong></td>
+<td>A function the model may ask us to run, described to the model as a name, a description and a JSON Schema for its arguments.</td>
+</tr>
+<tr>
+<td><strong>Tool call</strong></td>
+<td>The model's reply says "run <code>get_attempt</code> with <code>{attemptUid: ...}</code>" instead of (or before) giving an answer.</td>
+</tr>
+<tr>
+<td><strong>Tool loop</strong></td>
+<td>Call the model → run any tools it asked for → send results back → call the model again, until it answers in plain text.</td>
+</tr>
+<tr>
+<td><strong>requestId</strong></td>
+<td>A correlation id the client sends with each message. It is echoed back on the reply and written on every log line.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-where-the-code-lives">2. Where the code lives<a class="headerlink" href="#2-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/ai/assistant/ai-assistant.module.ts</code></td>
+<td><code>AiAssistantModule</code>. Imports <code>AiModule</code> and <code>AiToolsModule</code>. Imported by <code>EventsModule</code>.</td>
+</tr>
+<tr>
+<td><code>src/ai/assistant/conversation-assistant.service.ts</code></td>
+<td><code>ConversationAssistantService.answer()</code> — the tool loop (a LangGraph graph).</td>
+</tr>
+<tr>
+<td><code>src/ai/prompts/conversation-assistant.prompt.ts</code></td>
+<td>System prompt + per-turn context prompt.</td>
+</tr>
+<tr>
+<td><code>src/ai/tools/ai-tools.module.ts</code></td>
+<td><code>AiToolsModule</code>. Imports the domain modules the tools read from.</td>
+</tr>
+<tr>
+<td><code>src/ai/tools/ai-tools.service.ts</code></td>
+<td>Tool registry, definitions for the provider, argument validation, dispatch.</td>
+</tr>
+<tr>
+<td><code>src/ai/tools/*.tools.ts</code></td>
+<td>Tool definitions, grouped by domain.</td>
+</tr>
+<tr>
+<td><code>src/ai/tools/dto/*</code></td>
+<td><code>class-validator</code> DTOs for each tool's arguments.</td>
+</tr>
+<tr>
+<td><code>src/ai/tools/conversation-context.resolver.ts</code></td>
+<td>Turns a stored context into ids the tools accept.</td>
+</tr>
+<tr>
+<td><code>src/ai/ai-conversations.service.ts</code></td>
+<td>Conversation and message storage and reads.</td>
+</tr>
+<tr>
+<td><code>src/ai/ai-conversations.controller.ts</code></td>
+<td>HTTP: read a conversation's messages page by page.</td>
+</tr>
+<tr>
+<td><code>src/events/events.gateway.ts</code>, <code>src/events/conversation-router.service.ts</code></td>
+<td>Socket.IO entry point. See <a href="../realtime-events/">Realtime events</a>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why separate modules?</strong> Attempts and roadmaps import <code>AiModule</code> to store conversations. The tools import attempts and roadmaps. If the tools lived in <code>AiModule</code> there would be a dependency cycle. So the arrows go one way: <code>ai/assistant → ai/tools → domain modules → ai</code>.</p>
+<div class="mermaid">flowchart LR
+    EV["EventsModule - socket gateway"] --&gt; AS["AiAssistantModule"]
+    AS --&gt; TOOLS["AiToolsModule"]
+    AS --&gt; AI["AiModule"]
+    TOOLS --&gt; DOM["Users, Assessments, Attempts, LearningRoadmaps modules"]
+    TOOLS --&gt; AI
+    DOM --&gt; AI
+</div>
+<h2 id="3-conversations-and-messages">3. Conversations and messages<a class="headerlink" href="#3-conversations-and-messages" title="Permanent link">¶</a></h2>
+<h3 id="31-storage">3.1 Storage<a class="headerlink" href="#31-storage" title="Permanent link">¶</a></h3>
+<p><code>ai_conversations</code> (<code>src/common/entities/ai-conversation.entity.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>Internal key.</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>Public id, <code>conv_</code> + 32 hex chars. This is what clients and tools use.</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>Owner. Cascade-deletes with the user.</td>
+</tr>
+<tr>
+<td><code>context_type</code></td>
+<td><code>assessment_attempt</code> or <code>roadmap</code>.</td>
+</tr>
+<tr>
+<td><code>context_id</code></td>
+<td>Row id of the attempt (<code>assessment_attempts.id</code>) or roadmap.</td>
+</tr>
+<tr>
+<td><code>created_at</code>, <code>updated_at</code></td>
+<td><code>updated_at</code> is touched on every new message, so it means "last activity".</td>
+</tr>
+</tbody>
+</table>
+<p>Unique on <code>(context_type, context_id)</code>: <strong>one conversation per attempt (or roadmap)</strong>.</p>
+<p><code>ai_conversation_messages</code>: <code>id</code>, <code>uid</code>, <code>conversation_id</code> (cascade delete), <code>message</code> (text), <code>role</code> (<code>user</code> / <code>bot</code>), <code>created_at</code>. Indexed on <code>(conversation_id, created_at)</code>.</p>
+<p>Only the user's text and the assistant's final reply are stored. Tool calls and tool results are <strong>not</strong> stored.</p>
+<h3 id="32-opening-a-conversation">3.2 Opening a conversation<a class="headerlink" href="#32-opening-a-conversation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/attempts/:attemptUid/conversations</code> (rate limit <code>CLASS_B</code>)</td>
+<td><code>AttemptsController.createConversation</code></td>
+</tr>
+<tr>
+<td>Check the attempt belongs to the user, and its status has a result (evaluated). Otherwise a rule error.</td>
+<td><code>AttemptsService.getOrCreateConversation</code></td>
+</tr>
+<tr>
+<td>Find or create the conversation for this attempt. Two concurrent opens are safe: the loser of the unique-index race adopts the winner's row.</td>
+<td><code>AiConversationsService.getOrCreate</code></td>
+</tr>
+<tr>
+<td>Returns <code>{ conversationId: "conv_..." }</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why only after evaluation?</strong> While an attempt is live, the API hides the correct answers. A bot with attempt context would be a way around that.</p>
+<p>The <code>roadmap</code> context type exists in the enum, the resolver and the prompt, but today <strong>no endpoint creates a roadmap conversation</strong>.</p>
+<h3 id="33-reading-messages-over-http">3.3 Reading messages over HTTP<a class="headerlink" href="#33-reading-messages-over-http" title="Permanent link">¶</a></h3>
+<p><code>GET /v1/conversations/:conversationId/messages</code> (<code>AiConversationsController</code>, rate limit <code>CLASS_B</code>, JWT required).</p>
+<ul>
+<li>Query: <code>limit</code> (default 20), <code>cursor</code>.</li>
+<li>Returns messages <strong>newest first</strong>. The first page is the bottom of the chat. Pass <code>meta.nextCursor</code> back as <code>cursor</code> to load older messages. <code>nextCursor: null</code> means you reached the start.</li>
+<li>The cursor is the internal message id.</li>
+<li><code>403</code> if the conversation belongs to someone else, <code>404</code> if it does not exist.</li>
+</ul>
+<p>There is no HTTP endpoint for <em>sending</em> a message. Sending happens over the socket.</p>
+<h2 id="4-one-assistant-turn">4. One assistant turn<a class="headerlink" href="#4-one-assistant-turn" title="Permanent link">¶</a></h2>
+<h3 id="41-transport-socketio-requestreply-no-streaming">4.1 Transport: Socket.IO, request/reply, no streaming<a class="headerlink" href="#41-transport-socketio-requestreply-no-streaming" title="Permanent link">¶</a></h3>
+<p>The client sends a Socket.IO event <code>ai.conversation.message</code> with:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requestId</code></td>
+<td>Required. Letters, digits, <code>-</code>, <code>_</code>. Max 64.</td>
+</tr>
+<tr>
+<td><code>conversationId</code></td>
+<td>Required. Max 64.</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>Required. Max <strong>4000</strong> characters.</td>
+</tr>
+</tbody>
+</table>
+<p>The socket must have connected with a valid JWT (checked in <code>handleConnection</code>). <code>WsJwtGuard</code> checks the socket has a user. <code>wsValidationPipe</code> validates the DTO.</p>
+<p>The server answers on the <strong>same socket</strong> with event <code>ai.conversation.message</code> and <code>{ requestId, userId, conversationId, content, sentAt }</code>. Errors come back as an <code>exception</code> event (via <code>WsExceptionFilter</code>) that includes the <code>requestId</code>. The socket stays open.</p>
+<p>The reply is sent <strong>once, when complete</strong>. Tokens are <strong>not</strong> streamed.</p>
+<h3 id="42-sequence">4.2 Sequence<a class="headerlink" href="#42-sequence" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    participant C as Client
+    participant GW as EventsGateway
+    participant R as ConversationRouterService
+    participant A as ConversationAssistantService
+    participant CS as AiConversationsService
+    participant M as LLM default model
+    participant T as AiToolsService
+    participant D as AttemptsService
+
+    C-&gt;&gt;GW: ai.conversation.message with requestId, conversationId, content
+    GW-&gt;&gt;R: resolveAiConversationMessage with userId from socket
+    R-&gt;&gt;A: answer
+    A-&gt;&gt;CS: findOwnedByUid, 403 or 404 if not owned by the user
+    A-&gt;&gt;A: registry.getDefault, 503 if none
+    A-&gt;&gt;CS: getRecentMessages, last 20
+    A-&gt;&gt;A: resolve context to attemptUid
+    A-&gt;&gt;CS: appendMessage role user
+    A-&gt;&gt;M: system prompt, context prompt, history, new message, tool definitions
+    M--&gt;&gt;A: tool call get_attempt with attemptUid
+    A-&gt;&gt;T: execute get_attempt with userId from socket
+    T-&gt;&gt;T: parse and validate args with DTO
+    T-&gt;&gt;D: getAttemptForAssistant with attemptUid and userId
+    D--&gt;&gt;T: attempt detail
+    T--&gt;&gt;A: ok true with data
+    A-&gt;&gt;M: same messages plus tool result
+    M--&gt;&gt;A: plain text answer
+    A-&gt;&gt;CS: appendMessage role bot
+    A--&gt;&gt;R: content, sentAt, toolsUsed
+    R--&gt;&gt;GW: reply
+    GW--&gt;&gt;C: ai.conversation.message with requestId and content
+</div>
+<h3 id="43-step-by-step">4.3 Step by step<a class="headerlink" href="#43-step-by-step" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Ownership.</strong> <code>findOwnedByUid(conversationId, userId)</code>. Wrong owner → <code>403</code>, unknown → <code>404</code>.</li>
+<li><strong>Model.</strong> Always the <strong>default</strong> model (<code>AiModelRegistry.getDefault()</code>), not the user's plan model. No default → <code>503</code>, before anything is stored.</li>
+<li><strong>History and context.</strong> Load the last <strong>20</strong> stored messages. Resolve the context: for an attempt, the stored <code>context_id</code> (a row id) is turned into the attempt <code>uid</code> that <code>get_attempt</code> accepts.</li>
+<li><strong>Save the user message first.</strong> If the provider fails later, what the user said is not lost.</li>
+<li><strong>Build messages:</strong><ul>
+<li>System message 1: <code>CONVERSATION_ASSISTANT_SYSTEM_PROMPT</code> (static, so providers can cache it).</li>
+<li>System message 2: <code>buildConversationContextPrompt()</code> — current date/time, what the conversation is attached to, and a hint like <code>get_attempt({"attemptUid": "..."})</code>.</li>
+<li>The 20 history messages (<code>user</code> → human, <code>bot</code> → AI).</li>
+<li>The new user message.</li>
+</ul>
+</li>
+<li><strong>Run the tool loop</strong> (next section).</li>
+<li><strong>Save the reply</strong> as a <code>bot</code> message and return it.</li>
+</ol>
+<h3 id="44-the-tool-loop-graph">4.4 The tool loop graph<a class="headerlink" href="#44-the-tool-loop-graph" title="Permanent link">¶</a></h3>
+<div class="mermaid">flowchart LR
+    S(["START"]) --&gt; AG["agent: call the model"]
+    AG --&gt;|"reply has tool calls"| TL["tools: run each call in order"]
+    TL --&gt; AG
+    AG --&gt;|"no tool calls"| E(["END"])
+</div>
+<p>State: <code>messages</code> (LangGraph <code>MessagesAnnotation</code>, appended to), <code>round</code> (model calls so far), <code>toolsUsed</code> (tool names, for logs).</p>
+<ul>
+<li><strong>agent</strong> binds the tool definitions to the model with <code>bindTools</code> and calls it. Each call is audited in <code>llm_audit</code> with <code>jobType = ASSISTANT_REPLY</code>, <code>jobId = null</code>, and the user id.</li>
+<li><strong>tools</strong> runs every tool call from the last model message, one after another, and appends a <code>ToolMessage</code> for each.</li>
+<li><strong>Round limit.</strong> Tools are offered for rounds 1–4 (<code>MAX_TOOL_ROUNDS = 4</code>). On the 5th call the model is called <strong>without tools</strong>, so it must answer. Worst case: 5 provider calls per user message.</li>
+<li>If the final message has no text → <code>503 The assistant is temporarily unavailable</code>.</li>
+<li>If the model does not support tool calling (<code>bindTools</code> missing) → <code>503</code>.</li>
+<li>Any provider error → <code>503</code>. The user message stays stored, the bot message is not written.</li>
+</ul>
+<h2 id="5-tools">5. Tools<a class="headerlink" href="#5-tools" title="Permanent link">¶</a></h2>
+<p>All tools <strong>only read</strong>. None of them write, so a hallucinated tool call cannot change data.</p>
+<p>Defined in <code>src/ai/tools/*.tools.ts</code>. Names are in <code>AssistantToolName</code> (<code>src/common/enums/ai.enums.ts</code>). The names are part of the contract with the provider; renaming one breaks old transcripts.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it returns</th>
+<th>Inputs</th>
+<th>Service method</th>
+<th>Access check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_user_profile</code></td>
+<td>The caller's name, username, email, verified flag, join date</td>
+<td>none</td>
+<td><code>UsersService.getProfileForAssistant(userId)</code></td>
+<td>Always the caller. No way to pass another user.</td>
+</tr>
+<tr>
+<td><code>list_assessments</code></td>
+<td>Caller's assessments (title, schedule, duration, question count), newest first</td>
+<td><code>role</code>: <code>enrolled</code> (default) or <code>created</code>; <code>limit</code> 1–25 (default 10)</td>
+<td><code>AssessmentsService.listAssessmentsForAssistant</code></td>
+<td>Query is filtered by <code>createdBy = userId</code> or an active participant row for <code>userId</code>.</td>
+</tr>
+<tr>
+<td><code>get_assessment</code></td>
+<td>One assessment: title, schedule, status, generation status, sections (type, count, marks, difficulty), <code>createdByMe</code>, participant status. Never questions or answers.</td>
+<td><code>assessmentId</code> (int ≥ 1)</td>
+<td><code>AssessmentsService.getAssessmentForAssistant</code></td>
+<td><strong>No ownership check</strong> — see the warning below.</td>
+</tr>
+<tr>
+<td><code>list_attempts</code></td>
+<td>Caller's attempts, newest first, with score and right/wrong counts</td>
+<td><code>status</code> (optional <code>AttemptStatus</code>); <code>limit</code> 1–25</td>
+<td><code>AttemptsService.listAttemptsForAssistant</code></td>
+<td>Uses <code>findMyAttempts(userId)</code>.</td>
+</tr>
+<tr>
+<td><code>get_attempt</code></td>
+<td>One attempt. After evaluation: per-section results and every question with the user's answer, correct option and explanation (MCQ), or problem and saved code (coding). Before evaluation: <code>answersAvailable: false</code>, <code>questions: null</code>.</td>
+<td><code>attemptUid</code> (UUID v4)</td>
+<td><code>AttemptsService.getAttemptForAssistant</code></td>
+<td><code>resolveAttempt(attemptUid, userId)</code> — must be the caller's attempt.</td>
+</tr>
+<tr>
+<td><code>list_roadmaps</code></td>
+<td>Caller's roadmaps with step counts and progress</td>
+<td><code>status</code> (optional <code>RoadmapStatus</code>); <code>limit</code> 1–25</td>
+<td><code>LearningRoadmapsService.listRoadmapsForAssistant</code></td>
+<td>Listed for <code>userId</code> only.</td>
+</tr>
+<tr>
+<td><code>get_roadmap</code></td>
+<td>One roadmap with its ordered steps and the current step</td>
+<td><code>roadmapId</code> (int ≥ 1)</td>
+<td><code>LearningRoadmapsService.getRoadmapForAssistant</code></td>
+<td><code>findOwnedOr404(roadmapId, userId)</code>.</td>
+</tr>
+<tr>
+<td><code>get_roadmap_node</code></td>
+<td>One step in full: description, resources, estimated time, previous and next steps</td>
+<td><code>roadmapId</code>, <code>nodeId</code></td>
+<td><code>LearningRoadmapsService.getRoadmapNodeForAssistant</code></td>
+<td>Goes through the owned roadmap.</td>
+</tr>
+<tr>
+<td><code>get_conversation</code></td>
+<td>Another conversation: its context (with usable id), dates, message count, last 20 messages</td>
+<td><code>conversationId</code> (<code>conv_</code> + 32 hex)</td>
+<td><code>AiConversationsService.getConversationForAssistant</code> + context resolver</td>
+<td><code>findOwnedByUid(..., userId)</code>.</td>
+</tr>
+<tr>
+<td><code>get_conversation_messages</code></td>
+<td>A conversation's transcript, oldest first, up to 100 most recent, with <code>hasMore</code></td>
+<td><code>conversationId</code>; <code>limit</code> 1–100 (default 100)</td>
+<td><code>AiConversationsService.getConversationMessagesForAssistant</code></td>
+<td><code>findOwnedByUid(..., userId)</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-how-a-tool-call-is-executed">5.1 How a tool call is executed<a class="headerlink" href="#51-how-a-tool-call-is-executed" title="Permanent link">¶</a></h3>
+<p><code>AiToolsService.execute(name, rawArguments, context)</code> never throws. Every failure becomes <code>{ ok: false, tool, error }</code> so the model can read it and correct itself on the next round.</p>
+<ol>
+<li>Unknown tool name → error listing the available tools.</li>
+<li>Arguments are not a JSON object → error.</li>
+<li>Arguments are converted with <code>plainToInstance</code> and checked with <code>class-validator</code> (<code>whitelist: true</code>). Extra keys are dropped, not rejected. <code>"limit": "5"</code> is converted to a number.</li>
+<li>Validation errors → <code>Invalid arguments: ...</code>.</li>
+<li>The handler runs with <code>context.userId</code>.</li>
+<li>An <code>HttpException</code> from the service (404, 403, 400) is passed through with its message, e.g. "This conversation does not belong to you".</li>
+<li>Any other error is logged with its stack and the model gets a generic "That lookup failed" message. No internal detail reaches the transcript.</li>
+</ol>
+<p>The result goes back to the model as JSON in a <code>ToolMessage</code>.</p>
+<h3 id="52-limits-that-keep-prompts-small">5.2 Limits that keep prompts small<a class="headerlink" href="#52-limits-that-keep-prompts-small" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>History replayed each turn</td>
+<td>20 messages</td>
+<td><code>REPLAYED_HISTORY_MESSAGES</code></td>
+</tr>
+<tr>
+<td>Tool rounds per turn</td>
+<td>4 (+1 answer-only call)</td>
+<td><code>MAX_TOOL_ROUNDS</code></td>
+</tr>
+<tr>
+<td>List tool rows</td>
+<td>default 10, max 25</td>
+<td><code>src/ai/tools/ai-tools.constants.ts</code></td>
+</tr>
+<tr>
+<td>Transcript tool</td>
+<td>max 100 messages, no paging</td>
+<td><code>MAX_CONVERSATION_TRANSCRIPT_MESSAGES</code> in <code>src/ai/ai.constants.ts</code></td>
+</tr>
+<tr>
+<td>Conversation preview</td>
+<td>20 messages</td>
+<td><code>CONVERSATION_PREVIEW_MESSAGES</code></td>
+</tr>
+<tr>
+<td>User message length</td>
+<td>4000 characters</td>
+<td><code>ConversationMessageDto</code></td>
+</tr>
+</tbody>
+</table>
+<p>Because tool results are not stored, a follow-up question in a later turn makes the model call the tool again. The prompt tells it to do so rather than "recall" numbers.</p>
+<h2 id="6-safety-and-authorization">6. Safety and authorization<a class="headerlink" href="#6-safety-and-authorization" title="Permanent link">¶</a></h2>
+<p><strong>The user id never comes from the model.</strong> <code>AssistantToolContext.userId</code> is taken from the authenticated socket. No tool has a <code>userId</code> argument. Each domain method receives that id and filters or checks ownership with it.</p>
+<p><strong>Answers are protected in three layers:</strong></p>
+<ol>
+<li>A conversation can only be opened for an evaluated attempt.</li>
+<li><code>get_attempt</code> returns <code>answersAvailable: false</code> and no questions for any attempt that is not yet evaluated (the user may ask about another, live attempt).</li>
+<li>The system prompt forbids working out or hinting at answers for a test the user is still taking, and forbids calling ungraded answers right or wrong. It still allows teaching the topic.</li>
+</ol>
+<p><strong>Grounding.</strong> The prompt says every claim about the user's data must come from a tool result, never invent ids, and say plainly when a tool returns nothing or an error.</p>
+<p><strong>Only reads.</strong> No tool writes anything.</p>
+<div class="admonition warning">
+<p class="admonition-title"><code>get_assessment</code> has no access check</p>
+<p><code>AssessmentsService.getAssessmentForAssistant</code> (<code>src/assessments/assessments.service.ts</code>, around line 820) loads the assessment with <code>findOne(assessmentId)</code> and does not check that the caller created it or is registered for it. A user who guesses a numeric id can get the metadata of any assessment: title, schedule, status, section layout, marks and participant counts. It never returns questions or answers. Every other tool is scoped to the caller.</p>
+</div>
+<h3 id="61-rate-limits-and-usage-limits">6.1 Rate limits and usage limits<a class="headerlink" href="#61-rate-limits-and-usage-limits" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>No commerce usage limit applies to the assistant.</strong> <code>answer()</code> does not call <code>UsageService</code>. Chat does not count against any plan quota, and it always runs on the default model.</li>
+<li><strong>No rate limit on the socket message.</strong> The <code>ai.conversation.message</code> handler has no <code>@RateLimit</code>. Cost per message is limited only by the 4000-character cap and the 5-call round limit.</li>
+<li>The HTTP endpoints (<code>POST .../conversations</code>, <code>GET .../messages</code>) use rate-limit policy <code>CLASS_B</code>.</li>
+<li>Every assistant model call is recorded in <code>llm_audit</code> with <code>jobType = ASSISTANT_REPLY</code>, so admins can see chat cost per user through <code>GET /v1/admin/llm-audits?jobType=ASSISTANT_REPLY</code> (see <a href="../ai/#9-admin-endpoints">AI layer</a>).</li>
+</ul>
+<h2 id="7-adding-a-new-tool">7. Adding a new tool<a class="headerlink" href="#7-adding-a-new-tool" title="Permanent link">¶</a></h2>
+<ol>
+<li>Add the name to <code>AssistantToolName</code> in <code>src/common/enums/ai.enums.ts</code> (snake_case).</li>
+<li>Add an args DTO in <code>src/ai/tools/dto/</code> with <code>class-validator</code> rules. Use <code>@Type(() =&gt; Number)</code> for numbers, because models often send numbers as strings.</li>
+<li>Add a read-only method on the domain service that takes <code>userId</code> and <strong>checks ownership itself</strong>. Keep the result small.</li>
+<li>Add the tool object (name, description written for the model, JSON Schema parameters with <code>additionalProperties: false</code>, <code>argsType</code>, <code>handler</code>) to the matching <code>*.tools.ts</code> file, or a new file registered in the <code>AiToolsService</code> constructor.</li>
+<li>If the tool needs a new domain module, import it in <code>AiToolsModule</code>, not in <code>AiModule</code>.</li>
+<li>If the model should know when to use it, update <code>CONVERSATION_ASSISTANT_SYSTEM_PROMPT</code>.</li>
+<li>Add unit tests under <code>tests/unit/ai/</code>.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

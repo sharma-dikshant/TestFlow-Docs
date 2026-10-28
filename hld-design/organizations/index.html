@@ -1,0 +1,1783 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How organizations, members, invitations (single and bulk CSV), org context and org-scoped permissions work." name="description"/>
+<link href="../rbac/" rel="prev"/>
+<link href="../assessments/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Organizations - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#organizations">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Organizations
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-creating-an-organization">
+<span class="md-ellipsis">
+      
+        4. Creating an organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-invitations">
+<span class="md-ellipsis">
+      
+        5. Invitations
+      
+    </span>
+</a>
+<nav aria-label="5. Invitations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-what-invitemany-does">
+<span class="md-ellipsis">
+      
+        5.1 What inviteMany does
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-invite-and-accept">
+<span class="md-ellipsis">
+      
+        5.2 Invite and accept
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-bulk-invite-by-csv">
+<span class="md-ellipsis">
+      
+        5.3 Bulk invite by CSV
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-members">
+<span class="md-ellipsis">
+      
+        6. Members
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-org-context-how-a-request-picks-its-organization">
+<span class="md-ellipsis">
+      
+        7. Org context: how a request picks its organization
+      
+    </span>
+</a>
+<nav aria-label="7. Org context: how a request picks its organization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-org-scoped-permissions">
+<span class="md-ellipsis">
+      
+        7.1 Org-scoped permissions
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-org-assessments-and-participants">
+<span class="md-ellipsis">
+      
+        8. Org assessments and participants
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-lifecycles">
+<span class="md-ellipsis">
+      
+        9. Lifecycles
+      
+    </span>
+</a>
+<nav aria-label="9. Lifecycles" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#91-organization">
+<span class="md-ellipsis">
+      
+        9.1 Organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#92-membership">
+<span class="md-ellipsis">
+      
+        9.2 Membership
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        10. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-endpoints-summary">
+<span class="md-ellipsis">
+      
+        11. Endpoints summary
+      
+    </span>
+</a>
+<nav aria-label="11. Endpoints summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-and-member-routes-srcorganizationscontrollers-rate-limit-class_b">
+<span class="md-ellipsis">
+      
+        User and member routes (src/organizations/controllers/, rate limit CLASS_B)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-routes-srcorganizationsadmincontrollerts-rate-limit-class_c">
+<span class="md-ellipsis">
+      
+        Admin routes (src/organizations/admin.controller.ts, rate limit CLASS_C)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-async-work-emails-and-events">
+<span class="md-ellipsis">
+      
+        12. Async work, emails and events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        13. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#14-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        14. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-creating-an-organization">
+<span class="md-ellipsis">
+      
+        4. Creating an organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-invitations">
+<span class="md-ellipsis">
+      
+        5. Invitations
+      
+    </span>
+</a>
+<nav aria-label="5. Invitations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-what-invitemany-does">
+<span class="md-ellipsis">
+      
+        5.1 What inviteMany does
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-invite-and-accept">
+<span class="md-ellipsis">
+      
+        5.2 Invite and accept
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-bulk-invite-by-csv">
+<span class="md-ellipsis">
+      
+        5.3 Bulk invite by CSV
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-members">
+<span class="md-ellipsis">
+      
+        6. Members
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-org-context-how-a-request-picks-its-organization">
+<span class="md-ellipsis">
+      
+        7. Org context: how a request picks its organization
+      
+    </span>
+</a>
+<nav aria-label="7. Org context: how a request picks its organization" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-org-scoped-permissions">
+<span class="md-ellipsis">
+      
+        7.1 Org-scoped permissions
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-org-assessments-and-participants">
+<span class="md-ellipsis">
+      
+        8. Org assessments and participants
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-lifecycles">
+<span class="md-ellipsis">
+      
+        9. Lifecycles
+      
+    </span>
+</a>
+<nav aria-label="9. Lifecycles" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#91-organization">
+<span class="md-ellipsis">
+      
+        9.1 Organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#92-membership">
+<span class="md-ellipsis">
+      
+        9.2 Membership
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        10. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-endpoints-summary">
+<span class="md-ellipsis">
+      
+        11. Endpoints summary
+      
+    </span>
+</a>
+<nav aria-label="11. Endpoints summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user-and-member-routes-srcorganizationscontrollers-rate-limit-class_b">
+<span class="md-ellipsis">
+      
+        User and member routes (src/organizations/controllers/, rate limit CLASS_B)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-routes-srcorganizationsadmincontrollerts-rate-limit-class_c">
+<span class="md-ellipsis">
+      
+        Admin routes (src/organizations/admin.controller.ts, rate limit CLASS_C)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-async-work-emails-and-events">
+<span class="md-ellipsis">
+      
+        12. Async work, emails and events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        13. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#14-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        14. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="organizations">Organizations<a class="headerlink" href="#organizations" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>An <strong>organization</strong> ("org") is a group of users who work together. Examples are a company, a college or a coaching class. Inside an org:</p>
+<ul>
+<li>Each member has an <strong>org role</strong> (<code>org_owner</code>, <code>org_admin</code> or <code>org_member</code>) that decides what they may do there.</li>
+<li>Members can create <strong>org assessments</strong>, which belong to the org and not to one person.</li>
+<li>The org has its <strong>own subscription</strong> (it starts on a 7-day trial). See <a href="../commerce/">Commerce</a>.</li>
+</ul>
+<p>The same user can use TestFlow personally and also act in one or more orgs. Each request says which one it is acting in. That choice is called the <strong>org context</strong>.</p>
+<h2 id="2-key-terms">2. Key terms<a class="headerlink" href="#2-key-terms" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>uid</strong></td>
+<td>Public 8-character id of an org (for example <code>a7Kq2Xb9</code>). Clients always use the uid, never the numeric id.</td>
+</tr>
+<tr>
+<td><strong>slug</strong></td>
+<td>URL-safe name made from the org name, for example <code>acme-labs</code>. Unique among live orgs.</td>
+</tr>
+<tr>
+<td><strong>Owner</strong></td>
+<td>The user who created the org. Stored in <code>organizations.owner_user_id</code>, <strong>and</strong> as an <code>org_owner</code> membership row.</td>
+</tr>
+<tr>
+<td><strong>Membership</strong></td>
+<td>One row in <code>organization_members</code> for one user in one org, with a role and a status.</td>
+</tr>
+<tr>
+<td><strong>Invitation</strong></td>
+<td>A membership row with status <code>invited</code>. Accepting it changes the same row to <code>active</code>. There is no separate invitations table.</td>
+</tr>
+<tr>
+<td><strong>Placeholder account</strong></td>
+<td>An unverified user account created for an invitee who has no account yet. Its username starts with <code>invited_</code>. When the person later signs up (or uses Google) with that email, they take over this row. See <a href="../auth/">Auth</a>.</td>
+</tr>
+<tr>
+<td><strong>Org context</strong></td>
+<td><code>request.org = { orgId, memberId, roleId }</code>. <code>OrgContextGuard</code> sets it when a request acts in an org.</td>
+</tr>
+<tr>
+<td><strong>Org-scoped route</strong></td>
+<td>A route under <code>/v1/orgs/:orgUid/...</code> marked <code>@OrgScoped()</code>. It always acts in that org.</td>
+</tr>
+<tr>
+<td><strong>Header-scoped route</strong></td>
+<td>A route marked <code>@OrgHeaderScoped()</code>. It acts in an org only if the <code>x-organization-id</code> header is sent. Otherwise it is personal.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>See the <a href="../../erd/">ERD</a> for full definitions.</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>organizations</code></td>
+<td><code>uid</code>, <code>slug</code>, <code>name</code>, <code>owner_user_id</code>, <code>status</code> (<code>active</code> or <code>suspended</code>), soft delete. <code>uid</code> and <code>slug</code> are unique among live rows.</td>
+</tr>
+<tr>
+<td><code>organization_members</code></td>
+<td><code>organization_id</code>, <code>user_id</code>, <code>role_id</code>, <code>status</code> (<code>invited</code>, <code>active</code>, <code>suspended</code>), <code>invited_by</code>, <code>joined_at</code>, soft delete. <strong>One live row per user per org.</strong> A soft-deleted row does not block a new invite.</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td>The built-in org roles. See <a href="../rbac/">RBAC</a>.</td>
+</tr>
+<tr>
+<td><code>jobs</code></td>
+<td>One row per bulk CSV import (<code>type = IMPORT_ORG_INVITATIONS</code>). See <a href="../jobs-and-schedulers/">Jobs and schedulers</a>.</td>
+</tr>
+<tr>
+<td><code>subscriptions</code></td>
+<td>The org's trial subscription is created with the org. See <a href="../commerce/">Commerce</a>.</td>
+</tr>
+<tr>
+<td><code>assessments.organization_id</code></td>
+<td>Set for org assessments. NULL for personal ones. See <a href="../assessments/">Assessments</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The uploaded CSV files are stored in S3 (or MinIO or LocalStack in development) under <code>org-invitations/&lt;orgId&gt;/&lt;uuid&gt;.csv</code>, by <code>StorageService</code> in <code>src/storage/storage.service.ts</code>.</p>
+<h2 id="4-creating-an-organization">4. Creating an organization<a class="headerlink" href="#4-creating-an-organization" title="Permanent link">¶</a></h2>
+<ol>
+<li>A signed-in user calls <code>POST /v1/orgs</code> with <code>{ name, slug? }</code>.</li>
+<li><strong>Org limit</strong>: a user can <strong>own at most 1</strong> org (<code>OrganizationLimit.ORG_LIMIT</code>). Otherwise the server returns <code>409</code>.</li>
+<li>The slug is the one given, or it is made from the name (<code>slugify</code>). If the slug is already taken, the server returns <code>409</code>.</li>
+<li>In <strong>one transaction</strong>, the server:<ul>
+<li>inserts the org with a new random uid and status <code>active</code></li>
+<li>inserts an <strong>active <code>org_owner</code> membership</strong> for the creator</li>
+<li>creates the org's <strong>7-day trial subscription</strong> (<code>SubscriptionsService.createOrgTrialSubscription</code>)</li>
+</ul>
+</li>
+<li>If the random uid collides with an existing one, the whole transaction is retried, up to 5 times.</li>
+</ol>
+<p>A platform admin can do the same thing for another user with <code>POST /v1/admin/organizations</code> and <code>{ name, slug?, ownerEmail }</code>. The owner must have an account and must be active. The result is the same as if that user had created the org.</p>
+<p><strong>Updating</strong> (<code>PATCH /v1/orgs/:orgUid</code>, needs <code>org_settings:update</code>): you can change <code>name</code> and <code>slug</code>. <strong>If you change the name and do not send a slug, the slug is made again from the new name.</strong></p>
+<h2 id="5-invitations">5. Invitations<a class="headerlink" href="#5-invitations" title="Permanent link">¶</a></h2>
+<p>There is <strong>one invite endpoint</strong>. It takes a list of 1 to 50 people. Inviting one person means sending a list with one entry. (A separate single-invite route was removed on branch <code>feat/bulk-invite</code> in commit <code>c289b17</code>.) For larger lists there is a <strong>CSV import</strong> that runs as a background job.</p>
+<p>Both paths end in the same method, <code>OrganizationMembersService.inviteMany</code>.</p>
+<h3 id="51-what-invitemany-does">5.1 What <code>inviteMany</code> does<a class="headerlink" href="#51-what-invitemany-does" title="Permanent link">¶</a></h3>
+<p>Input: <code>{ invitees: [{ name, email }, ...] }</code>. Names and emails are trimmed.</p>
+<ol>
+<li>Every invitee gets the role <strong><code>org_member</code></strong>. You cannot pick another role at invite time.</li>
+<li>Duplicate emails in the list are merged, ignoring case. The first spelling wins.</li>
+<li>The server finds existing accounts by email, ignoring case.</li>
+<li>For each person:<ul>
+<li><strong>Already an active or suspended member</strong>: skipped with reason <code>already_member</code>.</li>
+<li><strong>Already invited</strong>: skipped with reason <code>already_invited</code>.</li>
+<li><strong>Has an account</strong> (verified or not): invited as they are.</li>
+<li><strong>Has no account</strong>: a <strong>placeholder account</strong> is created. It is unverified, the username is <code>invited_&lt;random&gt;</code>, the password is a random 24-character one that nobody sees, and the name comes from the invite.</li>
+</ul>
+</li>
+<li>In <strong>one transaction</strong>, the server creates the placeholder accounts and inserts the <code>invited</code> membership rows (<code>invited_by</code> = the caller).</li>
+<li>If someone else invited or signed up one of these people at the same moment, a unique index fails and the server returns <code>409 ... please retry</code>. Nothing is saved.</li>
+<li>After the commit, the server sends <strong>one email per new invitation</strong>, 10 at a time (<code>OrganizationInvitationMailer</code>). A failed email <strong>does not undo</strong> the invitation. It is listed in <code>emailsFailed</code>.</li>
+</ol>
+<p>The response has <code>invited</code> (member rows), <code>accountsCreated</code> (emails), <code>skipped</code> (email and reason) and <code>emailsFailed</code>.</p>
+<h3 id="52-invite-and-accept">5.2 Invite and accept<a class="headerlink" href="#52-invite-and-accept" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant A as Org admin
+    participant API as OrganizationInvitationsController
+    participant MS as OrganizationMembersService
+    participant DB as Postgres
+    participant ML as InvitationMailer
+    participant I as Invitee
+    A-&gt;&gt;API: POST /v1/orgs/:orgUid/invitations with invitees
+    Note over API: OrgContextGuard and the org_members create permission run first
+    API-&gt;&gt;MS: inviteMany(org, actorId, dto)
+    MS-&gt;&gt;DB: find users by email, find existing memberships
+    MS-&gt;&gt;DB: BEGIN, create placeholder users, insert invited rows, COMMIT
+    MS-&gt;&gt;ML: sendInvitations
+    ML--&gt;&gt;I: email with sign up link or view invitation link
+    MS--&gt;&gt;A: 201 invited, accountsCreated, skipped, emailsFailed
+    opt invitee has no usable account
+        I-&gt;&gt;API: sign up or Google sign-in with the same email, then verify
+        Note over I: Takes over the placeholder row, so the invite is kept
+    end
+    I-&gt;&gt;API: GET /v1/orgs/invitations
+    API--&gt;&gt;I: pending invitations
+    alt accept
+        I-&gt;&gt;API: POST /v1/orgs/:orgUid/invitation/accept
+        API-&gt;&gt;DB: status active, joined_at now
+        API--&gt;&gt;I: 204
+    else decline
+        I-&gt;&gt;API: DELETE /v1/orgs/:orgUid/invitation
+        API-&gt;&gt;DB: soft delete the row
+        API--&gt;&gt;I: 204
+    end
+</div>
+<p>The email link depends on whether an account was just created for the invitee:</p>
+<ul>
+<li><strong>Account created now</strong>: "Sign up to accept" → <code>FRONTEND_URL/signup?email=...</code></li>
+<li><strong>Account already existed</strong>: "View invitation" → <code>FRONTEND_URL/invitations</code></li>
+</ul>
+<p>The invitee must be <strong>verified</strong> to call the accept or decline routes, because the auth guard rejects unverified accounts (see <a href="../auth/">Auth</a>).</p>
+<h3 id="53-bulk-invite-by-csv">5.3 Bulk invite by CSV<a class="headerlink" href="#53-bulk-invite-by-csv" title="Permanent link">¶</a></h3>
+<ol>
+<li><code>GET /v1/orgs/:orgUid/invitations/import/sample</code> downloads a sample file. Its contents are just the header <code>name,email</code>.</li>
+<li><code>POST /v1/orgs/:orgUid/invitations/import</code> with a multipart field <code>file</code>:<ul>
+<li>at most <strong>1 MB</strong></li>
+<li>type <code>text/csv</code>, <code>application/csv</code>, <code>text/plain</code> or <code>application/vnd.ms-excel</code> (CSV has no magic bytes, so only the MIME type is checked)</li>
+</ul>
+</li>
+<li>The server stores the file in S3, creates a <code>jobs</code> row (status <code>PENDING</code>, <code>maxAttempts</code> 3, <code>createdBy</code> = the caller) and publishes a message to RabbitMQ. It returns <strong><code>202 Accepted</code></strong> with the job.</li>
+<li>If publishing fails, the job is marked failed and the server returns <code>503</code>.</li>
+<li><code>OrganizationInvitationImportConsumer</code> receives the message and calls <code>OrganizationInvitationImportService.run</code>:<ol>
+<li><strong>Claim</strong> the job. Drop the message if the job is missing, has the wrong type, or is already finished (a redelivery).</li>
+<li><strong>Re-check the uploader</strong> with <code>resolveContext</code>. They must still be an active member, and the org must not be suspended.</li>
+<li><strong>Read and parse</strong> the file (<code>parseInvitationCsv</code>):<ul>
+<li>The header row must have <code>name</code> and <code>email</code>, in any case. Other columns are ignored.</li>
+<li>At most <strong>5000 data rows</strong>. An empty file or a file without the right header fails the whole job.</li>
+<li>A bad row (it fails <code>InviteeDto</code> validation) goes to <code>failed</code> with its line number.</li>
+<li>A repeated email goes to <code>skipped</code> as <code>duplicate_in_file</code>.</li>
+</ul>
+</li>
+<li><strong>Invite in chunks of 50</strong> through <code>inviteMany</code>. After each chunk, the job's progress text is updated ("Invited 50 of 320"). If a chunk hits a <code>409</code> conflict, it is tried once more. If it fails again, its rows go to <code>failed</code>.</li>
+<li><strong>Mark the job completed</strong> with a result: <code>totalRows</code>, <code>invited</code>, <code>accountsCreated</code>, <code>skipped[]</code>, <code>failed[]</code>, <code>emailsFailed[]</code>.</li>
+<li><strong>Emit</strong> the socket event <code>org.invitations.import.settled</code> to the uploader.</li>
+</ol>
+</li>
+<li>Any other error marks the job <strong>failed</strong> and emits the same event with <code>status: failed</code>. The message is still acknowledged, so it is not redelivered forever. To retry, call <code>POST /v1/jobs/:id/retry</code>. Re-running is safe, because people already invited are skipped and are not emailed again.</li>
+<li>The client polls <code>GET /v1/jobs/:id</code>, or listens for the socket event.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant A as Org admin
+    participant API as InvitationsController
+    participant IS as ImportService
+    participant S3 as S3 storage
+    participant DB as Postgres
+    participant MQ as RabbitMQ
+    participant CO as ImportConsumer
+    participant MS as MembersService
+    participant WS as EventsGateway
+    A-&gt;&gt;API: POST /v1/orgs/:orgUid/invitations/import with CSV file
+    API-&gt;&gt;IS: enqueue
+    IS-&gt;&gt;S3: putObject org-invitations/orgId/uuid.csv
+    IS-&gt;&gt;DB: insert job IMPORT_ORG_INVITATIONS, PENDING
+    IS-&gt;&gt;MQ: publish to organization exchange
+    API--&gt;&gt;A: 202 job
+    MQ-&gt;&gt;CO: organization.invitations.import message
+    CO-&gt;&gt;IS: run(message)
+    IS-&gt;&gt;DB: claim job, mark PROCESSING
+    IS-&gt;&gt;MS: resolveContext for uploader
+    IS-&gt;&gt;S3: getObject
+    IS-&gt;&gt;IS: parse CSV, split into valid, invalid, duplicate rows
+    loop each chunk of 50 rows
+        IS-&gt;&gt;MS: inviteMany(chunk)
+        MS-&gt;&gt;DB: placeholder users and invited rows
+        MS--&gt;&gt;MS: send invitation emails
+        IS-&gt;&gt;DB: update job progress
+    end
+    IS-&gt;&gt;DB: mark job COMPLETED with result
+    IS-&gt;&gt;WS: org.invitations.import.settled to uploader
+    A-&gt;&gt;API: GET /v1/jobs/:id
+    API--&gt;&gt;A: job status, progress and result
+</div>
+<p>RabbitMQ wiring (<code>src/config/rabbitmq/rabbitmq.constants.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exchange</td>
+<td><code>organization</code> (topic)</td>
+</tr>
+<tr>
+<td>Routing key</td>
+<td><code>organization.invitations.import</code></td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><code>organization-invitation-import-queue</code></td>
+</tr>
+<tr>
+<td>Job queue name stored on the job row</td>
+<td><code>organization-invitations</code></td>
+</tr>
+<tr>
+<td>Job type</td>
+<td><code>IMPORT_ORG_INVITATIONS</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-members">6. Members<a class="headerlink" href="#6-members" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Route</th>
+<th>Permission</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>List</td>
+<td><code>GET /v1/orgs/:orgUid/members</code></td>
+<td><code>org_members:read</code></td>
+<td>Cursor-paged, newest first. Optional <code>status</code> filter. Includes pending invitations. <code>meta</code> has <code>nextCursor</code> and <code>total</code>.</td>
+</tr>
+<tr>
+<td>Change role or status</td>
+<td><code>PATCH /v1/orgs/:orgUid/members/:userId</code></td>
+<td><code>org_members:update</code></td>
+<td><code>roleKey</code> can be any built-in org role <strong>except <code>org_owner</code></strong>. <code>status</code> can be <code>active</code> or <code>suspended</code>. An invitation cannot be activated this way, only by the invitee accepting it.</td>
+</tr>
+<tr>
+<td>Remove member or revoke invite</td>
+<td><code>DELETE /v1/orgs/:orgUid/members/:userId</code></td>
+<td><code>org_members:delete</code></td>
+<td>Soft-deletes the row.</td>
+</tr>
+<tr>
+<td>Leave</td>
+<td><code>DELETE /v1/orgs/:orgUid/membership</code></td>
+<td>none (active member)</td>
+<td>The owner cannot leave.</td>
+</tr>
+</tbody>
+</table>
+<p>For both PATCH and DELETE, <strong>you cannot target yourself</strong>, and <strong>you cannot target the owner</strong> (<code>403</code>).</p>
+<p>A <strong>suspended</strong> member stays in the list, but cannot act in the org at all, because <code>OrgContextGuard</code> requires status <code>active</code>.</p>
+<h2 id="7-org-context-how-a-request-picks-its-organization">7. Org context: how a request picks its organization<a class="headerlink" href="#7-org-context-how-a-request-picks-its-organization" title="Permanent link">¶</a></h2>
+<p><code>OrgContextGuard</code> (<code>src/organizations/guards/org-context.guard.ts</code>) runs after <code>JwtAuthGuard</code>, <code>RateLimitGuard</code> and <code>RolesGuard</code>, and <strong>before</strong> <code>PermissionGuard</code>. So the permission check can already see <code>request.org</code>.</p>
+<p>There are two ways a route can ask for an org:</p>
+<table>
+<thead>
+<tr>
+<th>Decorator</th>
+<th>Where the org uid comes from</th>
+<th>If it is missing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@OrgScoped()</code></td>
+<td>Route param <code>:orgUid</code></td>
+<td>Not possible, because it is part of the path</td>
+</tr>
+<tr>
+<td><code>@OrgHeaderScoped()</code></td>
+<td>Header <code>x-organization-id</code></td>
+<td>The request stays <strong>personal</strong>. <code>request.org</code> is not set.</td>
+</tr>
+</tbody>
+</table>
+<p>Steps:</p>
+<ol>
+<li>If the route has neither decorator, do nothing.</li>
+<li>Read the uid from the param or the header. A header-scoped route with no header (or an empty one) continues as personal.</li>
+<li>Call <code>OrganizationMembersService.resolveContext(uid, userId)</code>. It looks for an <strong>active</strong> membership of this user in the org with this uid.<ul>
+<li>No such membership (not a member, only invited, suspended member, or no such org): <strong><code>404 Organization not found</code></strong>. It is 404 and not 403 so that outsiders cannot find out which orgs exist.</li>
+<li>The org is suspended: <strong><code>403 This organization has been suspended</code></strong>.</li>
+</ul>
+</li>
+<li>Set <code>request.org = { orgId, memberId, roleId }</code>.</li>
+</ol>
+<p>Handlers read it with:</p>
+<ul>
+<li><code>@CurrentOrg()</code>: returns the context. It throws a 500 if used on a route that is not org-scoped (a programming error).</li>
+<li><code>@OptionalOrg()</code>: returns the context or <code>null</code>. Used on header-scoped routes.</li>
+</ul>
+<div class="mermaid">flowchart TD
+    A["Request after JwtAuthGuard"] --&gt; B{"OrgScoped or OrgHeaderScoped?"}
+    B -- neither --&gt; P["Personal request, continue"]
+    B -- OrgScoped --&gt; C["uid from path param orgUid"]
+    B -- OrgHeaderScoped --&gt; D{"x-organization-id header sent?"}
+    D -- no --&gt; P
+    D -- yes --&gt; E["uid from header"]
+    C --&gt; F["resolveContext: find ACTIVE membership by uid and user"]
+    E --&gt; F
+    F --&gt; G{"Active membership found?"}
+    G -- no --&gt; N["404 Organization not found"]
+    G -- yes --&gt; H{"Org suspended?"}
+    H -- yes --&gt; S["403 Organization suspended"]
+    H -- no --&gt; R["Set request.org to orgId, memberId, roleId"]
+    R --&gt; PG["PermissionGuard checks the org role"]
+</div>
+<h3 id="71-org-scoped-permissions">7.1 Org-scoped permissions<a class="headerlink" href="#71-org-scoped-permissions" title="Permanent link">¶</a></h3>
+<p>When <code>request.org</code> is set, <code>PermissionGuard</code> checks permissions against the <strong>member's org role only</strong>. Platform roles, including <code>super_admin</code>, give nothing inside an org. <code>@OrgPermissions(...)</code> adds keys that are checked only in org mode. The full logic and the default grants for each org role are in <a href="../rbac/#43-default-grants-for-org-roles">RBAC</a>.</p>
+<p>Routes that use the header today:</p>
+<ul>
+<li><strong>Assessments</strong>: create, generate, list, invite, participants, register, and more. They use <code>@OrgPermissions('org_assessments:read' or 'create')</code>. See <a href="../assessments/">Assessments</a>.</li>
+<li><strong>Attempt review and leaderboard</strong>. See <a href="../attempts/">Attempts</a>.</li>
+<li><strong>Billing</strong>: <code>GET /v1/subscriptions</code> and <code>GET /v1/usage/subscriptions/:subscriptionId</code>, with <code>@OrgPermissions('org_billing:read')</code>. See <a href="../commerce/">Commerce</a>.</li>
+</ul>
+<h2 id="8-org-assessments-and-participants">8. Org assessments and participants<a class="headerlink" href="#8-org-assessments-and-participants" title="Permanent link">¶</a></h2>
+<p>The assessment side is covered in <a href="../assessments/">Assessments</a>. These are the points that matter for orgs:</p>
+<ol>
+<li>An assessment created with the <code>x-organization-id</code> header gets <code>organization_id</code> set, and belongs to the org.</li>
+<li><strong>Schedule</strong>: an org assessment has <strong>two windows</strong>, added on branch <code>feat/bulk-invite</code> (commit <code>514f2bd</code>, migration <code>add-registration-window-to-assessments</code>):<ul>
+<li><strong>Registration window</strong> (<code>registrationStartTime</code> to <code>registrationEndTime</code>): when people can register or be invited. If not given, it opens now and closes when the attempt window closes.</li>
+<li><strong>Attempt window</strong> (<code>attemptStartTime</code> to <code>attemptEndTime</code>): <strong>required</strong> for org assessments.</li>
+<li>Rules: each window must end after it starts, and registration cannot close after the attempt window ends.</li>
+<li>A personal assessment ignores these inputs. Both of its windows are "now plus 30 days".</li>
+</ul>
+</li>
+<li><strong>Only active org members can be invited</strong> to an org assessment. Others come back as skipped.</li>
+<li><strong>Participant details</strong> (<code>GET /v1/assessments/:id/participants</code>, added in commits <code>d442e37</code> and <code>cc7ffd0</code>) list everyone invited, active or revoked. Each row has the account details, <code>isCreator</code>, <code>invitedBy</code>, <code>invitedAt</code>, <code>inviteAcceptedAt</code> and <code>revokedAt</code>. There are <code>status</code> and <code>search</code> filters, and <code>meta.counts</code> gives the number in each status. Only the creator, or a member whose org role has <code>org_assessments:update</code>, may see it.</li>
+<li><code>DELETE /v1/assessments/:id/participants/:userId</code> removes a participant or revokes an invite. The creator cannot be removed.</li>
+</ol>
+<h2 id="9-lifecycles">9. Lifecycles<a class="headerlink" href="#9-lifecycles" title="Permanent link">¶</a></h2>
+<h3 id="91-organization">9.1 Organization<a class="headerlink" href="#91-organization" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; active: POST /v1/orgs or admin create
+    active --&gt; suspended: admin PATCH status
+    suspended --&gt; active: admin PATCH status
+</div>
+<p>When an org is <strong>suspended</strong>:</p>
+<ul>
+<li>Every org-scoped or header-scoped request for it returns <code>403</code>.</li>
+<li>Its pending invitations are hidden from <code>GET /v1/orgs/invitations</code> and cannot be accepted.</li>
+<li>It still shows in <code>GET /v1/orgs</code>, with an empty permissions list.</li>
+</ul>
+<p>There is <strong>no delete</strong> endpoint for organizations.</p>
+<h3 id="92-membership">9.2 Membership<a class="headerlink" href="#92-membership" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; invited: inviteMany
+    [*] --&gt; active: owner row at org creation
+    invited --&gt; active: invitee accepts
+    invited --&gt; removed: invitee declines or admin revokes
+    active --&gt; suspended: admin PATCH status
+    suspended --&gt; active: admin PATCH status
+    active --&gt; removed: admin removes or member leaves
+    suspended --&gt; removed: admin removes
+    removed --&gt; [*]
+    note right of removed
+        Soft deleted row.
+        The person can be invited again.
+    end note
+</div>
+<h2 id="10-business-rules-and-edge-cases">10. Business rules and edge cases<a class="headerlink" href="#10-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li>A user can <strong>own</strong> at most one org. They can be a <strong>member</strong> of any number.</li>
+<li>Each org has exactly one owner. <code>org_owner</code> can never be granted through the API, and the owner's membership can never be changed or removed. <strong>There is no ownership transfer endpoint.</strong></li>
+<li>Invites always use the role <code>org_member</code>. Promote people afterwards with <code>PATCH .../members/:userId</code>.</li>
+<li>An <code>org_admin</code> can change or remove <strong>another</strong> <code>org_admin</code>. There is no rank check between admins.</li>
+<li>Emails are matched <strong>ignoring case</strong> when inviting, but login and sign-up match them exactly (see <a href="../auth/">Auth</a>).</li>
+<li>A person with an account who has never verified it (for example, a placeholder from another org's invite) gets the "View invitation" email, not the "Sign up" one.</li>
+<li>Re-inviting after a decline, revoke, removal or leave works, because the unique index ignores soft-deleted rows.</li>
+<li>The import job re-checks only that the uploader is still an <strong>active member</strong>. It does not re-check that they still have <code>org_members:create</code>.</li>
+<li>Each invite request is limited to 50 people. Each CSV is limited to 5000 rows and 1 MB.</li>
+<li>A failed invitation email never fails the invite.</li>
+<li>There is <strong>no limit on how many members</strong> an org can have.</li>
+</ol>
+<h2 id="11-endpoints-summary">11. Endpoints summary<a class="headerlink" href="#11-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>The <a href="../../api-design/v1/">API reference</a> has the full details.</p>
+<h3 id="user-and-member-routes-srcorganizationscontrollers-rate-limit-class_b">User and member routes (<code>src/organizations/controllers/</code>, rate limit CLASS_B)<a class="headerlink" href="#user-and-member-routes-srcorganizationscontrollers-rate-limit-class_b" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Scope</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/orgs</code></td>
+<td>personal</td>
+<td>none</td>
+<td>Create an org</td>
+</tr>
+<tr>
+<td><code>GET /v1/orgs</code></td>
+<td>personal</td>
+<td>none</td>
+<td>My orgs (active and suspended memberships), each with my role and permission keys</td>
+</tr>
+<tr>
+<td><code>GET /v1/orgs/invitations</code></td>
+<td>personal</td>
+<td>none</td>
+<td>My pending invitations</td>
+</tr>
+<tr>
+<td><code>POST /v1/orgs/:orgUid/invitation/accept</code></td>
+<td>personal</td>
+<td>none</td>
+<td>Accept (204)</td>
+</tr>
+<tr>
+<td><code>DELETE /v1/orgs/:orgUid/invitation</code></td>
+<td>personal</td>
+<td>none</td>
+<td>Decline (204)</td>
+</tr>
+<tr>
+<td><code>GET /v1/orgs/:orgUid</code></td>
+<td>org</td>
+<td><code>org_settings:read</code></td>
+<td>Org details</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/orgs/:orgUid</code></td>
+<td>org</td>
+<td><code>org_settings:update</code></td>
+<td>Rename or change the slug</td>
+</tr>
+<tr>
+<td><code>DELETE /v1/orgs/:orgUid/membership</code></td>
+<td>org</td>
+<td>none</td>
+<td>Leave</td>
+</tr>
+<tr>
+<td><code>GET /v1/orgs/:orgUid/members</code></td>
+<td>org</td>
+<td><code>org_members:read</code></td>
+<td>List members and invites</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/orgs/:orgUid/members/:userId</code></td>
+<td>org</td>
+<td><code>org_members:update</code></td>
+<td>Change role or status</td>
+</tr>
+<tr>
+<td><code>DELETE /v1/orgs/:orgUid/members/:userId</code></td>
+<td>org</td>
+<td><code>org_members:delete</code></td>
+<td>Remove or revoke</td>
+</tr>
+<tr>
+<td><code>POST /v1/orgs/:orgUid/invitations</code></td>
+<td>org</td>
+<td><code>org_members:create</code></td>
+<td>Invite 1 to 50 people (201)</td>
+</tr>
+<tr>
+<td><code>POST /v1/orgs/:orgUid/invitations/import</code></td>
+<td>org</td>
+<td><code>org_members:create</code></td>
+<td>Upload a CSV, queue a job (202)</td>
+</tr>
+<tr>
+<td><code>GET /v1/orgs/:orgUid/invitations/import/sample</code></td>
+<td>org</td>
+<td><code>org_members:create</code></td>
+<td>Download the sample CSV</td>
+</tr>
+</tbody>
+</table>
+<h3 id="admin-routes-srcorganizationsadmincontrollerts-rate-limit-class_c">Admin routes (<code>src/organizations/admin.controller.ts</code>, rate limit CLASS_C)<a class="headerlink" href="#admin-routes-srcorganizationsadmincontrollerts-rate-limit-class_c" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/admin/organizations</code></td>
+<td><code>organizations:create</code></td>
+<td>Create an org for the user with <code>ownerEmail</code></td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/organizations</code></td>
+<td><code>organizations:read</code></td>
+<td>Cursor-paged list. Filters: <code>search</code> (name, slug), <code>status</code>.</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/organizations/:orgUid</code></td>
+<td><code>organizations:read</code></td>
+<td>One org</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/admin/organizations/:orgUid/status</code></td>
+<td><code>organizations:update</code></td>
+<td>Suspend or reactivate</td>
+</tr>
+</tbody>
+</table>
+<p>Admin routes are personal requests. They use platform permissions, and the admin does not need to be a member of the org.</p>
+<h2 id="12-async-work-emails-and-events">12. Async work, emails and events<a class="headerlink" href="#12-async-work-emails-and-events" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Name</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RabbitMQ consumer</td>
+<td><code>OrganizationInvitationImportConsumer</code> (<code>src/organizations/consumers/organization-invitation-import.consumer.ts</code>)</td>
+<td>A CSV import is queued</td>
+</tr>
+<tr>
+<td>Job</td>
+<td><code>IMPORT_ORG_INVITATIONS</code></td>
+<td>One per CSV upload. Poll <code>GET /v1/jobs/:id</code>, retry with <code>POST /v1/jobs/:id/retry</code>.</td>
+</tr>
+<tr>
+<td>Email</td>
+<td>Organization invitation (<code>src/notifications/email/templates/organization-invitation-email.template.ts</code>)</td>
+<td>Every new invitation, from the API route and from the import</td>
+</tr>
+<tr>
+<td>Socket event</td>
+<td><code>org.invitations.import.settled</code></td>
+<td>Sent to the uploader's user room when an import completes or fails. Payload: <code>jobId</code>, <code>status</code>, and either counts or a <code>reason</code>. See <a href="../realtime-events/">Realtime events</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="13-where-the-code-lives">13. Where the code lives<a class="headerlink" href="#13-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/organizations/controllers/organizations.controller.ts</code></td>
+<td>Create, list, accept, decline, read, update, leave</td>
+</tr>
+<tr>
+<td><code>src/organizations/controllers/organization-members.controller.ts</code></td>
+<td>Member list, update, remove</td>
+</tr>
+<tr>
+<td><code>src/organizations/controllers/organization-invitations.controller.ts</code></td>
+<td>Invite, CSV import, sample CSV</td>
+</tr>
+<tr>
+<td><code>src/organizations/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin org routes</td>
+</tr>
+<tr>
+<td><code>src/organizations/services/organizations.service.ts</code></td>
+<td>Create and update orgs</td>
+</tr>
+<tr>
+<td><code>src/organizations/services/organization-members.service.ts</code></td>
+<td><code>resolveContext</code>, <code>inviteMany</code>, member changes, accept, decline</td>
+</tr>
+<tr>
+<td><code>src/organizations/services/organization-invitation-import.service.ts</code></td>
+<td>CSV import job</td>
+</tr>
+<tr>
+<td><code>src/organizations/services/organization-invitation-mailer.service.ts</code></td>
+<td>Invitation emails</td>
+</tr>
+<tr>
+<td><code>src/organizations/helpers/parse-invitation-csv.ts</code></td>
+<td>CSV parsing and row validation</td>
+</tr>
+<tr>
+<td><code>src/organizations/guards/org-context.guard.ts</code></td>
+<td><code>OrgContextGuard</code></td>
+</tr>
+<tr>
+<td><code>src/organizations/decorators/</code></td>
+<td><code>@OrgScoped</code>, <code>@OrgHeaderScoped</code>, <code>@CurrentOrg</code>, <code>@OptionalOrg</code></td>
+</tr>
+<tr>
+<td><code>src/organizations/organizations.constants.ts</code></td>
+<td>Import limits, storage prefix, socket event name</td>
+</tr>
+<tr>
+<td><code>tests/unit/organizations/</code></td>
+<td>Unit tests, including the guard, import, mailer and CSV parser</td>
+</tr>
+</tbody>
+</table>
+<h2 id="14-known-gaps-and-todos">14. Known gaps and TODOs<a class="headerlink" href="#14-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>No ownership transfer</strong> and <strong>no org delete</strong>. The owner can never leave.</li>
+<li><strong>Uploaded CSV files are never deleted</strong> from S3 after the import finishes.</li>
+<li><strong>The <code>maxAttempts: 3</code> on import jobs is not used for automatic retries.</strong> A failure is final until someone calls the retry endpoint.</li>
+<li><strong>No member limit</strong> and no seat billing for orgs.</li>
+<li><strong>The wrong email for existing unverified accounts</strong> (rule 6). Those people get "View invitation" but cannot log in until they sign up.</li>
+<li><strong>The import does not re-check permission</strong> (rule 8).</li>
+<li><strong>No rank check between admins</strong> (rule 4).</li>
+<li><strong>A suspended member cannot leave</strong> the org, because <code>leave</code> is org-scoped and needs an active membership.</li>
+<li><strong>Changing the name changes the slug</strong> unless a slug is also sent. This may break saved links that use the slug.</li>
+<li>Admin org creation does not check that the owner is verified.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

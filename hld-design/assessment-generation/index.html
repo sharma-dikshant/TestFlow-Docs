@@ -1,0 +1,1707 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="End-to-end flow from POST /v1/assessments/generate to a finished assessment, through jobs, RabbitMQ, section workers and the AI layer" name="description"/>
+<link href="../questions-and-tags/" rel="prev"/>
+<link href="../attempts/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>AI Assessment Generation - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ai-assessment-generation">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              AI Assessment Generation
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-the-request">
+<span class="md-ellipsis">
+      
+        4. The request
+      
+    </span>
+</a>
+<nav aria-label="4. The request" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-two-step-validation">
+<span class="md-ellipsis">
+      
+        4.1 Two-step validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-planning-the-sections">
+<span class="md-ellipsis">
+      
+        4.2 Planning the sections
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flow">
+<span class="md-ellipsis">
+      
+        5. Main flow
+      
+    </span>
+</a>
+<nav aria-label="5. Main flow" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-starting-a-generation">
+<span class="md-ellipsis">
+      
+        5.1 Starting a generation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-calling-the-ai-layer">
+<span class="md-ellipsis">
+      
+        5.2 Calling the AI layer
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-checking-and-saving-generated-questions">
+<span class="md-ellipsis">
+      
+        5.3 Checking and saving generated questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-finishing">
+<span class="md-ellipsis">
+      
+        5.4 Finishing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-job-status-lifecycle">
+<span class="md-ellipsis">
+      
+        6. Job status lifecycle
+      
+    </span>
+</a>
+<nav aria-label="6. Job status lifecycle" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-section-job">
+<span class="md-ellipsis">
+      
+        6.1 Section job
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-parent-job">
+<span class="md-ellipsis">
+      
+        6.2 Parent job
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-failure-handling-and-retries">
+<span class="md-ellipsis">
+      
+        7. Failure handling and retries
+      
+    </span>
+</a>
+<nav aria-label="7. Failure handling and retries" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-happens-when-a-section-fails">
+<span class="md-ellipsis">
+      
+        7.1 What happens when a section fails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-retrying">
+<span class="md-ellipsis">
+      
+        7.2 Retrying
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-redelivery-and-duplicates">
+<span class="md-ellipsis">
+      
+        7.3 Redelivery and duplicates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#74-dead-lettering">
+<span class="md-ellipsis">
+      
+        7.4 Dead-lettering
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-idempotency">
+<span class="md-ellipsis">
+      
+        8. Idempotency
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        9. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-endpoints-summary">
+<span class="md-ellipsis">
+      
+        10. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-queues-events-and-emails">
+<span class="md-ellipsis">
+      
+        11. Queues, events and emails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-the-request">
+<span class="md-ellipsis">
+      
+        4. The request
+      
+    </span>
+</a>
+<nav aria-label="4. The request" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-two-step-validation">
+<span class="md-ellipsis">
+      
+        4.1 Two-step validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-planning-the-sections">
+<span class="md-ellipsis">
+      
+        4.2 Planning the sections
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flow">
+<span class="md-ellipsis">
+      
+        5. Main flow
+      
+    </span>
+</a>
+<nav aria-label="5. Main flow" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-starting-a-generation">
+<span class="md-ellipsis">
+      
+        5.1 Starting a generation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-calling-the-ai-layer">
+<span class="md-ellipsis">
+      
+        5.2 Calling the AI layer
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-checking-and-saving-generated-questions">
+<span class="md-ellipsis">
+      
+        5.3 Checking and saving generated questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-finishing">
+<span class="md-ellipsis">
+      
+        5.4 Finishing
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-job-status-lifecycle">
+<span class="md-ellipsis">
+      
+        6. Job status lifecycle
+      
+    </span>
+</a>
+<nav aria-label="6. Job status lifecycle" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-section-job">
+<span class="md-ellipsis">
+      
+        6.1 Section job
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-parent-job">
+<span class="md-ellipsis">
+      
+        6.2 Parent job
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-failure-handling-and-retries">
+<span class="md-ellipsis">
+      
+        7. Failure handling and retries
+      
+    </span>
+</a>
+<nav aria-label="7. Failure handling and retries" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-happens-when-a-section-fails">
+<span class="md-ellipsis">
+      
+        7.1 What happens when a section fails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-retrying">
+<span class="md-ellipsis">
+      
+        7.2 Retrying
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-redelivery-and-duplicates">
+<span class="md-ellipsis">
+      
+        7.3 Redelivery and duplicates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#74-dead-lettering">
+<span class="md-ellipsis">
+      
+        7.4 Dead-lettering
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-idempotency">
+<span class="md-ellipsis">
+      
+        8. Idempotency
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        9. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-endpoints-summary">
+<span class="md-ellipsis">
+      
+        10. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-queues-events-and-emails">
+<span class="md-ellipsis">
+      
+        11. Queues, events and emails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ai-assessment-generation">AI Assessment Generation<a class="headerlink" href="#ai-assessment-generation" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>A user describes a test in plain words ("Intermediate Postgres: indexing, MVCC, query plans") and the backend builds the whole assessment with an LLM.</p>
+<p>The work is slow (seconds to minutes) and can fail, so it runs <strong>in the background</strong>:</p>
+<ol>
+<li>The API checks the request, charges the quota, creates the assessment and some <strong>job</strong> rows, and publishes messages to <strong>RabbitMQ</strong>. It returns at once.</li>
+<li>One <strong>worker per section</strong> picks a message up, calls the AI layer, and saves the questions.</li>
+<li>An <strong>aggregator</strong> watches the section jobs and finishes the assessment when all of them are done.</li>
+<li>The client polls <code>GET /v1/jobs/:jobId</code> to show progress.</li>
+</ol>
+<p>This page covers the assessment side. The LLM internals (models, LangGraph graphs, prompts, structured output) are on <a href="../ai/">AI Layer</a>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mode</strong></td>
+<td><code>auto</code>: the backend lays out the sections from a total count, the allowed types and a difficulty. <code>manual</code>: the client gives every section (type, count, difficulty, marks, its own prompt).</td>
+</tr>
+<tr>
+<td><strong>Section</strong></td>
+<td>One group of same-type questions. Each section is generated by its own job, so sections run in parallel and fail on their own.</td>
+</tr>
+<tr>
+<td><strong>Parent job</strong></td>
+<td>One <code>jobs</code> row of type <code>GENERATE_ASSESSMENT</code>. It is never published to a queue. It only tracks its sections. <code>assessments.job_id</code> points to it.</td>
+</tr>
+<tr>
+<td><strong>Section job</strong></td>
+<td>One <code>jobs</code> row per section, of type <code>GENERATE_MCQ_SECTION</code>, <code>GENERATE_CODING_SECTION</code> or <code>GENERATE_DESCRIPTIVE_SECTION</code>, with <code>parent_job_id</code> set.</td>
+</tr>
+<tr>
+<td><strong>Aggregator</strong></td>
+<td><code>GenerationAggregatorService</code>. Runs every time a section job settles and decides what that means for the parent and the assessment.</td>
+</tr>
+<tr>
+<td><strong>Idempotency key</strong></td>
+<td>Optional <code>Idempotency-Key</code> header. Resending the same request with the same key returns the first result and charges nothing.</td>
+</tr>
+<tr>
+<td><strong>Quota</strong></td>
+<td>One unit of the <code>AI_ASSESSMENT</code> plan feature per generation (and per retry). Refunded once if the generation fails.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>See the <a href="../../erd/">ERD</a>:</p>
+<ul>
+<li><code>jobs</code> (parent and section rows: <code>type</code>, <code>status</code>, <code>payload</code>, <code>result</code>, <code>error</code>, <code>attempts</code>, <code>max_attempts</code>, <code>parent_job_id</code>, <code>idempotency_key</code>, <code>status_description</code>). There is a partial unique index on (<code>created_by</code>, <code>idempotency_key</code>).</li>
+<li><code>assessments</code>, <code>assessment_sections</code>, <code>assessments_participants</code> (creator row).</li>
+<li><code>questions</code> + details tables, and <code>assessments_questions</code> (written per section).</li>
+<li>Commerce usage rows (via <code>UsageService</code>), and <code>llm_audit</code> (via the AI layer).</li>
+</ul>
+<p>Parent job payload (<code>ParentGenerationPayload</code> in <code>src/assessments/generation/interfaces/generation-job.interface.ts</code>): <code>assessmentId</code>, <code>userId</code>, <code>orgId</code>, <code>mode</code>, <code>requestHash</code>, and <code>usage { charged, chargedAt, refunded }</code>.</p>
+<p>Section job payload (<code>SectionGenerationPayload</code>): <code>parentJobId</code>, <code>assessmentId</code>, <code>sectionId</code>, <code>sectionTitle</code>, <code>questionType</code>, <code>count</code>, <code>difficulty</code>, <code>prompt</code>, <code>userId</code>.</p>
+<h2 id="4-the-request">4. The request<a class="headerlink" href="#4-the-request" title="Permanent link">¶</a></h2>
+<p><code>POST /v1/assessments/generate</code>, body <code>GenerateAssessmentRequestDto</code> (<code>src/assessments/generation/dto/generate-assessment-request.dto.ts</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Mode</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>both</td>
+<td>Required, 10–5000 chars. Becomes the assessment's <code>description</code>.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>both</td>
+<td>Optional, 3–255. If missing, the AI's suggested title is used, or the description.</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>both</td>
+<td>1–180 minutes.</td>
+</tr>
+<tr>
+<td><code>maxParticipants</code></td>
+<td>both</td>
+<td>Required for org assessments (1–10,000). Ignored for personal ones, which always get 10.</td>
+</tr>
+<tr>
+<td><code>registrationStartTime</code> … <code>attemptEndTime</code></td>
+<td>both</td>
+<td>Org: attempt start and end required. Personal: ignored, fixed 30-day window. See <a href="../assessments/#42-schedule-rules">Assessments</a>.</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>both</td>
+<td><code>auto</code> or <code>manual</code>.</td>
+</tr>
+<tr>
+<td><code>totalQuestions</code></td>
+<td>auto</td>
+<td>1–50.</td>
+</tr>
+<tr>
+<td><code>questionTypes</code></td>
+<td>auto</td>
+<td>At least one, no repeats. <code>descriptive</code> is <strong>not</strong> allowed in auto mode.</td>
+</tr>
+<tr>
+<td><code>difficulty</code></td>
+<td>auto</td>
+<td>1–5.</td>
+</tr>
+<tr>
+<td><code>sections[]</code></td>
+<td>manual</td>
+<td>1–3 sections. Each: <code>title?</code> (≤100), <code>prompt</code> (10–5000, checked again after trimming), <code>questionType</code>, <code>questionCount ≥ 1</code>, <code>difficulty</code> 1–5, <code>positiveMark</code> 0.01–999.99, <code>negativeMark</code> 0–999.99.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Limits</strong> (<code>GENERATION_LIMITS</code> in <code>generation/generation.constants.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>MCQ</th>
+<th>Coding</th>
+<th>Descriptive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Max per section (manual)</td>
+<td>20</td>
+<td>5</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Max per assessment (manual)</td>
+<td>60</td>
+<td>5</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h3 id="41-two-step-validation">4.1 Two-step validation<a class="headerlink" href="#41-two-step-validation" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>The DTO</strong> (class-validator) checks each field on its own.</li>
+<li><strong><code>AssessmentGenerationValidatorService</code></strong> checks rules that need more than one field, collects <strong>all</strong> errors and returns them in one 400:<ul>
+<li>the fields of the other mode must not be sent (<code>sections is not allowed in auto mode</code>),</li>
+<li>the fields of this mode are required,</li>
+<li>auto: total must cover every requested type, coding-only is capped at 5, no descriptive,</li>
+<li>manual: section count, per-section and per-type limits (<code>sectionLimitErrors</code>, shared with templates),</li>
+<li>org: <code>maxParticipants</code> and the schedule.</li>
+</ul>
+</li>
+</ol>
+<p>It then returns a typed <code>GenerationRequest</code> (auto or manual), trimmed and in a fixed key order so it can be hashed.</p>
+<h3 id="42-planning-the-sections">4.2 Planning the sections<a class="headerlink" href="#42-planning-the-sections" title="Permanent link">¶</a></h3>
+<p><code>planSections()</code> in <code>generation/generation-planner.ts</code> is a pure function:</p>
+<ul>
+<li><strong>Manual</strong>: one planned section per request section, in order. A missing title becomes "Multiple Choice", "Coding" or "Descriptive". Each section is generated from <strong>its own</strong> prompt.</li>
+<li><strong>Auto, one type</strong>: one section with all the questions.</li>
+<li><strong>Auto, MCQ + coding</strong>: coding gets 10% of the total (at least 1, at most 5), MCQ gets the rest. Order is MCQ then coding. Example: 20 questions → 18 MCQ + 2 coding. Auto sections use the <strong>assessment</strong> prompt and the default marks (MCQ +1/0, coding +10/0).</li>
+</ul>
+<h2 id="5-main-flow">5. Main flow<a class="headerlink" href="#5-main-flow" title="Permanent link">¶</a></h2>
+<h3 id="51-starting-a-generation">5.1 Starting a generation<a class="headerlink" href="#51-starting-a-generation" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant API as AssessmentsController
+    participant V as GenerationValidator
+    participant O as GenerationOrchestrator
+    participant U as UsageService
+    participant DB as PostgreSQL
+    participant MQ as RabbitMQ
+    participant W as Section worker
+    participant AI as AiService and graphs
+    participant AG as GenerationAggregator
+
+    C-&gt;&gt;API: POST /v1/assessments/generate with Idempotency-Key
+    API-&gt;&gt;V: validate(dto, org)
+    V--&gt;&gt;API: typed GenerationRequest or 400
+    API-&gt;&gt;O: start(request, userId, org, key)
+    O-&gt;&gt;DB: find parent job by user and key
+    alt same key seen before
+        O--&gt;&gt;C: 200 first response, nothing charged
+    end
+    O-&gt;&gt;O: planSections
+    O-&gt;&gt;U: assert plan allows these question types
+    O-&gt;&gt;U: consume 1 AI_ASSESSMENT
+    O-&gt;&gt;DB: BEGIN
+    O-&gt;&gt;DB: INSERT assessment draft, sections, creator participant
+    O-&gt;&gt;DB: INSERT parent job - processing
+    O-&gt;&gt;DB: INSERT one section job per section - pending
+    O-&gt;&gt;DB: UPDATE assessments.job_id
+    O-&gt;&gt;DB: COMMIT
+    O-&gt;&gt;MQ: publish one message per section to its type queue
+    O--&gt;&gt;C: 200 assessmentId, jobId, status draft
+
+    MQ-&gt;&gt;W: section message
+    W-&gt;&gt;DB: claim job - check type, not settled, parent still processing
+    W-&gt;&gt;DB: mark section processing, attempts plus 1
+    W-&gt;&gt;AI: generate questions for this section
+    AI--&gt;&gt;W: drafts and suggested title
+    W-&gt;&gt;DB: BEGIN
+    W-&gt;&gt;DB: save bank questions and snapshots, bump curr_total_questions
+    W-&gt;&gt;DB: mark section completed with result
+    W-&gt;&gt;DB: COMMIT
+    W-&gt;&gt;AG: onSectionSettled(parentJobId)
+    AG-&gt;&gt;DB: lock parent row, read all sections
+    alt some sections still running
+        AG-&gt;&gt;DB: statusDescription 1 of 2 sections generated
+    else all completed
+        AG-&gt;&gt;DB: assessment ready or published, title set, parent completed
+    else all settled, some failed
+        AG-&gt;&gt;U: release 1 AI_ASSESSMENT once
+        AG-&gt;&gt;DB: parent failed with failedSections
+    end
+
+    loop until parent is completed or failed
+        C-&gt;&gt;API: GET /v1/jobs/:jobId
+        API--&gt;&gt;C: parent status and section jobs
+    end
+</div>
+<p>Notes on the diagram:</p>
+<ul>
+<li><strong>Steps before the transaction</strong> (replay check, plan check, quota) can each refuse the request without creating anything.</li>
+<li><strong>If the transaction fails</strong>, the quota unit is released right away. If it failed because a parallel request with the same key won the race (unique violation), the API answers with that request's result.</li>
+<li><strong>If publishing a section message fails</strong>, that section job is marked <code>failed</code> on the spot, the aggregator runs, and the API returns <strong>503</strong> "Assessment created, but question generation could not be started". The assessment exists and can be retried.</li>
+<li><strong>No WebSocket events and no emails</strong> are sent for generation. Progress is only visible by polling the job. See <a href="../jobs-and-schedulers/">Jobs &amp; Schedulers</a>.</li>
+</ul>
+<h3 id="52-calling-the-ai-layer">5.2 Calling the AI layer<a class="headerlink" href="#52-calling-the-ai-layer" title="Permanent link">¶</a></h3>
+<p>Each queue has its own consumer in <code>src/assessments/generation/consumers/</code>. They all hand off to the shared <code>SectionGenerationWorker</code>, passing a type-specific generator from <code>QuestionsService</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Queue (routing key)</th>
+<th>Consumer</th>
+<th>Generator</th>
+<th>AI call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>question-section-mcq-queue</code> (<code>question.section.mcq</code>)</td>
+<td><code>McqSectionConsumer</code></td>
+<td><code>generateMcqSection</code></td>
+<td><code>AiService.generateQuestions</code> → <code>QuestionGenerationGraph</code> (plan, generate, review, revise)</td>
+</tr>
+<tr>
+<td><code>question-section-coding-queue</code> (<code>question.section.coding</code>)</td>
+<td><code>CodingSectionConsumer</code></td>
+<td><code>generateCodingSection</code></td>
+<td><code>AiService.generateCodingQuestions</code> → <code>CodingQuestionGenerationGraph</code> (test cases checked by an independent review)</td>
+</tr>
+<tr>
+<td><code>question-section-descriptive-queue</code> (<code>question.section.descriptive</code>)</td>
+<td><code>DescriptiveSectionConsumer</code></td>
+<td><code>generateDescriptiveSection</code></td>
+<td><code>AiService.generateDescriptiveQuestions</code> → <code>StructuredOutputService</code> with a Zod schema</td>
+</tr>
+</tbody>
+</table>
+<p>All queues are bound to the <code>question.generation</code> topic exchange (<code>src/config/rabbitmq/</code>). One queue per type means slow coding generation never blocks MCQ sections.</p>
+<p>Before each call the model is picked by <code>AiModelSelector.forUser(userId)</code>, so the user's plan decides the model. Each LLM call is audited against the section job (<code>llm_audit</code>). The graphs, prompts and output validation are described on <a href="../ai/">AI Layer</a>.</p>
+<h3 id="53-checking-and-saving-generated-questions">5.3 Checking and saving generated questions<a class="headerlink" href="#53-checking-and-saving-generated-questions" title="Permanent link">¶</a></h3>
+<p>The AI layer validates the structure of the output (schemas, exact counts, review steps). On the assessment side:</p>
+<ol>
+<li>Only the first <code>count</code> questions are kept (<code>slice(0, count)</code>).</li>
+<li>MCQ: options and correct option are taken as given; <code>explanation</code> is <code>null</code>.</li>
+<li>Coding: the title is joined into the question text, the reference solution is dropped, fixed limits are applied (2000 ms, 256 MB, <code>exact</code> checker, <code>python</code>/<code>java</code>/<code>cpp</code>).</li>
+<li>Descriptive: checkpoints are renumbered from 1 and their weights normalised to sum to 100. <code>assertCheckpointWeights</code> runs again before saving.</li>
+<li><code>SectionQuestionWriter.append</code> refuses drafts whose type does not match the section, then saves bank rows, details rows and snapshots in <strong>one transaction</strong> together with completing the section job. See <a href="../questions-and-tags/#5-question-bank-vs-snapshots">Questions &amp; Tags</a>.</li>
+</ol>
+<h3 id="54-finishing">5.4 Finishing<a class="headerlink" href="#54-finishing" title="Permanent link">¶</a></h3>
+<p>When every section job is <code>completed</code>, the aggregator (inside the parent's row lock):</p>
+<ol>
+<li>takes the first non-empty suggested title from the section results,</li>
+<li>calls <code>AssessmentsService.markGenerated</code>: sets the title if the user gave none, and moves the status with <code>settleByCapacity</code> (full → <code>ready</code>; a <strong>personal</strong> assessment that is full goes straight to <code>published</code>),</li>
+<li>marks the parent <code>completed</code> with <code>{ sections, questionsGenerated }</code>.</li>
+</ol>
+<h2 id="6-job-status-lifecycle">6. Job status lifecycle<a class="headerlink" href="#6-job-status-lifecycle" title="Permanent link">¶</a></h2>
+<p>The job rules live in <code>src/jobs/domain/</code>. The outcome of a parent from its children is <code>childOutcome()</code> (<code>running</code> / <code>completed</code> / <code>failed</code>), re-exported as <code>generationOutcome</code> in <code>src/assessments/domain/generation-outcome.ts</code>.</p>
+<h3 id="61-section-job">6.1 Section job<a class="headerlink" href="#61-section-job" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; pending : created with the assessment
+    pending --&gt; processing : worker claims it
+    pending --&gt; failed : message could not be published
+    processing --&gt; processing : redelivered after a crash
+    processing --&gt; completed : questions saved
+    processing --&gt; failed : AI or save error
+    failed --&gt; pending : retry, if attempts are left
+    completed --&gt; [*]
+</div>
+<h3 id="62-parent-job">6.2 Parent job<a class="headerlink" href="#62-parent-job" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; processing : created, sections queued
+    processing --&gt; processing : a section settles, others still running
+    processing --&gt; completed : every section completed
+    processing --&gt; failed : all settled, at least one failed
+    failed --&gt; processing : POST generation retry
+    completed --&gt; [*]
+</div>
+<p>The <strong>assessment</strong> status moves alongside: it stays <code>draft</code> while the parent is <code>processing</code> or <code>failed</code>, becomes <code>ready</code> (or <code>published</code> for personal) on <code>completed</code>, and goes back to <code>draft</code> if a <code>ready</code> assessment is retried. See <a href="../assessments/#51-assessment-status">Assessments</a>.</p>
+<h2 id="7-failure-handling-and-retries">7. Failure handling and retries<a class="headerlink" href="#7-failure-handling-and-retries" title="Permanent link">¶</a></h2>
+<h3 id="71-what-happens-when-a-section-fails">7.1 What happens when a section fails<a class="headerlink" href="#71-what-happens-when-a-section-fails" title="Permanent link">¶</a></h3>
+<ul>
+<li>The worker catches the error, marks only <strong>that</strong> section job <code>failed</code>, and still acks the RabbitMQ message. It does not rethrow, so a prompt the LLM can never satisfy does not loop forever.</li>
+<li>The other sections carry on.</li>
+<li>When all sections have settled and one or more failed, the aggregator:<ul>
+<li>refunds the quota <strong>once</strong> (<code>usage.refunded</code> flag on the parent payload; the refund is skipped if the usage period has reset since <code>chargedAt</code>),</li>
+<li>marks the parent <code>failed</code> with <code>error.failedSections</code> (job id, section id, reason),</li>
+<li><strong>keeps</strong> the questions of the sections that completed.</li>
+</ul>
+</li>
+</ul>
+<h3 id="72-retrying">7.2 Retrying<a class="headerlink" href="#72-retrying" title="Permanent link">¶</a></h3>
+<p><code>POST /v1/assessments/:id/generation/retry</code> (<code>GenerationOrchestratorService.retry</code>). Rate limited like generate.</p>
+<ol>
+<li>Caller must be able to manage the assessment.</li>
+<li>The assessment must have a <code>GENERATE_ASSESSMENT</code> parent job in status <code>failed</code>. Otherwise 409.</li>
+<li>The assessment must not be <code>published</code>.</li>
+<li>Every failed section must still have attempts left (<code>attempts &lt; max_attempts</code>, max 3). Otherwise 409.</li>
+<li>The plan must still allow the failed sections' question types (403).</li>
+<li>One <code>AI_ASSESSMENT</code> unit is charged again (the failure refunded the first).</li>
+<li>In one transaction, under a row lock on the parent: parent <code>failed → processing</code> with a fresh unrefunded charge, failed sections <code>failed → pending</code>, assessment back to <code>draft</code>. A second concurrent retry gets 409 "already being retried".</li>
+<li>Only the failed sections are republished. Completed sections are not re-run.</li>
+</ol>
+<p>Generation jobs <strong>cannot</strong> be retried through the generic <code>POST /v1/jobs/:id/retry</code>; it returns 409 and points to the assessment route.</p>
+<h3 id="73-redelivery-and-duplicates">7.3 Redelivery and duplicates<a class="headerlink" href="#73-redelivery-and-duplicates" title="Permanent link">¶</a></h3>
+<ul>
+<li>A message is acked when the handler returns. If a worker process dies mid-run, RabbitMQ redelivers it. <code>claimJob</code> lets a job that is already <code>processing</code> be picked up again, which is the recovery path.</li>
+<li>A redelivered message for a job that is already <code>completed</code> or <code>failed</code> is dropped (<code>isClaimable</code>).</li>
+<li>A message whose parent is no longer <code>processing</code> is dropped, so a section that waited in the queue after its generation failed does not run.</li>
+<li>Concurrent aggregator calls are serialised by a <code>SELECT ... FOR UPDATE</code> on the parent row, so exactly one call finishes the generation.</li>
+</ul>
+<h3 id="74-dead-lettering">7.4 Dead-lettering<a class="headerlink" href="#74-dead-lettering" title="Permanent link">¶</a></h3>
+<p>There is <strong>no dead-letter exchange or queue</strong> configured (<code>src/config/rabbitmq/rabbitmq.module.ts</code>). Failures are recorded on the job rows instead, and retry is an explicit API call.</p>
+<h2 id="8-idempotency">8. Idempotency<a class="headerlink" href="#8-idempotency" title="Permanent link">¶</a></h2>
+<ol>
+<li>The client may send <code>Idempotency-Key</code> (1–100 chars). Blank or too long is a 400.</li>
+<li>The orchestrator hashes the validated request (SHA-256) and stores it as <code>requestHash</code> on the parent job, with the key in <code>jobs.idempotency_key</code>.</li>
+<li>A later request from the <strong>same user</strong> with the same key:<ul>
+<li>same hash → returns the first <code>{ assessmentId, jobId, status }</code>; nothing is created or charged,</li>
+<li>different hash → 422 "Idempotency-Key was already used for a different generation request",</li>
+<li>assessment since hard-deleted → 409.</li>
+</ul>
+</li>
+<li>Two simultaneous requests with the same key: the unique index (<code>created_by</code>, <code>idempotency_key</code>) lets only one insert win. The loser releases its quota unit and answers with the winner's result.</li>
+<li>Without a key, every request creates a new assessment.</li>
+</ol>
+<h2 id="9-business-rules-and-edge-cases">9. Business rules and edge cases<a class="headerlink" href="#9-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Plan checks come first.</strong> A question type not in the plan's <code>ALLOWED_QUESTION_TYPES</code> is a 403 before any charge. In an org, the <strong>org's</strong> plan and pooled quota are used, never the member's personal plan.</li>
+<li><strong>Quota exhausted</strong> → 422, nothing created.</li>
+<li><strong>Fewer questions than asked.</strong> If a generator returns fewer drafts than <code>count</code>, the section still completes. The assessment then stays <code>draft</code> (not full) while the parent job is <code>completed</code>, and retry is refused because nothing failed. The creator must fill the gap by hand.</li>
+<li><strong>Auto mode MCQ-only can make one section of up to 50 questions</strong>, above the manual-mode per-section cap of 20.</li>
+<li><strong>Personal assessments always get 10 seats</strong> and a 30-day window, whatever the request says.</li>
+<li><strong>Who can poll.</strong> <code>GET /v1/jobs/:id</code> only allows the user in <code>payload.userId</code>. Other org admins cannot poll a colleague's generation.</li>
+<li><strong>Retry budget.</strong> Each section may run 3 times in total. The parent's <code>attempts</code> counts retries but is not itself capped.</li>
+<li><strong>Testing environment.</strong> With <code>NODE_ENV=testing</code>, no LLM is called; stand-in questions are used (see <a href="../questions-and-tags/#8-business-rules-and-validation">Questions &amp; Tags</a>).</li>
+</ol>
+<h2 id="10-endpoints-summary">10. Endpoints summary<a class="headerlink" href="#10-endpoints-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/generate</code></td>
+<td>Start a generation (optional <code>Idempotency-Key</code>)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/generation/retry</code></td>
+<td>Retry failed sections</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/jobs/:jobId</code></td>
+<td>Poll the parent job; includes its section jobs</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>Assessment with sections and <code>generationStatus</code></td>
+</tr>
+</tbody>
+</table>
+<p>Both POST routes need login, <code>org_assessments:create</code> when the org header is sent, and spend 5 units of the <code>AI_GENERATION</code> rate-limit scope. Full reference: <a href="../../api-design/v1/">API v1</a>.</p>
+<h2 id="11-queues-events-and-emails">11. Queues, events and emails<a class="headerlink" href="#11-queues-events-and-emails" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Name</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exchange</td>
+<td><code>question.generation</code> (topic)</td>
+<td>Shared by all generation queues</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><code>question-section-mcq-queue</code></td>
+<td><code>GENERATE_MCQ_SECTION</code> jobs</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><code>question-section-coding-queue</code></td>
+<td><code>GENERATE_CODING_SECTION</code> jobs</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><code>question-section-descriptive-queue</code></td>
+<td><code>GENERATE_DESCRIPTIVE_SECTION</code> jobs</td>
+</tr>
+<tr>
+<td>Queue</td>
+<td><code>question-generation-queue</code> (<code>question.generate</code>)</td>
+<td>Older single-MCQ pipeline, see §13</td>
+</tr>
+<tr>
+<td>Message</td>
+<td><code>{ jobId, ...section payload }</code></td>
+<td>Every producer publishes exactly this, so <code>JOB_ROUTES</code> (<code>src/jobs/job-routes.ts</code>) plus the row can rebuild any message</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>none</td>
+<td>Clients poll <code>GET /v1/jobs/:id</code></td>
+</tr>
+<tr>
+<td>Email</td>
+<td>none</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Consumers only register when the instance runs with <code>CONSUMER=true</code> (the default). Set <code>CONSUMER=false</code> for API-only instances. See <a href="../jobs-and-schedulers/">Jobs &amp; Schedulers</a>.</p>
+<h2 id="12-where-the-code-lives">12. Where the code lives<a class="headerlink" href="#12-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/assessments/assessments.controller.ts</code></td>
+<td><code>generate</code> and <code>retryGeneration</code> routes, <code>Idempotency-Key</code> parsing</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/dto/</code></td>
+<td>Request DTOs</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/assessment-generation-validator.service.ts</code></td>
+<td>Cross-field validation</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/generation-planner.ts</code></td>
+<td>Section layout</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/generation-entitlement.service.ts</code></td>
+<td>Plan question-type check</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/generation-orchestrator.service.ts</code></td>
+<td>Start, retry, idempotency, publish</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/section-generation.worker.ts</code></td>
+<td>Claim, generate, save, hand to aggregator</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/consumers/</code></td>
+<td>One RabbitMQ consumer per type</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/generation-aggregator.service.ts</code></td>
+<td>Parent outcome, refund, finish</td>
+</tr>
+<tr>
+<td><code>src/assessments/generation/generation.constants.ts</code>, <code>section-limits.ts</code></td>
+<td>Limits, auto split, default marks, job types</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/questions.service.ts</code>, <code>section-question-writer.ts</code></td>
+<td>Generators and saving</td>
+</tr>
+<tr>
+<td><code>src/assessments/consumers/question-generation.consumer.ts</code></td>
+<td>Older pipeline consumer</td>
+</tr>
+<tr>
+<td><code>src/jobs/</code></td>
+<td>Job entity rules, routes, <code>GET /v1/jobs/:id</code></td>
+</tr>
+<tr>
+<td><code>src/ai/</code></td>
+<td>LLM layer, see <a href="../ai/">AI Layer</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="13-known-gaps-and-todos">13. Known gaps and TODOs<a class="headerlink" href="#13-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Older pipeline still in use.</strong> <code>AssessmentsService.generate()</code> + <code>QuestionGenerationConsumer</code> (job type <code>CREATE_ASSESSMENT</code>, queue <code>question-generation-queue</code>) build a single MCQ section. Learning roadmaps use it (<code>learning-roadmap-assessment.service.ts</code>). Unlike the new pipeline it:<ul>
+<li>never refunds the <code>AI_ASSESSMENT</code> unit when publishing or generation fails,</li>
+<li>saves bank questions and snapshots in separate transactions,</li>
+<li>ignores the caller's <code>maxParticipants</code> for personal assessments (always 10), even though the roadmap sends its own value,</li>
+<li>has a stale comment saying status "defaults to CREATING" (<code>assessments.service.ts:177</code>).</li>
+</ul>
+</li>
+<li><strong>No sweeper for stuck jobs.</strong> If a worker commits the section but dies before calling the aggregator, the redelivered message is dropped as already settled and the parent stays <code>processing</code> forever. No scheduler checks for this.</li>
+<li><strong>No dead-letter queue</strong> and no automatic retry with back-off. All retries are manual.</li>
+<li><strong>No push notification</strong> (WebSocket or email) when a generation finishes or fails.</li>
+<li><strong>Short generations look "completed" but stay draft</strong> (see rule 3 in §9), with no retry path.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

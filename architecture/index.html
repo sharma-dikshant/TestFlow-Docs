@@ -1,0 +1,2084 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Current architecture of the TestFlow backend - modules, request pipeline, infrastructure, async jobs, and shared conventions" name="description"/>
+<link href="../getting-started/" rel="prev"/>
+<link href="../erd/" rel="next"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Architecture - TestFlow | Docs</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#architecture">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-module-map">
+<span class="md-ellipsis">
+      
+        1. Module map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-request-pipeline">
+<span class="md-ellipsis">
+      
+        2. Request pipeline
+      
+    </span>
+</a>
+<nav aria-label="2. Request pipeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21-global-guards-in-order">
+<span class="md-ellipsis">
+      
+        2.1 Global guards, in order
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#22-validation">
+<span class="md-ellipsis">
+      
+        2.2 Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#23-responses-envelope-and-serializers">
+<span class="md-ellipsis">
+      
+        2.3 Responses: envelope and serializers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#24-errors">
+<span class="md-ellipsis">
+      
+        2.4 Errors
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-infrastructure">
+<span class="md-ellipsis">
+      
+        3. Infrastructure
+      
+    </span>
+</a>
+<nav aria-label="3. Infrastructure" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-postgresql-and-typeorm">
+<span class="md-ellipsis">
+      
+        3.1 PostgreSQL and TypeORM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-redis">
+<span class="md-ellipsis">
+      
+        3.2 Redis
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-rabbitmq">
+<span class="md-ellipsis">
+      
+        3.3 RabbitMQ
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-socketio-gateway">
+<span class="md-ellipsis">
+      
+        3.4 Socket.IO gateway
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-external-services">
+<span class="md-ellipsis">
+      
+        3.5 External services
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-sync-vs-async-work">
+<span class="md-ellipsis">
+      
+        4. Sync vs async work
+      
+    </span>
+</a>
+<nav aria-label="4. Sync vs async work" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-a-typical-sync-request-save-an-answer">
+<span class="md-ellipsis">
+      
+        4.1 A typical sync request: save an answer
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-a-typical-async-job-ai-assessment-generation">
+<span class="md-ellipsis">
+      
+        4.2 A typical async job: AI assessment generation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-async-job-with-a-websocket-push-csv-invitation-import">
+<span class="md-ellipsis">
+      
+        4.3 Async job with a WebSocket push: CSV invitation import
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-scheduled-work">
+<span class="md-ellipsis">
+      
+        4.4 Scheduled work
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-folder-structure">
+<span class="md-ellipsis">
+      
+        5. Folder structure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-cross-cutting-conventions">
+<span class="md-ellipsis">
+      
+        6. Cross-cutting conventions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-security-notes">
+<span class="md-ellipsis">
+      
+        7. Security notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-related-pages">
+<span class="md-ellipsis">
+      
+        8. Related pages
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-module-map">
+<span class="md-ellipsis">
+      
+        1. Module map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-request-pipeline">
+<span class="md-ellipsis">
+      
+        2. Request pipeline
+      
+    </span>
+</a>
+<nav aria-label="2. Request pipeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#21-global-guards-in-order">
+<span class="md-ellipsis">
+      
+        2.1 Global guards, in order
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#22-validation">
+<span class="md-ellipsis">
+      
+        2.2 Validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#23-responses-envelope-and-serializers">
+<span class="md-ellipsis">
+      
+        2.3 Responses: envelope and serializers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#24-errors">
+<span class="md-ellipsis">
+      
+        2.4 Errors
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-infrastructure">
+<span class="md-ellipsis">
+      
+        3. Infrastructure
+      
+    </span>
+</a>
+<nav aria-label="3. Infrastructure" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-postgresql-and-typeorm">
+<span class="md-ellipsis">
+      
+        3.1 PostgreSQL and TypeORM
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-redis">
+<span class="md-ellipsis">
+      
+        3.2 Redis
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-rabbitmq">
+<span class="md-ellipsis">
+      
+        3.3 RabbitMQ
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-socketio-gateway">
+<span class="md-ellipsis">
+      
+        3.4 Socket.IO gateway
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-external-services">
+<span class="md-ellipsis">
+      
+        3.5 External services
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-sync-vs-async-work">
+<span class="md-ellipsis">
+      
+        4. Sync vs async work
+      
+    </span>
+</a>
+<nav aria-label="4. Sync vs async work" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-a-typical-sync-request-save-an-answer">
+<span class="md-ellipsis">
+      
+        4.1 A typical sync request: save an answer
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-a-typical-async-job-ai-assessment-generation">
+<span class="md-ellipsis">
+      
+        4.2 A typical async job: AI assessment generation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-async-job-with-a-websocket-push-csv-invitation-import">
+<span class="md-ellipsis">
+      
+        4.3 Async job with a WebSocket push: CSV invitation import
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-scheduled-work">
+<span class="md-ellipsis">
+      
+        4.4 Scheduled work
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-folder-structure">
+<span class="md-ellipsis">
+      
+        5. Folder structure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-cross-cutting-conventions">
+<span class="md-ellipsis">
+      
+        6. Cross-cutting conventions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-security-notes">
+<span class="md-ellipsis">
+      
+        7. Security notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-related-pages">
+<span class="md-ellipsis">
+      
+        8. Related pages
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">¶</a></h1>
+<p>TestFlow's backend is a <strong>modular monolith</strong>: one NestJS app, one deployable, split into feature modules under <code>src/</code>. All modules share one PostgreSQL database. Slow work (LLM calls, grading, CSV imports) runs in the background through RabbitMQ, in the same codebase.</p>
+<p><strong>Why a monolith?</strong> The team is small, features touch each other a lot (assessments, attempts, AI, plans), and one deploy is simple. Module boundaries keep the code organized, and RabbitMQ lets slow work scale separately (see <code>CONSUMER</code> below) without splitting into microservices.</p>
+<div class="mermaid">flowchart LR
+    client["Web client"] --&gt;|"HTTPS REST /v1"| api["NestJS app"]
+    client --&gt;|"Socket.IO"| api
+    api --&gt; pg[("PostgreSQL")]
+    api --&gt; redis[("Redis")]
+    api --&gt;|"publish and consume"| mq[["RabbitMQ"]]
+    api --&gt; llm["LLM providers"]
+    api --&gt; runner["Code runner"]
+    api --&gt; smtp["SMTP"]
+    api --&gt; s3["S3"]
+    rzp["Razorpay"] --&gt;|"webhook"| api
+    api --&gt; rzp
+</div>
+<hr/>
+<h2 id="1-module-map">1. Module map<a class="headerlink" href="#1-module-map" title="Permanent link">¶</a></h2>
+<p><code>src/app.module.ts</code> imports the modules below. Some modules are not imported there directly but come in through another module (shown in the "pulled in by" column).</p>
+<div class="mermaid">flowchart TB
+    subgraph infra["Infrastructure - global"]
+        cfg["ConfigModule"]
+        db["DatabaseModule"]
+        mq["MessagingModule"]
+        rds["RedisModule"]
+    end
+
+    subgraph identity["Identity"]
+        users["UsersModule"]
+        auth["AuthModule"]
+        rbac["RbacModule"]
+        orgs["OrganizationsModule"]
+    end
+
+    subgraph engine["Assessment engine"]
+        assess["AssessmentsModule"]
+        questions["QuestionsModule"]
+        tags["TagsModule"]
+        attempts["AttemptsModule"]
+        evaluation["EvaluationModule"]
+        codeexec["CodeExecutionModule"]
+        jobs["JobsModule"]
+    end
+
+    subgraph ai["AI"]
+        aimod["AiModule"]
+        aitools["AiToolsModule"]
+        assistant["AiAssistantModule"]
+        roadmaps["LearningRoadmapsModule"]
+    end
+
+    subgraph money["Commerce"]
+        commerce["CommerceModule"]
+        payments["PaymentsModule"]
+        webhooks["WebhooksModule"]
+    end
+
+    subgraph platform["Platform"]
+        events["EventsModule"]
+        notif["NotificationsModule"]
+        storage["StorageModule"]
+        ratelimit["RateLimiterModule"]
+        flags["FeatureFlagsModule"]
+        sched["SchedulersModule"]
+        news["NewslettersModule"]
+        other["Health, Stats, SupportTickets"]
+    end
+
+    assess --&gt; questions
+    assess --&gt; commerce
+    assess --&gt; jobs
+    attempts --&gt; assess
+    attempts --&gt; evaluation
+    attempts --&gt; codeexec
+    evaluation --&gt; codeexec
+    evaluation --&gt; aimod
+    questions --&gt; aimod
+    roadmaps --&gt; assess
+    roadmaps --&gt; aimod
+    aitools --&gt; assess
+    aitools --&gt; attempts
+    aitools --&gt; roadmaps
+    assistant --&gt; aitools
+    events --&gt; assistant
+    events --&gt; attempts
+    orgs --&gt; storage
+    orgs --&gt; events
+    orgs --&gt; jobs
+    webhooks --&gt; payments
+    sched --&gt; news
+    auth --&gt; commerce
+    auth --&gt; flags
+</div>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Folder</th>
+<th>Job</th>
+<th>Pulled in by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ConfigModule</code></td>
+<td>(Nest)</td>
+<td>Loads <code>.env</code>, global.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>DatabaseModule</code></td>
+<td><code>src/config/database/</code></td>
+<td>TypeORM connection to Postgres; registers all entities; hosts the seeders.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>MessagingModule</code></td>
+<td><code>src/config/rabbitmq/</code></td>
+<td>Global RabbitMQ connection; declares exchanges and queues.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>RedisModule</code></td>
+<td><code>src/config/redis/</code></td>
+<td>Global Redis client for the read cache plus <code>RedisHelper</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>UsersModule</code></td>
+<td><code>src/identity/users/</code></td>
+<td>User accounts, profile, admin user management.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>AuthModule</code></td>
+<td><code>src/identity/auth/</code></td>
+<td>Signup, login, Google sign-in, tokens, email verification, password reset, <code>GET /me</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>RbacModule</code></td>
+<td><code>src/identity/rbac/</code></td>
+<td>Roles, permissions, <code>RolesGuard</code>, <code>PermissionGuard</code>, <code>AccessControlService</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>OrganizationsModule</code></td>
+<td><code>src/organizations/</code></td>
+<td>Orgs, members, org invitations, CSV bulk import, <code>OrgContextGuard</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>AssessmentsModule</code></td>
+<td><code>src/assessments/</code></td>
+<td>Assessments, sections, participants, invitations, templates, prompts, AI generation orchestration and consumers.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>QuestionsModule</code></td>
+<td><code>src/assessments/questions/</code></td>
+<td>Question bank and LLM question generation per type.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>TagsModule</code></td>
+<td><code>src/assessments/tags/</code></td>
+<td>Tags and admin tag management.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>AttemptsModule</code></td>
+<td><code>src/assessments/attempts/</code></td>
+<td>Attempts, responses, results, analytics, leaderboard, review, live code runs.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>EvaluationModule</code></td>
+<td><code>src/assessments/evaluation/</code></td>
+<td>Background scoring of attempts per question type.</td>
+<td><code>AttemptsModule</code></td>
+</tr>
+<tr>
+<td><code>CodeExecutionModule</code></td>
+<td><code>src/code-execution/</code></td>
+<td>Runs code on Piston or OnlineCompiler.io behind one <code>CodeRunner</code> interface.</td>
+<td><code>AttemptsModule</code>, <code>EvaluationModule</code></td>
+</tr>
+<tr>
+<td><code>JobsModule</code></td>
+<td><code>src/jobs/</code></td>
+<td>The <code>jobs</code> table: status, progress, retry, <code>GET /v1/jobs/:id</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>AiModule</code></td>
+<td><code>src/ai/</code></td>
+<td>Chat model factory, model registry and selector, LangGraph graphs, prompts, LLM audit, conversations API.</td>
+<td>Several modules</td>
+</tr>
+<tr>
+<td><code>AiToolsModule</code></td>
+<td><code>src/ai/tools/</code></td>
+<td>Read-only tools the assistant can call (assessments, attempts, roadmaps, user).</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>AiAssistantModule</code></td>
+<td><code>src/ai/assistant/</code></td>
+<td>The conversation assistant that answers chat messages using tools.</td>
+<td><code>EventsModule</code></td>
+</tr>
+<tr>
+<td><code>LearningRoadmapsModule</code></td>
+<td><code>src/learning-roadmaps/</code></td>
+<td>AI roadmaps, graph, progress, notes, node assessments, templates, roadmap consumers.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>CommerceModule</code></td>
+<td><code>src/commerce/</code></td>
+<td>Plans, plan versions, features, subscriptions, usage counters.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>PaymentsModule</code></td>
+<td><code>src/commerce/payments/</code></td>
+<td>Orders, payments, <code>RazorpayService</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>WebhooksModule</code></td>
+<td><code>src/webhooks/</code></td>
+<td>Razorpay webhook endpoint with signature check and de-duplication.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>EventsModule</code></td>
+<td><code>src/events/</code></td>
+<td>Socket.IO gateway: auth on connect, user rooms, AI chat messages, code runs, server pushes.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>NotificationsModule</code></td>
+<td><code>src/notifications/</code></td>
+<td><code>EmailService</code> (Nodemailer SMTP), templates, admin previews.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>StorageModule</code></td>
+<td><code>src/storage/</code></td>
+<td>S3 <code>putObject</code> / <code>getObject</code>.</td>
+<td><code>OrganizationsModule</code></td>
+</tr>
+<tr>
+<td><code>RateLimiterModule</code></td>
+<td><code>src/rate-limiter/</code></td>
+<td>Token-bucket rate limiting in Redis, <code>RateLimitGuard</code>.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>FeatureFlagsModule</code></td>
+<td><code>src/feature-flags/</code></td>
+<td>Flags turned on per role; admin API.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>SchedulersModule</code></td>
+<td><code>src/schedulers/</code></td>
+<td>All <code>@Cron</code> jobs live here (today: newsletter dispatch every minute).</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>NewslettersModule</code></td>
+<td><code>src/newsletters/</code></td>
+<td>Newsletter admin and the dispatch service.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>StatsModule</code></td>
+<td><code>src/stats/</code></td>
+<td>Admin platform stats.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>SupportTicketsModule</code></td>
+<td><code>src/support-tickets/</code></td>
+<td>User support tickets and admin handling.</td>
+<td><code>AppModule</code></td>
+</tr>
+<tr>
+<td><code>HealthModule</code></td>
+<td><code>src/health/</code></td>
+<td><code>GET /health</code>: checks database, Redis, RabbitMQ.</td>
+<td><code>AppModule</code></td>
+</tr>
+</tbody>
+</table>
+<p>Routes are versioned in the controller path (<code>v1/...</code>). There is no global prefix. A few routes sit outside <code>v1</code>: <code>GET /ping</code>, <code>GET /health</code>, <code>POST /webhooks/razorpay</code>, and Swagger at <code>/api/docs</code>.</p>
+<hr/>
+<h2 id="2-request-pipeline">2. Request pipeline<a class="headerlink" href="#2-request-pipeline" title="Permanent link">¶</a></h2>
+<p>Every HTTP request passes the same steps. Guards are registered with <code>APP_GUARD</code> in <code>src/app.module.ts</code>. The pipe and the filter are registered in <code>src/main.ts</code>.</p>
+<div class="mermaid">flowchart TB
+    req["HTTP request"] --&gt; g1["1. JwtAuthGuard"]
+    g1 --&gt; g2["2. RateLimitGuard"]
+    g2 --&gt; g3["3. RolesGuard"]
+    g3 --&gt; g4["4. OrgContextGuard"]
+    g4 --&gt; g5["5. PermissionGuard"]
+    g5 --&gt; pipe["ValidationPipe - DTO checks"]
+    pipe --&gt; ctrl["Controller"]
+    ctrl --&gt; svc["Service and domain rules"]
+    svc --&gt; ser["Serializer - entity to DTO"]
+    ser --&gt; ok["new ApiResponse - success envelope"]
+    g1 -. "throws" .-&gt; filter["HttpExceptionFilter"]
+    g5 -. "throws" .-&gt; filter
+    pipe -. "throws" .-&gt; filter
+    svc -. "throws" .-&gt; filter
+    filter --&gt; err["Error envelope"]
+</div>
+<div class="admonition note">
+<p class="admonition-title">Order</p>
+<p>In NestJS, guards run before pipes. So a request is authenticated and authorized first, and only then is its body validated.</p>
+</div>
+<h3 id="21-global-guards-in-order">2.1 Global guards, in order<a class="headerlink" href="#21-global-guards-in-order" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Guard</th>
+<th>File</th>
+<th>What it does</th>
+<th>Controlled by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>JwtAuthGuard</code></td>
+<td><code>src/identity/auth/guards/jwt-auth.guard.ts</code></td>
+<td>Requires <code>Authorization: Bearer &lt;access token&gt;</code>. Verifies it with <code>JWT_ACCESS_SECRET</code>. Then loads the account and rejects it (401) if it was deleted, deactivated, or is unverified. Sets <code>request.user = { sub, email, username }</code>.</td>
+<td><code>@Public()</code> (<code>src/common/decorators/public.decorator.ts</code>) skips it.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>RateLimitGuard</code></td>
+<td><code>src/rate-limiter/rate-limit.guard.ts</code></td>
+<td>Token bucket in Redis. Sets <code>X-RateLimit-Limit</code> and <code>X-RateLimit-Remaining</code>; on deny returns 429 with <code>Retry-After</code>. Skips non-HTTP contexts. Fails open if Redis is down.</td>
+<td><code>@RateLimit(policy, { scope?, cost? })</code>. Policies: <code>CLASS_A</code> 10 per 5 min by IP (auth), <code>CLASS_B</code> 30 per min by user (writes), <code>CLASS_C</code> 120 per min by user (reads). No decorator means no limit.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>RolesGuard</code></td>
+<td><code>src/identity/rbac/guards/roles.guard.ts</code></td>
+<td>Checks the user has one of the listed <strong>platform</strong> roles.</td>
+<td><code>@Roles(...)</code>. No decorator means pass.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>OrgContextGuard</code></td>
+<td><code>src/organizations/guards/org-context.guard.ts</code></td>
+<td>Finds the organization the request acts in and checks the user is an active member. Sets <code>request.org</code> (org id and the member's role). A non-member gets 404, so the org's existence is not leaked.</td>
+<td><code>@OrgScoped()</code> reads <code>:orgUid</code> from the path. <code>@OrgHeaderScoped()</code> reads the optional <code>x-organization-id</code> header; without it the request is "personal".</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>PermissionGuard</code></td>
+<td><code>src/identity/rbac/guards/permission.guard.ts</code></td>
+<td>Checks permissions. Inside an org, it checks the <strong>member's org role</strong>. Outside, it checks the user's platform roles.</td>
+<td><code>@Permissions(...)</code> (always) and <code>@OrgPermissions(...)</code> (only when <code>request.org</code> is set).</td>
+</tr>
+</tbody>
+</table>
+<p>Handy parameter decorators: <code>@CurrentUser()</code> (the JWT payload), <code>@CurrentOrg()</code> (org context, only on <code>@OrgScoped</code> routes), and <code>@OptionalOrg()</code> (org context or <code>null</code>).</p>
+<div class="admonition info">
+<p class="admonition-title">RabbitMQ consumers also pass through guards</p>
+<p><code>@golevelup/nestjs-rabbitmq</code> calls <code>@RabbitSubscribe</code> handlers through Nest's normal pipeline, so the global guards run for them too. That is why every consumer class is marked <code>@Public()</code>. Without it, <code>JwtAuthGuard</code> would look for an HTTP header that does not exist.</p>
+</div>
+<p>See <a href="../hld-design/auth/">Auth</a>, <a href="../hld-design/rbac/">RBAC</a>, <a href="../hld-design/organizations/">Organizations</a>, and <a href="../hld-design/platform-services/">Platform Services</a> for details.</p>
+<h3 id="22-validation">2.2 Validation<a class="headerlink" href="#22-validation" title="Permanent link">¶</a></h3>
+<p><code>src/main.ts</code> sets a global <code>ValidationPipe</code> with:</p>
+<ul>
+<li><code>whitelist: true</code>: unknown fields are removed.</li>
+<li><code>forbidNonWhitelisted: true</code>: unknown fields cause a 400 instead of being silently dropped.</li>
+<li><code>transform: true</code>: query and path values are converted to the DTO types (for example, <code>"5"</code> to <code>5</code>).</li>
+</ul>
+<p>DTOs use <code>class-validator</code> decorators. WebSocket messages use their own pipe (<code>src/events/pipes/ws-validation.pipe.ts</code>).</p>
+<h3 id="23-responses-envelope-and-serializers">2.3 Responses: envelope and serializers<a class="headerlink" href="#23-responses-envelope-and-serializers" title="Permanent link">¶</a></h3>
+<p>There is <strong>no global interceptor</strong>. Each controller builds its own response:</p>
+<ol>
+<li>The service returns entities (or plain query rows).</li>
+<li>The controller passes them through the module's serializer, for example <code>src/assessments/serializers/assessments.serializer.ts</code>. Each serializer extends <code>Serializer&lt;TSource, TResponse&gt;</code> from <code>src/common/serializers/serializer.ts</code> and copies <strong>only</strong> the fields the response DTO documents. This stops password hashes, joined relations, or soft-delete columns from leaking.</li>
+<li>The controller returns <code>new ApiResponse(data, message, meta?)</code> from <code>src/common/api-response.ts</code>.</li>
+</ol>
+<pre><code class="language-json">{ "success": true, "message": "Assessment fetched", "data": { }, "meta": { } }
+</code></pre>
+<p><code>meta</code> is optional (for example, paging info). <code>data</code> is never missing; <code>undefined</code> becomes <code>null</code>.</p>
+<h3 id="24-errors">2.4 Errors<a class="headerlink" href="#24-errors" title="Permanent link">¶</a></h3>
+<p><code>HttpExceptionFilter</code> (<code>src/common/filters/http-exception.filter.ts</code>) is registered with <code>@Catch()</code>, so it catches <strong>everything</strong>:</p>
+<ul>
+<li>An <code>HttpException</code> keeps its status. Its message is used (arrays of validation messages are joined with <code>,</code>). Any extra fields on the exception body are spread into the response.</li>
+<li>A <code>DomainError</code> (see section 6) is mapped to HTTP first by <code>src/common/filters/domain-error.mapper.ts</code>: <code>invalid_transition</code> and <code>conflict</code> → 409, <code>rule_violation</code> → 400, <code>forbidden</code> → 403.</li>
+<li>Anything else becomes a 500 with <code>Internal server error</code>, and the stack is logged.</li>
+</ul>
+<pre><code class="language-json">{ "success": false, "message": "Missing permission: questions:create" }
+</code></pre>
+<p>There is no <code>error</code> key. Extra fields sit at the top level.</p>
+<hr/>
+<h2 id="3-infrastructure">3. Infrastructure<a class="headerlink" href="#3-infrastructure" title="Permanent link">¶</a></h2>
+<h3 id="31-postgresql-and-typeorm">3.1 PostgreSQL and TypeORM<a class="headerlink" href="#31-postgresql-and-typeorm" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Where</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App connection</td>
+<td><code>src/config/database/database.module.ts</code></td>
+<td><code>TypeOrmModule.forRootAsync</code> with <code>ConfigService</code>. <code>synchronize: false</code>. Optional SSL via <code>DATABASE_SSL</code>.</td>
+</tr>
+<tr>
+<td>CLI data source</td>
+<td><code>src/config/database/data-source.ts</code></td>
+<td>Used by migration scripts and standalone scripts. Reads <code>process.env</code> directly because it runs outside Nest.</td>
+</tr>
+<tr>
+<td>Entities</td>
+<td><code>src/common/entities/</code></td>
+<td>All entities live here and are exported from <code>index.ts</code>. Each one must be listed in <strong>both</strong> files above.</td>
+</tr>
+<tr>
+<td>Migrations</td>
+<td><code>src/migrations/</code></td>
+<td>The only way to change the schema.</td>
+</tr>
+<tr>
+<td>Seeders</td>
+<td><code>src/seeders/</code></td>
+<td>Run by <code>npm run seed</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../erd/">ERD</a> and <a href="../data-access-pattern/">Data Access Patterns</a>.</p>
+<h3 id="32-redis">3.2 Redis<a class="headerlink" href="#32-redis" title="Permanent link">¶</a></h3>
+<p>Redis has two separate jobs, on two separate connections and logical DBs. Both <strong>fail open</strong>: if Redis is slow or down, the app keeps working.</p>
+<table>
+<thead>
+<tr>
+<th>Use</th>
+<th>Client</th>
+<th>DB</th>
+<th>What happens when Redis fails</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rate limiting</td>
+<td><code>REDIS_CLIENT</code> in <code>src/rate-limiter/redis.provider.ts</code></td>
+<td><code>REDIS_DB</code> (0)</td>
+<td>Requests are allowed. Timeout is 200 ms by default.</td>
+</tr>
+<tr>
+<td>Read cache</td>
+<td><code>CACHE_REDIS_CLIENT</code> in <code>src/config/redis/redis.provider.ts</code>, used through <code>RedisHelper</code> (<code>src/common/helpers/redis.helper.ts</code>)</td>
+<td><code>REDIS_CACHE_DB</code> (1)</td>
+<td>A read becomes a cache miss and goes to Postgres. Timeout is 500 ms by default.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What is cached</strong> (keys are prefixed <code>cache:v1</code>, TTLs in <code>src/config/redis/cache-ttl.constants.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>TTL</th>
+<th>Why it is safe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Results and analytics of an <code>evaluated</code> attempt</td>
+<td>1 hour</td>
+<td>An evaluated attempt never changes again.</td>
+</tr>
+<tr>
+<td>Question content during an attempt</td>
+<td>1 hour</td>
+<td>Assessment questions are append-only.</td>
+</tr>
+<tr>
+<td>AI assistant lists and details (assessments, attempts)</td>
+<td>60 seconds</td>
+<td>Short TTL instead of explicit invalidation.</td>
+</tr>
+</tbody>
+</table>
+<p>The health check (<code>GET /health</code>) pings the rate-limit Redis client. Redis is <strong>not</strong> used for sessions, refresh tokens (those are in Postgres), or Socket.IO.</p>
+<h3 id="33-rabbitmq">3.3 RabbitMQ<a class="headerlink" href="#33-rabbitmq" title="Permanent link">¶</a></h3>
+<p><code>MessagingModule</code> (<code>src/config/rabbitmq/rabbitmq.module.ts</code>) connects with <code>RABBITMQ_URL</code> and declares 4 <strong>topic</strong> exchanges and 12 queues. Names live in <code>src/config/rabbitmq/rabbitmq.constants.ts</code>. The <code>CONSUMER</code> env var decides whether this instance also runs the consumers (<code>registerHandlers</code>).</p>
+<p>Every producer first saves a row in the <code>jobs</code> table, then publishes <code>{ jobId, ...payload }</code>. Because of this, <code>JobsService</code> can rebuild and republish any message on retry using the route table in <code>src/jobs/job-routes.ts</code>.</p>
+<p><a id="rabbitmq"></a></p>
+<table>
+<thead>
+<tr>
+<th>Exchange</th>
+<th>Routing key</th>
+<th>Queue</th>
+<th>Producer</th>
+<th>Consumer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>question.generation</code></td>
+<td><code>question.generate</code></td>
+<td><code>question-generation-queue</code></td>
+<td><code>AssessmentsService.generate</code> (legacy single-job generation, used by roadmap node assessments)</td>
+<td><code>QuestionGenerationConsumer</code> (<code>src/assessments/consumers/question-generation.consumer.ts</code>)</td>
+</tr>
+<tr>
+<td><code>question.generation</code></td>
+<td><code>question.section.mcq</code></td>
+<td><code>question-section-mcq-queue</code></td>
+<td><code>GenerationOrchestratorService</code> (<code>src/assessments/generation/generation-orchestrator.service.ts</code>)</td>
+<td><code>McqSectionConsumer</code> (<code>src/assessments/generation/consumers/mcq-section.consumer.ts</code>)</td>
+</tr>
+<tr>
+<td><code>question.generation</code></td>
+<td><code>question.section.coding</code></td>
+<td><code>question-section-coding-queue</code></td>
+<td><code>GenerationOrchestratorService</code></td>
+<td><code>CodingSectionConsumer</code></td>
+</tr>
+<tr>
+<td><code>question.generation</code></td>
+<td><code>question.section.descriptive</code></td>
+<td><code>question-section-descriptive-queue</code></td>
+<td><code>GenerationOrchestratorService</code></td>
+<td><code>DescriptiveSectionConsumer</code></td>
+</tr>
+<tr>
+<td><code>attempt</code></td>
+<td><code>attempt.evaluate</code></td>
+<td><code>attempt-evaluation-queue</code></td>
+<td><code>AttemptsService.submitAttempt</code> (<code>src/assessments/attempts/attempts.service.ts</code>)</td>
+<td><code>AttemptEvaluationConsumer</code> (<code>src/assessments/evaluation/consumers/</code>)</td>
+</tr>
+<tr>
+<td><code>attempt</code></td>
+<td><code>attempt.evaluate.mcq</code></td>
+<td><code>attempt-evaluation-mcq-queue</code></td>
+<td><code>EvaluationOrchestratorService</code> (<code>src/assessments/evaluation/evaluation-orchestrator.service.ts</code>)</td>
+<td><code>McqEvaluationConsumer</code></td>
+</tr>
+<tr>
+<td><code>attempt</code></td>
+<td><code>attempt.evaluate.coding</code></td>
+<td><code>attempt-evaluation-coding-queue</code></td>
+<td><code>EvaluationOrchestratorService</code></td>
+<td><code>CodingEvaluationConsumer</code></td>
+</tr>
+<tr>
+<td><code>attempt</code></td>
+<td><code>attempt.evaluate.descriptive</code></td>
+<td><code>attempt-evaluation-descriptive-queue</code></td>
+<td><code>EvaluationOrchestratorService</code></td>
+<td><code>DescriptiveEvaluationConsumer</code></td>
+</tr>
+<tr>
+<td><code>roadmap</code></td>
+<td><code>roadmap.analyze</code></td>
+<td><code>roadmap-analysis-queue</code></td>
+<td><code>LearningRoadmapsService</code> (<code>src/learning-roadmaps/learning-roadmaps.service.ts</code>)</td>
+<td><code>RoadmapAnalysisConsumer</code> (<code>src/learning-roadmaps/consumers/</code>)</td>
+</tr>
+<tr>
+<td><code>roadmap</code></td>
+<td><code>roadmap.generate</code></td>
+<td><code>roadmap-generation-queue</code></td>
+<td><code>LearningRoadmapsService</code></td>
+<td><code>RoadmapGenerationConsumer</code></td>
+</tr>
+<tr>
+<td><code>roadmap</code></td>
+<td><code>roadmap.modify</code></td>
+<td><code>roadmap-modification-queue</code></td>
+<td><code>LearningRoadmapsService</code></td>
+<td><code>RoadmapModificationConsumer</code></td>
+</tr>
+<tr>
+<td><code>organization</code></td>
+<td><code>organization.invitations.import</code></td>
+<td><code>organization-invitation-import-queue</code></td>
+<td><code>OrganizationInvitationImportService</code> (<code>src/organizations/services/organization-invitation-import.service.ts</code>)</td>
+<td><code>OrganizationInvitationImportConsumer</code> (<code>src/organizations/consumers/</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><code>JobsService.retry</code> (<code>src/jobs/jobs.service.ts</code>, behind <code>POST /v1/jobs/:id/retry</code>) can republish any of these.</p>
+<p><strong>Why one queue per question type?</strong> Coding work (writing test cases, running code) is much slower than MCQ work. Separate queues mean a slow coding section never blocks MCQs.</p>
+<p><strong>Why save the job row first?</strong> If publishing fails, the code marks the job <code>FAILED</code> right away and returns 503, so nothing is left "stuck" in a running state. The client can always read progress from <code>GET /v1/jobs/:id</code>.</p>
+<h3 id="34-socketio-gateway">3.4 Socket.IO gateway<a class="headerlink" href="#34-socketio-gateway" title="Permanent link">¶</a></h3>
+<p><code>EventsGateway</code> (<code>src/events/events.gateway.ts</code>) listens on path <code>/socket.io</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connect</td>
+<td>The token comes from <code>handshake.auth.token</code>, the <code>token</code> query param, or an <code>Authorization: Bearer</code> header. It is verified with <code>JWT_ACCESS_SECRET</code>. A bad token gets an <code>exception</code> event and is disconnected. A good one joins the room for that user.</td>
+</tr>
+<tr>
+<td><code>ai.conversation.message</code></td>
+<td>Client → server chat message. The AI assistant answers and the reply returns on the same event.</td>
+</tr>
+<tr>
+<td><code>code.run</code></td>
+<td>Client → server "run my code" during an attempt. Results stream back to that socket only: <code>code.run.started</code>, <code>code.run.case</code> (per visible test case), then <code>code.run.completed</code> or <code>code.run.failed</code>.</td>
+</tr>
+<tr>
+<td>Server push</td>
+<td><code>emitToUser(userId, event, data)</code> sends to every socket of the user. Today it is used for <code>org.invitations.import.settled</code> when a CSV import finishes.</td>
+</tr>
+<tr>
+<td>Errors</td>
+<td><code>WsExceptionFilter</code> sends an <code>exception</code> frame and keeps the socket open.</td>
+</tr>
+</tbody>
+</table>
+<p>Connections are tracked in an in-memory map (<code>src/events/connection-manager.service.ts</code>). There is no Redis adapter, so a push only reaches sockets connected to the <strong>same</strong> instance. See <a href="../hld-design/realtime-events/">Realtime Events</a>.</p>
+<h3 id="35-external-services">3.5 External services<a class="headerlink" href="#35-external-services" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Used for</th>
+<th>Code</th>
+<th>Config</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OpenAI, Anthropic, Google GenAI</td>
+<td>Question generation, descriptive grading, roadmaps, AI assistant</td>
+<td><code>src/ai/llm/chat-model.factory.ts</code>, <code>src/ai/ai-model-registry.service.ts</code></td>
+<td><code>ai_models</code> rows point at env vars such as <code>OPENAI_API_KEY</code></td>
+</tr>
+<tr>
+<td>Razorpay</td>
+<td>Orders and payment webhooks</td>
+<td><code>src/commerce/payments/razorpay/razorpay.service.ts</code>, <code>src/webhooks/</code></td>
+<td><code>RAZORPAY_*</code></td>
+</tr>
+<tr>
+<td>Piston (self-hosted) or OnlineCompiler.io</td>
+<td>Running candidate code</td>
+<td><code>src/code-execution/runners/</code> chosen by <code>src/code-execution/code-execution.module.ts</code></td>
+<td><code>CODE_RUNNER_PROVIDER</code>, <code>PISTON_*</code>, <code>ONLINE_COMPILER_*</code></td>
+</tr>
+<tr>
+<td>SMTP (Nodemailer)</td>
+<td>Transactional email and newsletters</td>
+<td><code>src/notifications/email/email.service.ts</code></td>
+<td><code>SMTP_*</code>, <code>EMAIL_FROM</code></td>
+</tr>
+<tr>
+<td>AWS S3 (or MinIO / LocalStack)</td>
+<td>Uploaded invitation CSVs</td>
+<td><code>src/storage/storage.service.ts</code></td>
+<td><code>AWS_*</code></td>
+</tr>
+<tr>
+<td>Google OAuth</td>
+<td>Verifying Google ID tokens</td>
+<td><code>src/identity/auth/google/google-oauth.service.ts</code></td>
+<td><code>GOOGLE_OAUTH2_CLIENT_ID</code></td>
+</tr>
+</tbody>
+</table>
+<p>All LLM calls are recorded in the <code>llm_audit</code> table (<code>src/ai/llm-audit.service.ts</code>). See <a href="../hld-design/ai/">AI Layer</a> and <a href="../hld-design/code-execution/">Code Execution</a>.</p>
+<hr/>
+<h2 id="4-sync-vs-async-work">4. Sync vs async work<a class="headerlink" href="#4-sync-vs-async-work" title="Permanent link">¶</a></h2>
+<p><strong>Rule of thumb:</strong> if a task calls an LLM, runs code, or loops over many rows, it goes to RabbitMQ. The HTTP request saves a <code>jobs</code> row, publishes a message, and returns fast. Everything else runs inside the request.</p>
+<h3 id="41-a-typical-sync-request-save-an-answer">4.1 A typical sync request: save an answer<a class="headerlink" href="#41-a-typical-sync-request-save-an-answer" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor C as Client
+    participant G as Global guards
+    participant P as ValidationPipe
+    participant Ctl as AttemptsController
+    participant S as AttemptsService
+    participant DB as PostgreSQL
+
+    C-&gt;&gt;G: PUT /v1/attempts/:attemptUid/responses/:questionId
+    G-&gt;&gt;G: JWT check, rate limit, roles, org, permissions
+    G-&gt;&gt;P: allowed
+    P-&gt;&gt;Ctl: validated DTO
+    Ctl-&gt;&gt;S: save response for current user
+    S-&gt;&gt;DB: load attempt and assessment
+    S-&gt;&gt;S: domain rules - attempt answerable, assessment window open
+    S-&gt;&gt;DB: upsert response row
+    S--&gt;&gt;Ctl: saved entity
+    Ctl--&gt;&gt;C: 200 ApiResponse with serialized data
+</div>
+<h3 id="42-a-typical-async-job-ai-assessment-generation">4.2 A typical async job: AI assessment generation<a class="headerlink" href="#42-a-typical-async-job-ai-assessment-generation" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor C as Client
+    participant Ctl as AssessmentsController
+    participant O as GenerationOrchestrator
+    participant DB as PostgreSQL
+    participant MQ as RabbitMQ
+    participant W as Section consumer
+    participant LLM as LLM provider
+    participant A as GenerationAggregator
+
+    C-&gt;&gt;Ctl: POST /v1/assessments/generate
+    Ctl-&gt;&gt;O: start request
+    O-&gt;&gt;DB: check plan, spend quota
+    O-&gt;&gt;DB: one transaction - assessment, sections, parent job, one job per section
+    O-&gt;&gt;MQ: publish each section job to its type queue
+    Ctl--&gt;&gt;C: 200 with assessmentId and jobId
+    MQ-&gt;&gt;W: section message
+    W-&gt;&gt;LLM: LangGraph plan, generate, review
+    LLM--&gt;&gt;W: questions
+    W-&gt;&gt;DB: save questions, mark section job done
+    W-&gt;&gt;A: section settled
+    A-&gt;&gt;DB: lock parent job, update progress
+    A-&gt;&gt;DB: all done - assessment ready, parent job completed
+    loop until done
+        C-&gt;&gt;Ctl: GET /v1/jobs/:jobId
+    end
+</div>
+<p>If any section fails, the aggregator fails the parent job and refunds the quota once. <code>POST /v1/assessments/:id/generation/retry</code> re-runs only the failed sections. Clients learn about progress by <strong>polling</strong> <code>GET /v1/jobs/:id</code>; there is no WebSocket push for generation today. See <a href="../hld-design/assessment-generation/">AI Assessment Generation</a>.</p>
+<h3 id="43-async-job-with-a-websocket-push-csv-invitation-import">4.3 Async job with a WebSocket push: CSV invitation import<a class="headerlink" href="#43-async-job-with-a-websocket-push-csv-invitation-import" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor C as Org admin
+    participant Ctl as OrgInvitationsController
+    participant I as InvitationImportService
+    participant S3 as S3
+    participant MQ as RabbitMQ
+    participant W as InvitationImportConsumer
+    participant WS as EventsGateway
+
+    C-&gt;&gt;Ctl: POST /v1/orgs/:orgUid/invitations/import with CSV
+    Ctl-&gt;&gt;I: start import
+    I-&gt;&gt;S3: store CSV
+    I-&gt;&gt;I: save jobs row
+    I-&gt;&gt;MQ: publish job
+    Ctl--&gt;&gt;C: 200 with jobId
+    MQ-&gt;&gt;W: import message
+    W-&gt;&gt;S3: read CSV
+    W-&gt;&gt;W: parse rows, invite in chunks, send emails
+    W-&gt;&gt;W: mark job completed or failed
+    W-&gt;&gt;WS: emitToUser org.invitations.import.settled
+    WS--&gt;&gt;C: push event
+</div>
+<p>Whether the import succeeds or fails, the user gets the <code>org.invitations.import.settled</code> event with the job id and a summary (or the failure reason).</p>
+<p>Other async flows follow the same shape: attempt evaluation (see <a href="../hld-design/evaluation/">Evaluation</a>) and the three roadmap stages (see <a href="../hld-design/learning-roadmaps/">Learning Roadmaps</a>).</p>
+<h3 id="44-scheduled-work">4.4 Scheduled work<a class="headerlink" href="#44-scheduled-work" title="Permanent link">¶</a></h3>
+<p><code>SchedulersModule</code> (<code>src/schedulers/</code>) is the only place for <code>@Cron</code> handlers. Today there is one: <code>newsletter-dispatch</code>, every minute, turned off with <code>NEWSLETTER_SCHEDULER_ENABLED=false</code>. See <a href="../hld-design/jobs-and-schedulers/">Jobs &amp; Schedulers</a>.</p>
+<hr/>
+<h2 id="5-folder-structure">5. Folder structure<a class="headerlink" href="#5-folder-structure" title="Permanent link">¶</a></h2>
+<p>Each feature module follows the same shape. The <code>nestjs-folder-structure</code> skill has the full rules.</p>
+<pre><code class="language-text">src/&lt;module&gt;/
+  &lt;module&gt;.module.ts
+  &lt;module&gt;.controller.ts      # thin: validate, call service, serialize, wrap in ApiResponse
+  &lt;module&gt;.service.ts         # business logic and DB access
+  admin.controller.ts         # /v1/admin/... routes for platform admins (many modules)
+  dto/                        # request and response DTOs (class-validator + Swagger)
+  serializers/                # &lt;module&gt;.serializer.ts extends common Serializer
+  domain/                     # pure rules and state transitions (where needed)
+  consumers/                  # RabbitMQ consumers (where needed)
+  interfaces/                 # TypeScript interfaces
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>What lives there</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/common/entities/</code></td>
+<td><strong>All</strong> TypeORM entities, exported from <code>index.ts</code>. Entities do not extend a base class; each declares <code>id</code>, <code>createdAt</code>, <code>updatedAt</code>, and usually <code>deletedAt</code> inline.</td>
+</tr>
+<tr>
+<td><code>src/common/decorators/</code></td>
+<td><code>@Public()</code>.</td>
+</tr>
+<tr>
+<td><code>src/common/filters/</code></td>
+<td><code>HttpExceptionFilter</code> and the <code>DomainError</code> → HTTP mapper.</td>
+</tr>
+<tr>
+<td><code>src/common/domain/</code></td>
+<td><code>DomainError</code> and transition-table helpers.</td>
+</tr>
+<tr>
+<td><code>src/common/dto/</code></td>
+<td><code>PaginationDto</code> and <code>PaginatedResponseDto</code>.</td>
+</tr>
+<tr>
+<td><code>src/common/enums/</code></td>
+<td>Shared enums by area (assessments, commerce, identity, jobs, roadmaps, and more).</td>
+</tr>
+<tr>
+<td><code>src/common/helpers/</code></td>
+<td><code>RedisHelper</code>, LIKE-escaping, question content helpers.</td>
+</tr>
+<tr>
+<td><code>src/common/serializers/</code></td>
+<td>The base <code>Serializer</code> class.</td>
+</tr>
+<tr>
+<td><code>src/common/</code> (root files)</td>
+<td><code>api-response.ts</code>, <code>db-errors.ts</code> (for example, unique-violation checks), <code>nano-id.ts</code> and <code>prefixed-id.ts</code> (public ids), <code>slugify.ts</code>.</td>
+</tr>
+<tr>
+<td><code>src/config/</code></td>
+<td>Database, RabbitMQ, and Redis setup.</td>
+</tr>
+<tr>
+<td><code>src/migrations/</code>, <code>src/seeders/</code>, <code>src/scripts/</code></td>
+<td>Schema changes, seed data, one-off CLI scripts.</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="6-cross-cutting-conventions">6. Cross-cutting conventions<a class="headerlink" href="#6-cross-cutting-conventions" title="Permanent link">¶</a></h2>
+<p>These come from the code and the project skills in <code>.claude/skills/</code>. When a skill and general NestJS habits disagree, <strong>the skill wins</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Convention</th>
+<th>Skill</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Controllers</td>
+<td>Thin. No <code>try/catch</code>. Call the service, serialize, return <code>ApiResponse</code>.</td>
+<td><code>nestjs-error-handling</code>, <code>api-response-format</code></td>
+</tr>
+<tr>
+<td>Business errors</td>
+<td>Services throw Nest HTTP exceptions (<code>NotFoundException</code>, <code>ConflictException</code>, <code>ForbiddenException</code>, <code>UnprocessableEntityException</code>, <code>ServiceUnavailableException</code>, and so on). Pure <code>domain/</code> code throws <code>DomainError</code> and knows nothing about HTTP.</td>
+<td><code>nestjs-error-handling</code></td>
+</tr>
+<tr>
+<td>State machines</td>
+<td>Status changes go through transition tables in <code>domain/</code> folders (for example, <code>src/assessments/domain/attempt-state.ts</code>). An illegal move throws <code>DomainError.invalidTransition</code>, which becomes 409.</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td><code>class-validator</code> on every DTO field, <code>@Type()</code> for query numbers, <code>PartialType</code> for updates.</td>
+<td><code>nestjs-validation</code></td>
+</tr>
+<tr>
+<td>Config</td>
+<td>Always <code>ConfigService</code>, never <code>process.env</code>, except in <code>main.ts</code>, <code>data-source.ts</code>, RabbitMQ constants, and scripts.</td>
+<td><code>config-service-usage</code></td>
+</tr>
+<tr>
+<td>Entities</td>
+<td>Explicit column <code>name</code> (snake_case) and <code>type</code>, <code>timestamptz</code> dates, named indexes, soft delete with <code>deletedAt</code>. Integer auto-increment ids; public ids use nanoid <code>uid</code> columns.</td>
+<td><code>typeorm-entity-patterns</code></td>
+</tr>
+<tr>
+<td>Migrations</td>
+<td>Every schema change needs a migration. Never edit an applied one.</td>
+<td><code>typeorm-migrations</code></td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td><code>dataSource.transaction(async (manager) =&gt; ...)</code> for multi-table writes. Use only <code>manager</code> inside the callback. Publish to RabbitMQ <strong>after</strong> the commit.</td>
+<td><code>nestjs-transactions</code></td>
+</tr>
+<tr>
+<td>Pagination</td>
+<td>Cursor-based: <code>cursor</code> (last id) and <code>limit</code> (max 50, default 20). Response has <code>nextCursor</code> and <code>total</code>.</td>
+<td><code>nestjs-pagination</code></td>
+</tr>
+<tr>
+<td>Queries</td>
+<td>Repository methods for simple reads, QueryBuilder for joins and filters. Avoid N+1 queries; select only needed columns.</td>
+<td><code>query-optimization</code></td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>One <code>new Logger(ClassName.name)</code> per class. No <code>console.*</code>. Log ids, not personal data.</td>
+<td><code>logging-conventions</code></td>
+</tr>
+<tr>
+<td>Swagger</td>
+<td>Every route documents its envelope, errors, and auth.</td>
+<td><code>nestjs-swagger</code></td>
+</tr>
+<tr>
+<td>Tests</td>
+<td>Jest. Unit tests in <code>tests/unit/&lt;module&gt;/</code> mirroring <code>src/</code>; e2e in <code>tests/</code>.</td>
+<td><code>jest-mock-patterns</code>, <code>test-naming-conventions</code>, <code>e2e-test-setup</code></td>
+</tr>
+<tr>
+<td>Types</td>
+<td>No <code>any</code>. Use interfaces or DTOs.</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="7-security-notes">7. Security notes<a class="headerlink" href="#7-security-notes" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Current behavior</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authentication</td>
+<td>Bearer JWT only, no cookies. Every non-public request re-checks that the account is still active and verified. Refresh tokens are stored as SHA-256 hashes in Postgres.</td>
+<td><code>jwt-auth.guard.ts</code>, <code>auth.service.ts</code></td>
+</tr>
+<tr>
+<td>CORS (HTTP)</td>
+<td><code>enableCors({ origin: true, credentials: true })</code>. This reflects <strong>any</strong> origin. Fine for development; tighten it for production.</td>
+<td><code>src/main.ts</code></td>
+</tr>
+<tr>
+<td>CORS (WebSocket)</td>
+<td><code>origin: '*'</code>.</td>
+<td><code>src/events/events.gateway.ts</code></td>
+</tr>
+<tr>
+<td>Raw body</td>
+<td>The app is created with <code>rawBody: true</code>, so <code>req.rawBody</code> is available. The Razorpay webhook verifies <code>x-razorpay-signature</code> (HMAC) over the raw bytes, which is why the parsed JSON body is not enough. Webhook events are de-duplicated in <code>webhook_events</code>.</td>
+<td><code>src/main.ts</code>, <code>src/webhooks/</code></td>
+</tr>
+<tr>
+<td>Swagger</td>
+<td><code>/api/docs</code> is behind HTTP basic auth (<code>SWAGGER_USER</code> / <code>SWAGGER_PASS</code>). See the known issue below.</td>
+<td><code>src/main.ts</code></td>
+</tr>
+<tr>
+<td>Rate limiting</td>
+<td>Auth routes use the strict IP-based <code>CLASS_A</code> policy. AI generation uses its own scope with a higher cost per call.</td>
+<td><code>src/rate-limiter/</code></td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Unknown fields are rejected (<code>forbidNonWhitelisted</code>).</td>
+<td><code>src/main.ts</code></td>
+</tr>
+<tr>
+<td>Not used</td>
+<td>No <code>helmet</code>. <code>passport</code> and <code>passport-jwt</code> are installed but not used; guards verify tokens with <code>JwtService</code> directly.</td>
+<td><code>package.json</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Known issues to be aware of</p>
+<ul>
+<li><strong>Swagger basic auth may not block content.</strong> When credentials are missing or wrong, the middleware in <code>src/main.ts</code> sets 401 and <code>WWW-Authenticate</code> but then calls <code>next()</code>, so Swagger still sends the page body. The JSON spec route (<code>/api/docs-json</code>) is also outside the protected <code>/api/docs</code> path prefix.</li>
+<li><strong>WebSocket auth is lighter than HTTP auth.</strong> The handshake only verifies the JWT signature (<code>src/events/events.service.ts</code>). It does not re-check that the account is still active, unlike <code>JwtAuthGuard</code>.</li>
+<li><strong>Pushes are per instance.</strong> With more than one instance, a <code>emitToUser</code> call from a consumer on instance A does not reach a socket held by instance B.</li>
+</ul>
+</div>
+<hr/>
+<h2 id="8-related-pages">8. Related pages<a class="headerlink" href="#8-related-pages" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../getting-started/">Getting Started</a>: run it locally.</li>
+<li><a href="../erd/">ERD</a> and <a href="../data-access-pattern/">Data Access Patterns</a>: the data model.</li>
+<li><a href="../api-design/v1/">API v1</a>: every endpoint.</li>
+<li><a href="../hld-design/jobs-and-schedulers/">Jobs &amp; Schedulers</a>: the <code>jobs</code> table and retries.</li>
+<li><a href="../hld-design/realtime-events/">Realtime Events</a>: the socket protocol.</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

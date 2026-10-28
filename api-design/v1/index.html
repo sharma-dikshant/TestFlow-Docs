@@ -1,0 +1,5189 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Every HTTP endpoint of the TestFlow backend, with its auth rule, purpose, and main inputs">
+      
+      
+      
+      
+        <link rel="prev" href="../../data-access-pattern/">
+      
+      
+        <link rel="next" href="../../hld-design/auth/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>API Reference v1 - TestFlow | Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference-v1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="TestFlow | Docs" class="md-header__button md-logo" aria-label="TestFlow | Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference v1
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="TestFlow | Docs" class="md-nav__button md-logo" aria-label="TestFlow | Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TestFlow | Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../data-access-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-url-and-versioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base URL and versioning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-auth-column-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the "Auth" column means
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organization-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organization context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Success envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pagination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swagger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swagger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhooks-and-raw-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhooks and raw body
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auth-v1auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth (/v1/auth)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organizations-v1orgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations (/v1/orgs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Organizations (/v1/orgs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assessments-v1assessments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessments (/v1/assessments)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assessments (/v1/assessments)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attempt-review-and-leaderboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempt review and leaderboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessment-templates-v1assessment-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessment templates (/v1/assessment-templates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessment-prompts-v1assessment-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessment prompts (/v1/assessment-prompts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions-and-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions and tags
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Questions and tags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tags-v1tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags (/v1/tags)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attempts-v1attempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempts (/v1/attempts)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attempts (/v1/attempts)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#next-assessment-suggestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next-assessment suggestion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-conversations-v1conversations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI conversations (/v1/conversations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs-v1jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jobs (/v1/jobs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-roadmaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning roadmaps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Learning roadmaps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roadmaps-v1roadmaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roadmaps (/v1/roadmaps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roadmap-templates-v1roadmap-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roadmap templates (/v1/roadmap-templates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commerce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commerce
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commerce">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plans-v1plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plans (/v1/plans)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscriptions-v1subscriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscriptions (/v1/subscriptions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-v1usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage (/v1/usage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payments-v1payments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payments (/v1/payments)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orders-v1orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orders (/v1/orders)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credits-v1credits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credits (/v1/credits)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhooks-webhooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhooks (/webhooks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support-v1support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support (/v1/support)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health-and-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health and ping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-api-v1admin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin API (/v1/admin)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin API (/v1/admin)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organizations_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commerce_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commerce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ai-models-and-llm-audits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI models and LLM audits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feature-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newsletters-and-email-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newsletters and email templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stats-and-support-tickets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stats and support tickets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#websocket-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#route-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Route count
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication & Users
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/rbac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/assessments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/questions-and-tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Questions & Tags
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/assessment-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/attempts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/code-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs & Graphs)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/ai-assistant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Assistant & Tools
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/commerce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commerce, Payments & Webhooks
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/learning-roadmaps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/realtime-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/jobs-and-schedulers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs & Schedulers
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & Email
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hld-design/platform-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../claude-agent-arch/arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conventions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base-url-and-versioning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base URL and versioning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-auth-column-means" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the "Auth" column means
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organization-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organization context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Success envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validation-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Validation errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pagination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pagination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swagger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Swagger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhooks-and-raw-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhooks and raw body
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auth-v1auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth (/v1/auth)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organizations-v1orgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations (/v1/orgs)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Organizations (/v1/orgs)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Members
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#invitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Invitations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assessments-v1assessments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessments (/v1/assessments)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assessments (/v1/assessments)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attempt-review-and-leaderboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempt review and leaderboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessment-templates-v1assessment-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessment templates (/v1/assessment-templates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessment-prompts-v1assessment-prompts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessment prompts (/v1/assessment-prompts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions-and-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions and tags
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Questions and tags">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tags-v1tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags (/v1/tags)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attempts-v1attempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempts (/v1/attempts)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Attempts (/v1/attempts)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#next-assessment-suggestion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next-assessment suggestion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ai-conversations-v1conversations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI conversations (/v1/conversations)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jobs-v1jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Jobs (/v1/jobs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-roadmaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning roadmaps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Learning roadmaps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roadmaps-v1roadmaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roadmaps (/v1/roadmaps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roadmap-templates-v1roadmap-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roadmap templates (/v1/roadmap-templates)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commerce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commerce
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Commerce">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plans-v1plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Plans (/v1/plans)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscriptions-v1subscriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscriptions (/v1/subscriptions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage-v1usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage (/v1/usage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payments-v1payments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payments (/v1/payments)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orders-v1orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Orders (/v1/orders)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#credits-v1credits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Credits (/v1/credits)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhooks-webhooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhooks (/webhooks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support-v1support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Support (/v1/support)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#health-and-ping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health and ping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-api-v1admin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin API (/v1/admin)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin API (/v1/admin)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roles-and-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Roles and permissions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#organizations_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#assessments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Assessments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attempts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attempts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commerce_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commerce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ai-models-and-llm-audits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AI models and LLM audits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#feature-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Feature flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newsletters-and-email-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newsletters and email templates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stats-and-support-tickets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stats and support tickets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#websocket-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket events
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#route-count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Route count
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="api-reference-v1">API Reference v1<a class="headerlink" href="#api-reference-v1" title="Permanent link">&para;</a></h1>
+<p>This page lists every HTTP route in the TestFlow backend. Use it to find an endpoint fast.
+For how a feature works end to end, follow the link at the top of each section.</p>
+<p>There are <strong>178 routes</strong> in <strong>40 controllers</strong>.</p>
+<hr />
+<h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">&para;</a></h2>
+<h3 id="base-url-and-versioning">Base URL and versioning<a class="headerlink" href="#base-url-and-versioning" title="Permanent link">&para;</a></h3>
+<ul>
+<li>There is no global prefix and no Nest versioning. Each controller puts <code>v1/</code> in its own path, for example <code>@Controller('v1/assessments')</code>.</li>
+<li>So almost every route starts with <code>/v1/...</code>.</li>
+<li>Three routes have no <code>v1</code>: <code>GET /ping</code>, <code>GET /health</code>, and <code>POST /webhooks/razorpay</code>.</li>
+<li>The server listens on <code>PORT</code> (default <code>3000</code>). CORS is open to any origin, with credentials.</li>
+</ul>
+<h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">&para;</a></h3>
+<p>Every route needs a valid access token <strong>unless</strong> it is marked <code>@Public()</code>.
+Send the token in the <code>Authorization</code> header:</p>
+<pre><code class="language-http">GET /v1/auth/me
+Authorization: Bearer &lt;accessToken&gt;
+</code></pre>
+<ul>
+<li>You get tokens from <code>POST /v1/auth/login</code>, <code>/signup</code>, <code>/google</code>, or <code>/refresh</code>.</li>
+<li>Public routes need no header. If you send a token to a public route, it is ignored. The route does not know who you are.</li>
+<li>A missing or bad token returns <code>401</code>.</li>
+</ul>
+<p>The global guards run in this order on every request:</p>
+<ol>
+<li><code>JwtAuthGuard</code> checks the Bearer token (skipped on <code>@Public()</code> routes).</li>
+<li><code>RateLimitGuard</code> applies the <code>@RateLimit()</code> policy, if the route has one.</li>
+<li><code>RolesGuard</code> checks <code>@Roles()</code>. Only one route uses it.</li>
+<li><code>OrgContextGuard</code> loads the organization for org routes.</li>
+<li><code>PermissionGuard</code> checks <code>@Permissions()</code> and <code>@OrgPermissions()</code>.</li>
+</ol>
+<h3 id="what-the-auth-column-means">What the "Auth" column means<a class="headerlink" href="#what-the-auth-column-means" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Public</td>
+<td>No token needed.</td>
+</tr>
+<tr>
+<td>JWT</td>
+<td>Any logged-in user. The service may still check ownership (for example, "only the creator can edit").</td>
+</tr>
+<tr>
+<td>Perm <code>x:y</code></td>
+<td>Logged-in user whose <strong>platform</strong> role grants permission <code>x:y</code>. Missing permission returns <code>403 Missing permission: x:y</code>.</td>
+</tr>
+<tr>
+<td>Org perm <code>x:y</code></td>
+<td>Route acts inside an organization. The caller must be an active member, and their <strong>org role</strong> must grant <code>x:y</code>.</td>
+</tr>
+<tr>
+<td>Org header</td>
+<td>Route accepts the optional <code>x-organization-id</code> header. See below.</td>
+</tr>
+<tr>
+<td>Role <code>super_admin</code></td>
+<td>Caller must have the <code>super_admin</code> platform role.</td>
+</tr>
+<tr>
+<td>AI cost N</td>
+<td>Uses the shared AI generation rate-limit bucket. See <a href="#rate-limits">Rate limits</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../../hld-design/rbac/">RBAC</a> for roles and permission keys.</p>
+<h3 id="organization-context">Organization context<a class="headerlink" href="#organization-context" title="Permanent link">&para;</a></h3>
+<p>There are two ways a route can act inside an organization.</p>
+<p><strong>1. Path-scoped routes (<code>@OrgScoped()</code>)</strong></p>
+<p>The org uid is in the path: <code>/v1/orgs/:orgUid/...</code>.</p>
+<ul>
+<li>The caller must be an active member of that org.</li>
+<li><code>@Permissions()</code> on these routes is checked against the caller's <strong>org role</strong>, not their platform roles.</li>
+<li>If the caller is not a member, the API returns <code>404 Organization not found</code>. It does not return <code>403</code>, so it does not reveal that the org exists.</li>
+</ul>
+<p><strong>2. Header-scoped routes (<code>@OrgHeaderScoped()</code>)</strong></p>
+<p>Send the org uid in a header:</p>
+<pre><code class="language-http">x-organization-id: org_8f3k2l
+</code></pre>
+<ul>
+<li>The header is optional.</li>
+<li><strong>Without the header</strong>, the request runs in your personal scope. <code>@OrgPermissions()</code> is not checked. A plain <code>@Permissions()</code> is checked against your platform roles.</li>
+<li><strong>With the header</strong>, you must be an active member (else <code>404</code>). Both <code>@Permissions()</code> and <code>@OrgPermissions()</code> are checked against your org role.</li>
+</ul>
+<p>See <a href="../../hld-design/organizations/">Organizations</a>.</p>
+<h3 id="success-envelope">Success envelope<a class="headerlink" href="#success-envelope" title="Permanent link">&para;</a></h3>
+<p>Every successful response (except <code>204</code>) uses <code>ApiResponse</code>:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: true,
+  &quot;message&quot;: &quot;Assessments fetched successfully.&quot;,
+  &quot;data&quot;: [ { &quot;id&quot;: 12, &quot;title&quot;: &quot;JavaScript Basics&quot; } ],
+  &quot;meta&quot;: { &quot;total&quot;: 42, &quot;page&quot;: 1, &quot;limit&quot;: 20, &quot;totalPages&quot;: 3 }
+}
+</code></pre>
+<ul>
+<li><code>message</code> is always present.</li>
+<li><code>data</code> is always present. It is <code>null</code> when there is nothing to return.</li>
+<li><code>meta</code> is only present on list endpoints (and a few others, like the leaderboard).</li>
+<li><code>204 No Content</code> responses have no body.</li>
+</ul>
+<h3 id="error-envelope">Error envelope<a class="headerlink" href="#error-envelope" title="Permanent link">&para;</a></h3>
+<p>All errors go through <code>HttpExceptionFilter</code>:</p>
+<pre><code class="language-json">{
+  &quot;success&quot;: false,
+  &quot;message&quot;: &quot;Missing permission: questions:create&quot;
+}
+</code></pre>
+<ul>
+<li>There is no nested <code>error</code> object and no <code>statusCode</code> field. Use the HTTP status code.</li>
+<li>If the thrown exception carries extra fields, they are added at the top level. For example, <code>GET /health</code> returns <code>data</code> with its <code>503</code>.</li>
+<li>Any unexpected error returns <code>500</code> with <code>"message": "Internal server error"</code>. The details are only logged on the server.</li>
+<li>Business-rule errors from the domain layer are mapped to <code>409</code>, <code>400</code>, <code>403</code>, or <code>422</code>.</li>
+</ul>
+<p>Common status codes:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td>OK</td>
+</tr>
+<tr>
+<td>201</td>
+<td>Created</td>
+</tr>
+<tr>
+<td>202</td>
+<td>Accepted. Work was queued. Poll the returned job id with <code>GET /v1/jobs/:id</code>.</td>
+</tr>
+<tr>
+<td>204</td>
+<td>Done, no body (most deletes)</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Validation failed, or a bad request</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Missing, invalid, or expired token</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Missing permission or role, or not the owner</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not found, or not a member of the org</td>
+</tr>
+<tr>
+<td>409</td>
+<td>Conflict (duplicate, wrong state)</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Business rule broken</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Rate limit hit</td>
+</tr>
+<tr>
+<td>503</td>
+<td>A dependency is down, or a job could not be queued</td>
+</tr>
+</tbody>
+</table>
+<h3 id="validation-errors">Validation errors<a class="headerlink" href="#validation-errors" title="Permanent link">&para;</a></h3>
+<p>The global <code>ValidationPipe</code> runs with <code>whitelist</code>, <code>forbidNonWhitelisted</code>, and <code>transform</code> turned on.</p>
+<ul>
+<li>Unknown fields in the body or query are <strong>rejected</strong> with <code>400</code>. They are not silently dropped.</li>
+<li>Query strings are converted to the right type (numbers, booleans).</li>
+<li>All validation messages are joined into one string with <code>,</code>:</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;success&quot;: false,
+  &quot;message&quot;: &quot;email must be a valid email address, password must be at least 8 characters&quot;
+}
+</code></pre>
+<p>Path ids that must be numbers or UUIDs (<code>ParseIntPipe</code>, <code>ParseUUIDPipe</code>) also return <code>400</code> when wrong.</p>
+<h3 id="pagination">Pagination<a class="headerlink" href="#pagination" title="Permanent link">&para;</a></h3>
+<p>There are two styles. Each list endpoint uses one of them.</p>
+<p><strong>Page style</strong> (most lists, including most admin lists):</p>
+<pre><code class="language-text">?page=1&amp;limit=20
+</code></pre>
+<ul>
+<li><code>page</code> starts at 1. <code>limit</code> defaults to 20 and is usually capped at 100.</li>
+<li><code>meta</code> looks like <code>{ "total": 42, "page": 1, "limit": 20, "totalPages": 3 }</code>.</li>
+</ul>
+<p><strong>Cursor style</strong> (lists built on <code>PaginationDto</code>: invited assessments, participants, leaderboard, conversation messages, roadmaps, roadmap templates, org members, admin users, admin organizations):</p>
+<pre><code class="language-text">?cursor=7&amp;limit=20
+</code></pre>
+<ul>
+<li><code>cursor</code> is the id of the last item from the previous page. Leave it out for the first page.</li>
+<li><code>limit</code> defaults to 20, max 50.</li>
+<li><code>meta</code> looks like <code>{ "nextCursor": "7", "total": 42 }</code>. <code>nextCursor: null</code> means this was the last page.</li>
+<li>Some endpoints add more to <code>meta</code>. The leaderboard adds <code>me</code>. Participants adds <code>counts</code>.</li>
+</ul>
+<p>Many lists also take <code>search</code>, <code>sort</code>, and <code>order</code> (<code>asc</code> or <code>desc</code>). The tables below list the main ones.</p>
+<h3 id="rate-limits">Rate limits<a class="headerlink" href="#rate-limits" title="Permanent link">&para;</a></h3>
+<p>Routes are only limited when they have <code>@RateLimit()</code>. A method-level policy replaces the class-level one.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Limit</th>
+<th>Keyed by</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Class A</td>
+<td>10 per 5 minutes</td>
+<td>IP</td>
+<td>Auth routes</td>
+</tr>
+<tr>
+<td>Class B</td>
+<td>30 per minute</td>
+<td>User (IP if not logged in)</td>
+<td>Writes: create, update, submit, enrol</td>
+</tr>
+<tr>
+<td>Class C</td>
+<td>120 per minute</td>
+<td>User (IP if not logged in)</td>
+<td>Reads, lists, polling</td>
+</tr>
+<tr>
+<td>AI generation</td>
+<td>Class B bucket, scope <code>AI_GENERATION</code>, each call costs 3 or 5 tokens</td>
+<td>User</td>
+<td>AI generation routes</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Routes with the same scope share one bucket. All AI generation routes share the <code>AI_GENERATION</code> bucket. At cost 5, that is about 6 calls per minute.</li>
+<li>Every limited response has <code>X-RateLimit-Limit</code> and <code>X-RateLimit-Remaining</code> headers.</li>
+<li>When you hit the limit, you get <code>429</code> with a <code>Retry-After</code> header (seconds):</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;success&quot;: false,
+  &quot;message&quot;: &quot;Rate limit exceeded. Please retry later.&quot;
+}
+</code></pre>
+<h3 id="swagger">Swagger<a class="headerlink" href="#swagger" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Interactive docs are at <code>/api/docs</code>.</li>
+<li>The page is protected with HTTP Basic auth. The username and password come from <code>SWAGGER_USER</code> and <code>SWAGGER_PASS</code>.</li>
+<li>Click <strong>Authorize</strong> and paste an access token to call protected routes. The token is kept across reloads.</li>
+<li>The Razorpay webhook is hidden from Swagger.</li>
+</ul>
+<h3 id="webhooks-and-raw-body">Webhooks and raw body<a class="headerlink" href="#webhooks-and-raw-body" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The app is created with <code>rawBody: true</code>, so <code>req.rawBody</code> holds the exact bytes sent.</li>
+<li><code>POST /webhooks/razorpay</code> uses the raw body to check the <code>x-razorpay-signature</code> HMAC. A missing or wrong signature returns <code>401</code>.</li>
+<li>See <a href="../../hld-design/commerce/">Commerce</a>.</li>
+</ul>
+<hr />
+<h2 id="auth-v1auth">Auth (<code>/v1/auth</code>)<a class="headerlink" href="#auth-v1auth" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/auth/">Auth</a>. Controller: <code>src/identity/auth/auth.controller.ts</code>.
+Rate limit: Class A (by IP) unless noted.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/login</code></td>
+<td>Public</td>
+<td>Log in with email or username and password. Returns tokens.</td>
+<td><code>email</code> or <code>username</code>, <code>password</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/signup</code></td>
+<td>Public</td>
+<td>Create an account. Returns tokens. Status is <code>200</code>, not <code>201</code>.</td>
+<td><code>firstName</code>, <code>lastName</code>, <code>username</code>, <code>email</code>, <code>password</code>, <code>phoneNumber?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/auth/verify-email</code></td>
+<td>Public · own Class A bucket</td>
+<td>Verify an email with the token from the link.</td>
+<td>query <code>token</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/forgot-password</code></td>
+<td>Public · own Class A bucket</td>
+<td>Email a password reset link.</td>
+<td><code>email</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/reset-password</code></td>
+<td>Public · own Class A bucket</td>
+<td>Set a new password with the reset token.</td>
+<td><code>token</code>, <code>password</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/auth/check-username</code></td>
+<td>Public · own Class A bucket</td>
+<td>Check if a username is taken.</td>
+<td>query <code>username</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/google</code></td>
+<td>Public</td>
+<td>Log in or sign up with a Google ID token.</td>
+<td><code>idToken</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/refresh</code></td>
+<td>Public</td>
+<td>Swap a refresh token for a new token pair.</td>
+<td><code>refreshToken</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/auth/me</code></td>
+<td>JWT · Class C</td>
+<td>Get the logged-in user's profile.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/auth/logout</code></td>
+<td>Public</td>
+<td>Invalidate a refresh token.</td>
+<td><code>refreshToken</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>/logout</code> is public because it checks the refresh token in the body, not the access token.</p>
+<hr />
+<h2 id="organizations-v1orgs">Organizations (<code>/v1/orgs</code>)<a class="headerlink" href="#organizations-v1orgs" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/organizations/">Organizations</a>.
+Rate limit: Class B for all three controllers.</p>
+<h3 id="organizations">Organizations<a class="headerlink" href="#organizations" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/organizations/controllers/organizations.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/orgs</code></td>
+<td>JWT</td>
+<td>Create an organization. You become its owner.</td>
+<td><code>name</code>, <code>slug?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/orgs</code></td>
+<td>JWT</td>
+<td>List the orgs you belong to, with your role and permissions.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/orgs/invitations</code></td>
+<td>JWT</td>
+<td>List your pending org invitations.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/orgs/:orgUid/invitation/accept</code></td>
+<td>JWT</td>
+<td>Accept a pending invitation. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/orgs/:orgUid/invitation</code></td>
+<td>JWT</td>
+<td>Decline a pending invitation. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/orgs/:orgUid</code></td>
+<td>Org perm <code>org_settings:read</code></td>
+<td>Get an org you belong to.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/orgs/:orgUid</code></td>
+<td>Org perm <code>org_settings:update</code></td>
+<td>Update an org.</td>
+<td><code>name?</code>, <code>slug?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/orgs/:orgUid/membership</code></td>
+<td>Org member (no permission)</td>
+<td>Leave the org. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="members">Members<a class="headerlink" href="#members" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/organizations/controllers/organization-members.controller.ts</code>. The whole controller is org-scoped.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/orgs/:orgUid/members</code></td>
+<td>Org perm <code>org_members:read</code></td>
+<td>List members and pending invitations. Cursor style.</td>
+<td>query <code>status?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/orgs/:orgUid/members/:userId</code></td>
+<td>Org perm <code>org_members:update</code></td>
+<td>Change a member's role or status.</td>
+<td><code>roleKey?</code>, <code>status?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/orgs/:orgUid/members/:userId</code></td>
+<td>Org perm <code>org_members:delete</code></td>
+<td>Remove a member, or revoke a pending invite. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="invitations">Invitations<a class="headerlink" href="#invitations" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/organizations/controllers/organization-invitations.controller.ts</code>. The whole controller is org-scoped.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/orgs/:orgUid/invitations</code></td>
+<td>Org perm <code>org_members:create</code></td>
+<td>Invite people by name and email.</td>
+<td><code>invitees[]</code> (<code>name</code>, <code>email</code>)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/orgs/:orgUid/invitations/import</code></td>
+<td>Org perm <code>org_members:create</code></td>
+<td>Invite people from a CSV file. Queued, returns <code>202</code> with a job.</td>
+<td>multipart field <code>file</code> (CSV, max 1 MB)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/orgs/:orgUid/invitations/import/sample</code></td>
+<td>Org perm <code>org_members:create</code></td>
+<td>Download a sample CSV.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="assessments-v1assessments">Assessments (<code>/v1/assessments</code>)<a class="headerlink" href="#assessments-v1assessments" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/assessments/">Assessments</a> and <a href="../../hld-design/assessment-generation/">Assessment generation</a>.
+Controller: <code>src/assessments/assessments.controller.ts</code>. Rate limit: Class B unless noted.</p>
+<p>All routes except <code>GET /v1/assessments/:id</code> accept the optional <code>x-organization-id</code> header. With the header, the org role must grant the listed org permission. For edit, delete, publish, and participant routes the guard only checks <code>org_assessments:read</code>. The service then checks that you are the creator, or that your org role has <code>org_assessments:update</code> / <code>org_assessments:delete</code>. This is marked "(+ service check)".</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/generate</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:create</code> · AI cost 5</td>
+<td>Start AI generation of an assessment. Poll the returned job.</td>
+<td><code>prompt</code>, <code>mode</code>, <code>duration</code>, <code>title?</code>, <code>totalQuestions?</code>, <code>questionTypes?</code>, <code>difficulty?</code>, <code>sections[]?</code>, schedule fields; header <code>Idempotency-Key?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/generation/retry</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:create</code> · AI cost 5</td>
+<td>Retry the failed sections of a generation.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:create</code></td>
+<td>Create an assessment by hand.</td>
+<td><code>description</code>, <code>duration</code>, <code>maxParticipants</code>, <code>maxTotalQuestions</code>, <code>correctMarks</code>, <code>incorrectMarks</code>, <code>title?</code>, schedule fields</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/check-enrollment</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>Check if you are enrolled.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>List assessments in your scope. Page style.</td>
+<td>query <code>status</code>, <code>search</code>, <code>sort</code>, <code>order</code>, <code>popular</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/invited</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>List assessments you were invited to. Cursor style.</td>
+<td>query <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>Public</td>
+<td>Get one assessment with its sections.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Update an assessment.</td>
+<td>any create field</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Delete an assessment. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/questions</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Add bank questions to an assessment.</td>
+<td><code>questions[]</code> (<code>questionId</code>, <code>correctMarks</code>, <code>incorrectMarks</code>)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/questions</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>List the questions on an assessment.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/assessments/:id/questions/:assessmentQuestionId</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Replace a question's content on a draft assessment.</td>
+<td><code>questionText</code>, <code>options[]</code>, <code>correctOptionId</code>, <code>explanation?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/publish</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Publish a draft.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/invitations</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Invite people by email.</td>
+<td><code>emails[]</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/participants</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>List participants and their status. Cursor style, <code>meta.counts</code>.</td>
+<td>query <code>status?</code>, <code>search?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessments/:id/participants/:userId</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code> (+ service check)</td>
+<td>Remove a participant or revoke an invite. Returns <code>200</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/invitations/accept</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>Accept your invitation.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/register</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>Register for an assessment.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/unregister</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>Unregister. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Schedule fields (all optional, ISO dates): <code>registrationStartTime</code>, <code>registrationEndTime</code>, <code>attemptStartTime</code>, <code>attemptEndTime</code>.</p>
+<h3 id="attempt-review-and-leaderboard">Attempt review and leaderboard<a class="headerlink" href="#attempt-review-and-leaderboard" title="Permanent link">&para;</a></h3>
+<p>Controllers: <code>src/assessments/attempts/attempt-review.controller.ts</code>, <code>src/assessments/attempts/leaderboard.controller.ts</code>. Rate limit: Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/attempts</code></td>
+<td>JWT · Org header · Perm <code>assessment_attempts:read</code></td>
+<td>List attempts on an assessment, for review. Page style.</td>
+<td>query <code>status?</code>, <code>search?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/attempts/:attemptUid/responses</code></td>
+<td>JWT · Org header · Perm <code>assessment_attempt_responses:read</code></td>
+<td>See one attempt's answers.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/attempts/:attemptUid/reject</code></td>
+<td>JWT · Org header · Perm <code>assessment_attempts:update</code></td>
+<td>Reject an attempt.</td>
+<td><code>reason</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/leaderboard</code></td>
+<td>JWT · Org header, org perm <code>org_assessments:read</code></td>
+<td>Ranked results. Cursor style, <code>meta.me</code> holds your row.</td>
+<td>query <code>cursor</code>, <code>limit</code></td>
+</tr>
+</tbody>
+</table>
+<p>The three review routes use <code>@Permissions()</code>, not <code>@OrgPermissions()</code>. Without the header they need the <strong>platform</strong> permission. With the header they need the <strong>org role</strong> permission.</p>
+<h3 id="assessment-templates-v1assessment-templates">Assessment templates (<code>/v1/assessment-templates</code>)<a class="headerlink" href="#assessment-templates-v1assessment-templates" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/assessments/assessment-templates.controller.ts</code>. Rate limit: Class B.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-templates</code></td>
+<td>Public</td>
+<td>List templates. Page style.</td>
+<td>query <code>search</code>, <code>sort</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessment-templates</code></td>
+<td>JWT</td>
+<td>Create a template.</td>
+<td><code>name</code>, <code>description</code>, <code>duration</code>, <code>maxParticipants</code>, <code>sections[]</code>, <code>slug?</code>, <code>title?</code>, <code>prompt?</code>, <code>visibility?</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/assessment-templates/:uid</code></td>
+<td>JWT (creator only)</td>
+<td>Update a template.</td>
+<td>any create field, <code>isActive?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessment-templates/:uid</code></td>
+<td>JWT (creator only)</td>
+<td>Delete a template. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="assessment-prompts-v1assessment-prompts">Assessment prompts (<code>/v1/assessment-prompts</code>)<a class="headerlink" href="#assessment-prompts-v1assessment-prompts" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/assessments/assessment-prompts.controller.ts</code>. Rate limit: Class B.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessment-prompts</code></td>
+<td>JWT</td>
+<td>Save a prompt.</td>
+<td><code>title</code>, <code>description</code>, <code>prompt</code>, <code>visibility?</code>, <code>status?</code>, <code>tagSlugs?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-prompts</code></td>
+<td>JWT</td>
+<td>List your own prompts. Page style.</td>
+<td>query <code>search</code>, <code>visibility</code>, <code>status</code>, <code>tags</code>, <code>sort</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-prompts/public</code></td>
+<td>JWT</td>
+<td>List the public prompt library. Page style.</td>
+<td>same query as above</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-prompts/:id</code></td>
+<td>JWT</td>
+<td>Get one prompt.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/assessment-prompts/:id</code></td>
+<td>JWT (owner)</td>
+<td>Replace a prompt, including its tags.</td>
+<td>same as create</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessment-prompts/:id</code></td>
+<td>JWT (owner)</td>
+<td>Delete a prompt. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="questions-and-tags">Questions and tags<a class="headerlink" href="#questions-and-tags" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/questions-and-tags/">Questions and tags</a>.</p>
+<p>There is no user-facing questions API. Questions are managed only through the <a href="#questions">Admin API</a>. Tags have a read-only user API.</p>
+<h3 id="tags-v1tags">Tags (<code>/v1/tags</code>)<a class="headerlink" href="#tags-v1tags" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/assessments/tags/tags.controller.ts</code>. Rate limit: Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/tags</code></td>
+<td>JWT</td>
+<td>List tags. Page style.</td>
+<td>query <code>search</code>, <code>sort</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/tags/:id</code></td>
+<td>JWT</td>
+<td>Get one tag.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="attempts-v1attempts">Attempts (<code>/v1/attempts</code>)<a class="headerlink" href="#attempts-v1attempts" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/attempts/">Attempts</a>, <a href="../../hld-design/evaluation/">Evaluation</a>, and <a href="../../hld-design/code-execution/">Code execution</a>.
+Controller: <code>src/assessments/attempts/attempts.controller.ts</code>. Rate limit: Class C unless noted. All routes only work on your own attempts.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts</code></td>
+<td>JWT</td>
+<td>List your attempts. Page style.</td>
+<td>query <code>status?</code>, <code>assessmentId?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:assessmentId/start</code></td>
+<td>JWT · Class B</td>
+<td>Start an attempt. Returns the attempt uid.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/questions</code></td>
+<td>JWT</td>
+<td>List the questions in an attempt.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/questions/:assessmentQuestionId</code></td>
+<td>JWT</td>
+<td>Get one question in an attempt.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/result</code></td>
+<td>JWT</td>
+<td>Get the evaluated result, with a per-question breakdown.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/analytics</code></td>
+<td>JWT</td>
+<td>Get analytics for an attempt.</td>
+<td>query <code>intervalMinutes?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/conversations</code></td>
+<td>JWT · Class B</td>
+<td>Open the AI conversation for an evaluated attempt.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/next-assessment</code></td>
+<td>JWT · Class B · Plan <code>AI_ASSESSMENT_SUGGESTION</code></td>
+<td>Suggest the next assessment from this attempt's result and store it on the attempt. Returns the stored one, with no AI call, when it already exists. <code>200</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/attempts/:attemptUid/responses/:assessmentQuestionId</code></td>
+<td>JWT</td>
+<td>Save or change an answer.</td>
+<td><code>optionId?</code> (MCQ), <code>language?</code> + <code>code?</code> (coding), <code>text?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/submit</code></td>
+<td>JWT · Class B</td>
+<td>Submit the attempt for evaluation.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/attempts/:attemptUid/responses/:assessmentQuestionId</code></td>
+<td>JWT</td>
+<td>Clear an answer. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="next-assessment-suggestion">Next-assessment suggestion<a class="headerlink" href="#next-assessment-suggestion" title="Permanent link">&para;</a></h3>
+<p><code>POST /v1/attempts/:attemptUid/next-assessment</code> returns the suggestion as <code>data</code>. <code>GET /v1/attempts/:attemptUid/result</code> returns the same object as <code>data.nextAssessmentSuggestion</code>, or <code>null</code> when none has been made. Clients show a "suggest" button when it is <code>null</code>.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;SQL Joins — Focused Practice&quot;,
+  &quot;title&quot;: &quot;SQL Joins Practice&quot;,
+  &quot;description&quot;: &quot;Practises the outer joins you missed most, at a gentler difficulty.&quot;,
+  &quot;prompt&quot;: &quot;SQL joins at an intermediate level, focusing on LEFT and FULL OUTER JOIN semantics.&quot;,
+  &quot;duration&quot;: 20,
+  &quot;maxTotalQuestions&quot;: 10,
+  &quot;sections&quot;: [
+    {
+      &quot;title&quot;: &quot;Outer joins&quot;,
+      &quot;prompt&quot;: &quot;LEFT and FULL OUTER JOIN results on small tables; ask what rows come back.&quot;,
+      &quot;questionType&quot;: &quot;mcq&quot;,
+      &quot;questionCount&quot;: 10,
+      &quot;difficulty&quot;: 2,
+      &quot;positiveMark&quot;: 4,
+      &quot;negativeMark&quot;: 1
+    }
+  ],
+  &quot;generatedAt&quot;: &quot;2026-10-28T09:00:00.000Z&quot;
+}
+</code></pre>
+<p>It is the start-ready part of an assessment template (no <code>uid</code>, <code>slug</code>, owner or visibility). To start it, send it as a manual-mode <code>POST /v1/assessments/generate</code>: <code>mode: "manual"</code>, <code>title</code>, <code>prompt</code>, <code>duration</code> and the <code>sections</code>. That spends <code>AI_ASSESSMENT</code> as usual.</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>400</code></td>
+<td>Attempt uid malformed, or the attempt is not evaluated yet.</td>
+</tr>
+<tr>
+<td><code>403</code></td>
+<td>Not your attempt, or your plan does not include <code>AI_ASSESSMENT_SUGGESTION</code>.</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Attempt not found.</td>
+</tr>
+<tr>
+<td><code>409</code></td>
+<td>The attempt was rejected by a reviewer.</td>
+</tr>
+<tr>
+<td><code>503</code></td>
+<td>The model call failed after its repair attempts.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ai-conversations-v1conversations">AI conversations (<code>/v1/conversations</code>)<a class="headerlink" href="#ai-conversations-v1conversations" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/ai-assistant/">AI assistant</a> and <a href="../../hld-design/ai/">AI</a>.
+Controller: <code>src/ai/ai-conversations.controller.ts</code>. Rate limit: Class B.</p>
+<p>New messages are sent over the WebSocket, not HTTP. See <a href="../../hld-design/realtime-events/">Realtime events</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/conversations/:conversationId/messages</code></td>
+<td>JWT (owner)</td>
+<td>One page of a conversation's messages, newest first. Cursor style.</td>
+<td>query <code>cursor</code>, <code>limit</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="jobs-v1jobs">Jobs (<code>/v1/jobs</code>)<a class="headerlink" href="#jobs-v1jobs" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/jobs-and-schedulers/">Jobs and schedulers</a>.
+Controller: <code>src/jobs/jobs.controller.ts</code>. Rate limit: Class C unless noted.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/jobs/:id</code></td>
+<td>JWT (owner)</td>
+<td>Get a background job's status and progress.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/jobs/:id/retry</code></td>
+<td>JWT (owner) · AI cost 5</td>
+<td>Retry a failed job.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="learning-roadmaps">Learning roadmaps<a class="headerlink" href="#learning-roadmaps" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/learning-roadmaps/">Learning roadmaps</a>.</p>
+<h3 id="roadmaps-v1roadmaps">Roadmaps (<code>/v1/roadmaps</code>)<a class="headerlink" href="#roadmaps-v1roadmaps" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/learning-roadmaps/learning-roadmaps.controller.ts</code>. Rate limit: Class B unless noted. All routes only work on your own roadmaps.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/roadmaps</code></td>
+<td>JWT · AI cost 3</td>
+<td>Start a roadmap from a plain-language goal. Returns <code>202</code> and a job id.</td>
+<td><code>description</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/roadmaps/:id/requirement-collection</code></td>
+<td>JWT · AI cost 5</td>
+<td>Answer the requirement questions and build the graph. Returns <code>202</code>.</td>
+<td><code>requirementQuestions[]</code> (<code>id</code>, <code>answer</code>, <code>description?</code>)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/roadmaps/:id/graph/modify</code></td>
+<td>JWT · AI cost 5</td>
+<td>Revise the roadmap in plain language. Returns <code>202</code>.</td>
+<td><code>description</code>, <code>affectedNodes[]</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmaps</code></td>
+<td>JWT</td>
+<td>List your roadmaps. Cursor style.</td>
+<td>query <code>status?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmaps/:id</code></td>
+<td>JWT</td>
+<td>Roadmap detail, requirement questions, and job ids.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmaps/:id/graph</code></td>
+<td>JWT</td>
+<td>The full graph (nodes and edges).</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmaps/:id/nodes/:nodeId</code></td>
+<td>JWT</td>
+<td>One node's full detail.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmaps/:id/notepad</code></td>
+<td>JWT</td>
+<td>Get your notepad for the roadmap.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/roadmaps/:id/notepad</code></td>
+<td>JWT</td>
+<td>Replace your notepad.</td>
+<td><code>content</code></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/roadmaps/:id/nodes/:nodeId/progress</code></td>
+<td>JWT</td>
+<td>Set a step's progress.</td>
+<td><code>status</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/roadmaps/:id/nodes/:nodeId/assessments</code></td>
+<td>JWT · AI cost 5</td>
+<td>Generate a practice assessment for a step. Returns <code>202</code>.</td>
+<td><code>totalQuestion</code>, <code>positiveMark</code>, <code>negativeMark</code>, <code>duration</code>, <code>instruction?</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="roadmap-templates-v1roadmap-templates">Roadmap templates (<code>/v1/roadmap-templates</code>)<a class="headerlink" href="#roadmap-templates-v1roadmap-templates" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/learning-roadmaps/learning-roadmap-templates.controller.ts</code>. Rate limit: Class B.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/roadmap-templates</code></td>
+<td>Public</td>
+<td>List roadmap templates. Cursor style.</td>
+<td>query <code>search?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/roadmap-templates</code></td>
+<td>JWT</td>
+<td>Create a template.</td>
+<td><code>name</code>, <code>description</code>, <code>goal</code>, <code>slug?</code>, <code>visibility?</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/roadmap-templates/:uid</code></td>
+<td>JWT (creator only)</td>
+<td>Update a template.</td>
+<td>any create field, <code>isActive?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/roadmap-templates/:uid</code></td>
+<td>JWT (creator only)</td>
+<td>Delete a template. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="commerce">Commerce<a class="headerlink" href="#commerce" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/commerce/">Commerce</a>.</p>
+<h3 id="plans-v1plans">Plans (<code>/v1/plans</code>)<a class="headerlink" href="#plans-v1plans" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/plans/plans.controller.ts</code>. Rate limit: Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/plans</code></td>
+<td>Public</td>
+<td>List the plans shown to buyers. Page style.</td>
+<td>query <code>name?</code>, <code>audience?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="subscriptions-v1subscriptions">Subscriptions (<code>/v1/subscriptions</code>)<a class="headerlink" href="#subscriptions-v1subscriptions" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/subscriptions/subscriptions.controller.ts</code>. Rate limit: Class C unless noted.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/subscriptions</code></td>
+<td>JWT · Org header, org perm <code>org_billing:read</code></td>
+<td>Get the current subscription (yours, or the org's with the header).</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/subscriptions/checkout</code></td>
+<td>JWT · Class B</td>
+<td>Start checkout for a plan. Creates an order.</td>
+<td><code>planCode</code>, <code>version</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="usage-v1usage">Usage (<code>/v1/usage</code>)<a class="headerlink" href="#usage-v1usage" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/usage/usage.controller.ts</code>. Rate limit: Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/usage/subscriptions/:subscriptionId</code></td>
+<td>JWT · Org header, org perm <code>org_billing:read</code></td>
+<td>Feature usage for a subscription.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="payments-v1payments">Payments (<code>/v1/payments</code>)<a class="headerlink" href="#payments-v1payments" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/payments/payments.controller.ts</code>. Rate limit: Class B.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/payments/razorpay/create</code></td>
+<td>JWT</td>
+<td>Create a Razorpay payment for an order (a plan or a credit pack). Returns what the checkout widget needs.</td>
+<td><code>orderId</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="orders-v1orders">Orders (<code>/v1/orders</code>)<a class="headerlink" href="#orders-v1orders" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/payments/orders.controller.ts</code>. Rate limit: Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/orders</code></td>
+<td>JWT</td>
+<td>Your paid, fulfilled and failed orders, newest first, each with the plan or credit pack bought and every payment attempt (with Razorpay's payment id as <code>reference</code>). Unpaid checkouts are left out. Cursor style.</td>
+<td>query <code>status?</code> (<code>PAID</code>, <code>FULFILLED</code>, <code>FAILED</code>), <code>resourceType?</code>, <code>cursor?</code>, <code>limit?</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="credits-v1credits">Credits (<code>/v1/credits</code>)<a class="headerlink" href="#credits-v1credits" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/commerce/credits/credits.controller.ts</code>. Rate limit: Class C unless noted.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/credits/packs</code></td>
+<td>Public</td>
+<td>List the credit packs on sale.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/credits/checkout</code></td>
+<td>JWT · Class B</td>
+<td>Start buying a pack. Creates a <code>CREDIT</code> order, paid through <code>/v1/payments/razorpay/create</code>.</td>
+<td><code>creditPackId</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/credits/balance</code></td>
+<td>JWT</td>
+<td>Your credit balances, per feature and AI model.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="webhooks-webhooks">Webhooks (<code>/webhooks</code>)<a class="headerlink" href="#webhooks-webhooks" title="Permanent link">&para;</a></h3>
+<p>Controller: <code>src/webhooks/webhooks.controller.ts</code>. No rate limit. Hidden from Swagger.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/webhooks/razorpay</code></td>
+<td>Public (HMAC signature checked in the service)</td>
+<td>Receive Razorpay payment events.</td>
+<td>raw body; header <code>x-razorpay-signature</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="support-v1support">Support (<code>/v1/support</code>)<a class="headerlink" href="#support-v1support" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/platform-services/">Platform services</a>.
+Controller: <code>src/support-tickets/support-tickets.controller.ts</code>. Rate limit: Class C, create is Class B.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/support</code></td>
+<td>JWT · Class B</td>
+<td>Create a support ticket.</td>
+<td><code>topic</code>, <code>query</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="health-and-ping">Health and ping<a class="headerlink" href="#health-and-ping" title="Permanent link">&para;</a></h2>
+<p>Flows: <a href="../../hld-design/platform-services/">Platform services</a>. No rate limit, no <code>v1</code> prefix.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/ping</code></td>
+<td>Public</td>
+<td>Simple liveness check.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/health</code></td>
+<td>Public</td>
+<td>Check the process and its dependencies. Returns <code>503</code> with <code>data</code> if one is down.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="admin-api-v1admin">Admin API (<code>/v1/admin</code>)<a class="headerlink" href="#admin-api-v1admin" title="Permanent link">&para;</a></h2>
+<p>These routes are for platform admins. Every route needs a <strong>platform</strong> permission (checked against your platform roles, never an org role). The seeded <code>super_admin</code> role has the <code>*:*</code> wildcard, so it passes all of them. See <a href="../../hld-design/rbac/">RBAC</a>.</p>
+<p>Rate limit: Class C unless noted.</p>
+<h3 id="users">Users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/rbac/">RBAC</a>. Controller: <code>src/identity/users/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/users</code></td>
+<td>Perm <code>users:read</code></td>
+<td>List users with their roles. Cursor style.</td>
+<td>query <code>search?</code>, <code>role?</code>, <code>isActive?</code>, <code>isVerified?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/users/:username/roles</code></td>
+<td>Perm <code>users:read</code></td>
+<td>List a user's roles.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/users/:username/roles</code></td>
+<td>Perm <code>users:create</code></td>
+<td>Give a user a role.</td>
+<td><code>roleKey</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/users/:username/roles/:roleKey</code></td>
+<td>Perm <code>users:delete</code></td>
+<td>Take a role away. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roles-and-permissions">Roles and permissions<a class="headerlink" href="#roles-and-permissions" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/rbac/">RBAC</a>. Controller: <code>src/identity/rbac/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/roles</code></td>
+<td>Perm <code>roles:read</code></td>
+<td>List all roles, platform and org.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/roles/:roleKey</code></td>
+<td>Perm <code>roles:read</code></td>
+<td>Get one role.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/roles</code></td>
+<td>Perm <code>roles:create</code></td>
+<td>Create a role.</td>
+<td><code>key</code>, <code>scope?</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/roles/:roleKey</code></td>
+<td>Perm <code>roles:update</code></td>
+<td>Rename a role.</td>
+<td><code>key?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/roles/:roleKey</code></td>
+<td>Perm <code>roles:delete</code></td>
+<td>Delete a role. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/roles/:roleKey/permissions</code></td>
+<td>Perm <code>permissions:read</code></td>
+<td>List a role's permission keys.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/admin/roles/:roleKey/permissions</code></td>
+<td>Perm <code>permissions:update</code></td>
+<td>Replace all of a role's permissions.</td>
+<td><code>permissions[]</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/roles/:roleKey/permissions/:permissionKey</code></td>
+<td>Perm <code>permissions:create</code></td>
+<td>Add one permission to a role.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/roles/:roleKey/permissions/:permissionKey</code></td>
+<td>Perm <code>permissions:delete</code></td>
+<td>Remove one permission. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/permissions</code></td>
+<td>Perm <code>permissions:read</code></td>
+<td>List every permission key.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/access-check</code></td>
+<td>Perm <code>permissions:read</code></td>
+<td>Check if a role has a permission.</td>
+<td><code>roleKey</code>, <code>permissionKey</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="organizations_1">Organizations<a class="headerlink" href="#organizations_1" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/organizations/">Organizations</a>. Controller: <code>src/organizations/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/organizations</code></td>
+<td>Perm <code>organizations:create</code></td>
+<td>Create an org for an existing user.</td>
+<td><code>name</code>, <code>ownerEmail</code>, <code>slug?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/organizations</code></td>
+<td>Perm <code>organizations:read</code></td>
+<td>List all orgs. Cursor style.</td>
+<td>query <code>search?</code>, <code>status?</code>, <code>cursor</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/organizations/:orgUid</code></td>
+<td>Perm <code>organizations:read</code></td>
+<td>Get any org.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/organizations/:orgUid/status</code></td>
+<td>Perm <code>organizations:update</code></td>
+<td>Suspend or reactivate an org.</td>
+<td><code>status</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="assessments">Assessments<a class="headerlink" href="#assessments" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/assessments/">Assessments</a>. Controller: <code>src/assessments/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments</code></td>
+<td>Perm <code>assessments:read</code></td>
+<td>List every assessment, personal and org. Page style.</td>
+<td>same query as <code>GET /v1/assessments</code>, plus <code>workspace?</code>, <code>organization?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments/:id</code></td>
+<td>Perm <code>assessments:read</code></td>
+<td>Get any assessment.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="attempts">Attempts<a class="headerlink" href="#attempts" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/attempts/">Attempts</a>. Controller: <code>src/assessments/attempts/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments/:id/attempts</code></td>
+<td>Perm <code>assessment_attempts:read</code></td>
+<td>List any assessment's attempts. Page style.</td>
+<td>query <code>status?</code>, <code>search?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments/:id/attempts/:attemptUid/responses</code></td>
+<td>Perm <code>assessment_attempt_responses:read</code></td>
+<td>See one attempt's answers.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/assessments/:id/attempts/:attemptUid/reject</code></td>
+<td>Perm <code>assessment_attempts:update</code></td>
+<td>Reject an attempt.</td>
+<td><code>reason</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="questions">Questions<a class="headerlink" href="#questions" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/questions-and-tags/">Questions and tags</a>. Controller: <code>src/assessments/questions/admin.controller.ts</code>. Rate limit: <strong>Class B</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/questions</code></td>
+<td>Perm <code>questions:create</code></td>
+<td>Create a question in the bank.</td>
+<td><code>questionText</code>, <code>options[]</code>, <code>correctOptionId</code>, <code>explanation?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/questions/generate</code></td>
+<td>Role <code>super_admin</code> + Perm <code>questions:create</code> · AI cost 5</td>
+<td>Generate questions with AI and add them to the bank.</td>
+<td><code>prompt</code>, <code>count</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/questions</code></td>
+<td>Perm <code>questions:read</code></td>
+<td>List questions. Page style.</td>
+<td>query <code>search?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td>Perm <code>questions:read</code></td>
+<td>Get one question.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td>Perm <code>questions:update</code></td>
+<td>Update a question.</td>
+<td><code>questionText?</code>, <code>options?</code>, <code>correctOptionId?</code>, <code>explanation?</code>, <code>coding?</code></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/admin/questions/:id/starter-code</code></td>
+<td>Perm <code>questions:update</code></td>
+<td>Replace a coding question's starter code.</td>
+<td><code>starterCode</code> (object keyed by language)</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td>Perm <code>questions:delete</code></td>
+<td>Delete a question. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/questions-and-tags/">Questions and tags</a>. Controller: <code>src/assessments/tags/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/tags</code></td>
+<td>Perm <code>tags:create</code></td>
+<td>Create a tag.</td>
+<td><code>name</code>, <code>slug?</code>, <code>isActive?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/tags</code></td>
+<td>Perm <code>tags:read</code></td>
+<td>List tags. Page style.</td>
+<td>query <code>search</code>, <code>sort</code>, <code>order</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/tags/:id</code></td>
+<td>Perm <code>tags:read</code></td>
+<td>Get one tag.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/tags/:id</code></td>
+<td>Perm <code>tags:update</code></td>
+<td>Update a tag.</td>
+<td><code>name?</code>, <code>slug?</code>, <code>isActive?</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/tags/:slug</code></td>
+<td>Perm <code>tags:delete</code></td>
+<td>Delete a tag <strong>by slug</strong> (not id). Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="commerce_1">Commerce<a class="headerlink" href="#commerce_1" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/commerce/">Commerce</a>. Controller: <code>src/commerce/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/plans</code></td>
+<td>Perm <code>plans:read</code></td>
+<td>List all plans, including hidden ones. Page style.</td>
+<td>query <code>name?</code>, <code>audience?</code>, <code>isActive?</code>, <code>isDisplayed?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/plans/:planId</code></td>
+<td>Perm <code>plans:update</code></td>
+<td>Edit a plan's details.</td>
+<td><code>name?</code>, <code>description?</code>, <code>isActive?</code>, <code>sortOrder?</code>, <code>isDisplayed?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/plans/:planId</code></td>
+<td>Perm <code>plans:read</code></td>
+<td>Get a plan with its versions and features.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/plans</code></td>
+<td>Perm <code>plans:create</code></td>
+<td>Create a plan and its first version.</td>
+<td><code>name</code>, <code>description</code>, <code>price</code>, <code>currency</code>, <code>billingCycle</code>, <code>audience?</code>, <code>expiryDays?</code>, …</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/plans/:planId/versions</code></td>
+<td>Perm <code>plans:create</code></td>
+<td>Add a new price version.</td>
+<td><code>price</code>, <code>currency</code>, <code>billingCycle</code>, <code>effectiveFrom?</code>, <code>effectiveUntil?</code>, <code>expiryDays?</code></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/admin/plans/:planId/versions/:versionNo</code></td>
+<td>Perm <code>plans:update</code></td>
+<td>Update a version.</td>
+<td>any version field, <code>isCurrent?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/plans/:planId/versions/:versionNumber/features</code></td>
+<td>Perm <code>plans:create</code></td>
+<td>Add a feature to a version.</td>
+<td><code>featureId</code>, <code>displayName</code>, <code>featureValue</code>, <code>type?</code>, <code>description?</code>, <code>resetPeriod?</code></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/admin/plans/:planId/versions/:versionNumber/features/:featureId</code></td>
+<td>Perm <code>plans:update</code></td>
+<td>Update a version's feature.</td>
+<td>any feature field</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/plans/:planId/versions/:versionNumber/features/:featureId</code></td>
+<td>Perm <code>plans:delete</code></td>
+<td>Remove a feature from a version. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/features</code></td>
+<td>Perm <code>features:read</code></td>
+<td>List all features.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/orders</code></td>
+<td>Perm <code>payments:read</code></td>
+<td>List orders across all users, with what each bought. Page style.</td>
+<td>query <code>status?</code>, <code>resourceType?</code>, <code>provider?</code>, <code>userId?</code>, <code>search?</code>, <code>createdFrom?</code>, <code>createdTo?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/orders/:orderId</code></td>
+<td>Perm <code>payments:read</code></td>
+<td>Get an order with its metadata and every payment attempt.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/payments</code></td>
+<td>Perm <code>payments:read</code></td>
+<td>List payments across all users. Page style.</td>
+<td>query <code>status?</code>, <code>provider?</code>, <code>search?</code>, <code>createdFrom?</code>, <code>createdTo?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/payments/:paymentId</code></td>
+<td>Perm <code>payments:read</code></td>
+<td>Get a payment, with the plan or credit pack its order bought.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/subscriptions</code></td>
+<td>Perm <code>subscriptions:read</code></td>
+<td>List subscriptions across users and orgs. Page style.</td>
+<td>query <code>status?</code>, <code>planId?</code>, <code>scope?</code>, <code>organizationUid?</code>, <code>search?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/subscriptions/:subscriptionId</code></td>
+<td>Perm <code>subscriptions:read</code></td>
+<td>Get a subscription with its orders, their payments, and its current-period usage.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/usage</code></td>
+<td>Perm <code>usage:read</code></td>
+<td>List feature usage across users and orgs. Page style.</td>
+<td>query <code>featureKey?</code>, <code>scope?</code>, <code>organizationUid?</code>, <code>current?</code>, <code>search?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/usage/:usageId</code></td>
+<td>Perm <code>usage:read</code></td>
+<td>Get a usage row with its plan feature settings, what is left, and the owner's credit balances.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Credit packs: controller <code>src/commerce/credits/credit-packs-admin.controller.ts</code>, rate limit Class C.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/credit-packs</code></td>
+<td>Perm <code>plans:read</code></td>
+<td>List every credit pack, inactive ones included.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/credit-packs/:creditPackId</code></td>
+<td>Perm <code>plans:read</code></td>
+<td>Get a credit pack.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/credit-packs</code></td>
+<td>Perm <code>plans:create</code></td>
+<td>Create a credit pack.</td>
+<td><code>name</code>, <code>featureId</code>, <code>quantity</code>, <code>price</code>, <code>currency</code>, <code>description?</code>, <code>aiModelCode?</code>, <code>isActive?</code>, <code>sortOrder?</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/credit-packs/:creditPackId</code></td>
+<td>Perm <code>plans:update</code></td>
+<td>Edit a pack, or take it off sale with <code>isActive: false</code>.</td>
+<td>any create field</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ai-models-and-llm-audits">AI models and LLM audits<a class="headerlink" href="#ai-models-and-llm-audits" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/ai/">AI</a>. Controller: <code>src/ai/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/ai-models</code></td>
+<td>Perm <code>ai_models:create</code></td>
+<td>Register an AI model.</td>
+<td><code>provider</code>, <code>code</code>, <code>displayName</code>, <code>apiKeyVariable</code>, <code>baseUrlVariable?</code>, <code>capabilities?</code>, <code>isActive?</code>, <code>isDefault?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/ai-models</code></td>
+<td>Perm <code>ai_models:read</code></td>
+<td>List AI models. Page style.</td>
+<td>query <code>provider?</code>, <code>isActive?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/ai-models/:id</code></td>
+<td>Perm <code>ai_models:read</code></td>
+<td>Get one AI model.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/ai-models/:id</code></td>
+<td>Perm <code>ai_models:update</code></td>
+<td>Update an AI model.</td>
+<td>any create field</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/ai-models/:id</code></td>
+<td>Perm <code>ai_models:delete</code></td>
+<td>Delete an AI model. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/llm-audits</code></td>
+<td>Perm <code>llm_audits:read</code></td>
+<td>LLM usage per job, with tokens and cost. Page style.</td>
+<td>query <code>jobId?</code>, <code>jobType?</code>, <code>userId?</code>, <code>modelCode?</code>, <code>provider?</code>, <code>status?</code>, <code>startedFrom?</code>, <code>startedTo?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="feature-flags">Feature flags<a class="headerlink" href="#feature-flags" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/platform-services/">Platform services</a>. Controller: <code>src/feature-flags/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/feature-flags</code></td>
+<td>Perm <code>feature_flags:read</code></td>
+<td>List all flags and their state.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/feature-flags/:key</code></td>
+<td>Perm <code>feature_flags:read</code></td>
+<td>Get one flag.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/feature-flags/:key</code></td>
+<td>Perm <code>feature_flags:update</code></td>
+<td>Turn a flag on or off, or limit it to roles.</td>
+<td><code>enabled?</code>, <code>roleKeys?</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="newsletters-and-email-templates">Newsletters and email templates<a class="headerlink" href="#newsletters-and-email-templates" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/notifications/">Notifications</a>. Controllers: <code>src/newsletters/admin.controller.ts</code>, <code>src/notifications/email-templates-admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/newsletters</code></td>
+<td>Perm <code>newsletters:create</code> · Class B</td>
+<td>Schedule a newsletter to all subscribed users.</td>
+<td><code>subject</code>, <code>bodyHtml</code>, <code>bodyText?</code>, <code>scheduledAt?</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/newsletters/preview</code></td>
+<td>Perm <code>newsletters:create</code></td>
+<td>Render a draft as it will be sent.</td>
+<td><code>subject</code>, <code>bodyHtml</code>, <code>bodyText?</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/newsletters</code></td>
+<td>Perm <code>newsletters:read</code></td>
+<td>List newsletters. Page style.</td>
+<td>query <code>status?</code>, <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/newsletters/:id</code></td>
+<td>Perm <code>newsletters:read</code></td>
+<td>Get one newsletter and its delivery status.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/newsletters/:id/preview</code></td>
+<td>Perm <code>newsletters:read</code></td>
+<td>Render a saved newsletter.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/newsletters/:id</code></td>
+<td>Perm <code>newsletters:delete</code></td>
+<td>Cancel a newsletter. Returns <code>204</code>.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/email-templates</code></td>
+<td>Perm <code>newsletters:read</code></td>
+<td>List the emails the platform sends.</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/email-templates/:key/preview</code></td>
+<td>Perm <code>newsletters:read</code></td>
+<td>Render an email with sample data.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="stats-and-support-tickets">Stats and support tickets<a class="headerlink" href="#stats-and-support-tickets" title="Permanent link">&para;</a></h3>
+<p>Flows: <a href="../../hld-design/platform-services/">Platform services</a>. Controllers: <code>src/stats/admin.controller.ts</code>, <code>src/support-tickets/admin.controller.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Key body / query fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/stats</code></td>
+<td>Perm <code>stats:read</code></td>
+<td>Platform-wide numbers for the admin overview.</td>
+<td>query <code>days</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/support-tickets</code></td>
+<td>Perm <code>support_tickets:read</code></td>
+<td>List all support tickets. Page style.</td>
+<td>query <code>page</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/support-tickets/:id</code></td>
+<td>Perm <code>support_tickets:update</code></td>
+<td>Change a ticket's status.</td>
+<td><code>status</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="websocket-events">WebSocket events<a class="headerlink" href="#websocket-events" title="Permanent link">&para;</a></h2>
+<p>Live updates (generation progress, job status, AI assistant messages) use Socket.IO, not REST.
+See <a href="../../hld-design/realtime-events/">Realtime events</a>.</p>
+<hr />
+<h2 id="route-count">Route count<a class="headerlink" href="#route-count" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Routes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Organizations (orgs, members, invitations)</td>
+<td>14</td>
+</tr>
+<tr>
+<td>Assessments, review, leaderboard, templates, prompts</td>
+<td>33</td>
+</tr>
+<tr>
+<td>Tags (user)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Attempts</td>
+<td>10</td>
+</tr>
+<tr>
+<td>AI conversations</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Jobs</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Roadmaps and roadmap templates</td>
+<td>15</td>
+</tr>
+<tr>
+<td>Commerce (plans, subscriptions, usage, payments, orders, credits, webhook)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Support</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Health and ping</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Admin API</td>
+<td>78</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>178</strong></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2905 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Set up and run the TestFlow backend locally - tools, environment variables, migrations, seeds, tests">
+      
+      
+      
+      
+        <link rel="prev" href="../overview/">
+      
+      
+        <link rel="next" href="../architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Getting Started - TestFlow | Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="TestFlow | Docs" class="md-header__button md-logo" aria-label="TestFlow | Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Getting Started
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="TestFlow | Docs" class="md-nav__button md-logo" aria-label="TestFlow | Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    TestFlow | Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Quick start
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Quick start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-run-only-the-services-in-docker-the-app-on-your-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A: run only the services in Docker, the app on your machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-run-everything-in-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: run everything in Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-that-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check that it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Environment variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Environment variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#app-and-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App and docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database (PostgreSQL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-jwt-and-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth (JWT and Google)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llm-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email-smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email (SMTP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payments-razorpay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payments (Razorpay)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newsletters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newsletters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-storage-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File storage (S3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripts-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripts only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-swagger-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Swagger (API docs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-database-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Database migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-seeders-and-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Seeders and scripts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-lint-and-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Lint and format
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-useful-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Useful tips
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../erd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-access-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api-design/v1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication & Users
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/rbac/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/organizations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/assessments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/questions-and-tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Questions & Tags
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/assessment-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/attempts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/code-execution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/ai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs & Graphs)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/ai-assistant/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Assistant & Tools
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/commerce/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commerce, Payments & Webhooks
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/learning-roadmaps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/realtime-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/jobs-and-schedulers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs & Schedulers
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & Email
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hld-design/platform-services/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+  
+  
+    
+  
+  
+    <span class="md-status md-status--stable"></span>
+  
+
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../claude-agent-arch/arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Quick start
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Quick start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-run-only-the-services-in-docker-the-app-on-your-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A: run only the services in Docker, the app on your machine
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-run-everything-in-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B: run everything in Docker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-that-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check that it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Environment variables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Environment variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#app-and-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        App and docs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database (PostgreSQL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auth-jwt-and-google" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Auth (JWT and Google)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Redis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llm-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#email-smtp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Email (SMTP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payments-razorpay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payments (Razorpay)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#newsletters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newsletters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-storage-s3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File storage (S3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scripts-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scripts only
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-swagger-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Swagger (API docs)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-database-migrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Database migrations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-seeders-and-scripts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Seeders and scripts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tests
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-lint-and-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Lint and format
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-useful-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Useful tips
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
+<p>This page takes you from a fresh clone to a running backend with data in it. It also lists every environment variable the code reads.</p>
+<hr />
+<h2 id="1-prerequisites">1. Prerequisites<a class="headerlink" href="#1-prerequisites" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Version</th>
+<th>Why you need it</th>
+<th>Required?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js + npm</td>
+<td>20 (the Docker image uses <code>node:20-alpine</code>)</td>
+<td>Runs the NestJS app, scripts, and tests.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>15 (compose uses <code>postgres:15-alpine</code>)</td>
+<td>Main database.</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>7</td>
+<td>Rate-limit buckets and the read cache. The app still starts if Redis is down (both uses "fail open").</td>
+<td>Strongly recommended</td>
+</tr>
+<tr>
+<td>RabbitMQ</td>
+<td>4 with the management plugin</td>
+<td>Background jobs: AI generation, evaluation, roadmaps, CSV invite import.</td>
+<td>Yes (the app connects at boot)</td>
+</tr>
+<tr>
+<td>Docker + Docker Compose</td>
+<td>Any recent</td>
+<td>Easiest way to run Postgres, Redis, and RabbitMQ.</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>An LLM API key</td>
+<td>OpenAI by default</td>
+<td>AI generation, descriptive grading, roadmaps, assistant.</td>
+<td>Needed for AI features</td>
+</tr>
+<tr>
+<td>Code runner</td>
+<td>Piston (self-hosted, separate <code>piston</code> repo) or an OnlineCompiler.io key</td>
+<td>Running and judging coding questions.</td>
+<td>Needed for coding questions</td>
+</tr>
+<tr>
+<td>SMTP server</td>
+<td>Any (Mailtrap, Gmail app password, etc.)</td>
+<td>Verification, reset, and invite emails.</td>
+<td>Its env vars are required at boot</td>
+</tr>
+<tr>
+<td>S3 bucket</td>
+<td>AWS S3, or MinIO / LocalStack locally</td>
+<td>Stores uploaded invitation CSVs.</td>
+<td>Its env vars are required at boot</td>
+</tr>
+<tr>
+<td>Razorpay test keys</td>
+<td>-</td>
+<td>Checkout and payment webhooks.</td>
+<td>Key ID and secret are required at boot</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Required at boot</p>
+<p>Some services read their variables with <code>getOrThrow</code> in their constructor, so the app will not start without them, even if you never use that feature. These are: the <code>DATABASE_*</code> vars, <code>RABBITMQ_URL</code>, <code>SMTP_HOST</code>, <code>SMTP_USER</code>, <code>SMTP_PASSWORD</code>, <code>EMAIL_FROM</code>, <code>AWS_REGION</code>, <code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code>, <code>AWS_S3_BUCKET</code>, <code>RAZORPAY_KEY_ID</code>, <code>RAZORPAY_KEY_SECRET</code>, and <code>GOOGLE_OAUTH2_CLIENT_ID</code>. The JWT variables are needed as soon as anyone logs in. Put a placeholder value in when you do not need a feature.</p>
+</div>
+<hr />
+<h2 id="2-quick-start">2. Quick start<a class="headerlink" href="#2-quick-start" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash">git clone &lt;backend repo url&gt; Test-Flow-Backend
+cd Test-Flow-Backend
+npm ci
+cp .env.example .env          # then fill in the values (see section 3)
+</code></pre>
+<h3 id="option-a-run-only-the-services-in-docker-the-app-on-your-machine">Option A: run only the services in Docker, the app on your machine<a class="headerlink" href="#option-a-run-only-the-services-in-docker-the-app-on-your-machine" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">docker compose up -d db redis rabbitmq
+</code></pre>
+<p>The compose file maps the ports like this, so update <code>.env</code> to match:</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Host port</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Postgres</td>
+<td><code>5434</code></td>
+<td>Set <code>DATABASE_PORT=5434</code>, <code>DATABASE_HOST=localhost</code>.</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td><code>6380</code></td>
+<td>Set <code>REDIS_PORT=6380</code>.</td>
+</tr>
+<tr>
+<td>RabbitMQ</td>
+<td><code>5672</code> (AMQP), <code>15672</code> (UI)</td>
+<td><code>RABBITMQ_URL=amqp://guest:guest@localhost:5672</code>. Management UI at <code>http://localhost:15672</code> (guest/guest).</td>
+</tr>
+</tbody>
+</table>
+<p>Then:</p>
+<pre><code class="language-bash">npm run migration:run
+npm run seed
+npm run dev          # nest start --watch, on PORT (default 3000)
+</code></pre>
+<h3 id="option-b-run-everything-in-docker">Option B: run everything in Docker<a class="headerlink" href="#option-b-run-everything-in-docker" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">docker compose up --build
+</code></pre>
+<p>This builds the <code>dev</code> stage of the <code>Dockerfile</code> and mounts <code>./src</code> and <code>./tests</code>, so code changes hot-reload. <code>entrypoint.dev.sh</code> waits for Postgres, runs <code>npm run migration:run</code>, then <code>npm run dev</code>. The compose file overrides <code>DATABASE_HOST</code>, <code>REDIS_HOST</code>, and <code>RABBITMQ_URL</code> so the app can reach the other containers. If you add an npm dependency, run <code>docker compose up --build</code> again.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>docker-compose.yml</code></td>
+<td>Local full stack (app + db + redis + rabbitmq). Also used by the CI smoke test.</td>
+</tr>
+<tr>
+<td><code>docker-compose.dev.yml</code></td>
+<td>The shared dev server. It pulls a prebuilt image and has <strong>no</strong> database service (the dev DB is external).</td>
+</tr>
+<tr>
+<td><code>Dockerfile</code></td>
+<td>Multi-stage. <code>dev</code> stage for hot reload; the last (runtime) stage ships only <code>dist/</code> and production deps.</td>
+</tr>
+<tr>
+<td><code>entrypoint.sh</code></td>
+<td>Runtime image: wait for Postgres, <code>migration:run:prod</code>, <code>start:prod</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="check-that-it-works">Check that it works<a class="headerlink" href="#check-that-it-works" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>URL</th>
+<th>What you should see</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET http://localhost:3000/ping</code></td>
+<td>A public ping response.</td>
+</tr>
+<tr>
+<td><code>GET http://localhost:3000/health</code></td>
+<td>Status of <code>database</code>, <code>redis</code>, and <code>rabbitmq</code>.</td>
+</tr>
+<tr>
+<td><code>http://localhost:3000/api/docs</code></td>
+<td>Swagger UI (asks for basic auth, see below).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-environment-variables">3. Environment variables<a class="headerlink" href="#3-environment-variables" title="Permanent link">&para;</a></h2>
+<p>The app loads <code>.env</code> through <code>ConfigModule.forRoot({ isGlobal: true })</code> in <code>src/app.module.ts</code>. Code reads values through <code>ConfigService</code>. A few places read <code>process.env</code> directly because they run before Nest starts: <code>src/main.ts</code> (port, Swagger), <code>src/config/database/data-source.ts</code> (the TypeORM CLI), and the scripts.</p>
+<div class="admonition warning">
+<p class="admonition-title">Never commit real secrets</p>
+<p><code>.env</code> is git-ignored. Only <code>.env.example</code> is committed, and it must hold placeholders only. Ask a teammate for dev keys.</p>
+</div>
+<h3 id="app-and-docs">App and docs<a class="headerlink" href="#app-and-docs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PORT</code></td>
+<td>HTTP port. Default <code>3000</code>.</td>
+</tr>
+<tr>
+<td><code>NODE_ENV</code></td>
+<td>Environment name. The question generator checks for the exact value <code>testing</code>: then it picks random questions from the bank instead of calling an LLM (see the note below).</td>
+</tr>
+<tr>
+<td><code>SWAGGER_USER</code> / <code>SWAGGER_PASS</code></td>
+<td>Basic-auth login for <code>/api/docs</code>.</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>Frontend base URL, used for links in emails. Default <code>https://app.testflow.com</code>.</td>
+</tr>
+<tr>
+<td><code>LOG_LEVEL</code></td>
+<td>Listed in <code>.env.example</code> but not read by any code today.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title"><code>NODE_ENV=test</code> vs <code>testing</code></p>
+<p><code>.env.example</code> says <code>test</code> turns off LLM calls, but <code>src/assessments/questions/questions.service.ts</code> checks for <code>testing</code>. Use <code>testing</code> if you want to skip the LLM.</p>
+</div>
+<h3 id="database-postgresql">Database (PostgreSQL)<a class="headerlink" href="#database-postgresql" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_HOST</code></td>
+<td>Host name.</td>
+</tr>
+<tr>
+<td><code>DATABASE_PORT</code></td>
+<td>Port (<code>5434</code> if you use the compose Postgres from your machine).</td>
+</tr>
+<tr>
+<td><code>DATABASE_USERNAME</code> / <code>DATABASE_PASSWORD</code></td>
+<td>Login.</td>
+</tr>
+<tr>
+<td><code>DATABASE_NAME</code></td>
+<td>Database name (compose default <code>testflow</code>).</td>
+</tr>
+<tr>
+<td><code>DATABASE_SSL</code></td>
+<td><code>true</code> to connect over SSL (with <code>rejectUnauthorized: false</code>).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="auth-jwt-and-google">Auth (JWT and Google)<a class="headerlink" href="#auth-jwt-and-google" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JWT_ACCESS_SECRET</code></td>
+<td>Signs access tokens. Also used to check WebSocket tokens.</td>
+</tr>
+<tr>
+<td><code>JWT_REFRESH_SECRET</code></td>
+<td>Signs refresh tokens.</td>
+</tr>
+<tr>
+<td><code>JWT_ACCESS_EXPIRY</code></td>
+<td>Access token lifetime <strong>in seconds</strong> (the code converts the value with <code>+value</code>).</td>
+</tr>
+<tr>
+<td><code>JWT_REFRESH_EXPIRY</code></td>
+<td>Refresh token lifetime <strong>in seconds</strong>.</td>
+</tr>
+<tr>
+<td><code>JWT_EMAIL_VERIFICATION_SECRET</code> / <code>JWT_EMAIL_VERIFICATION_EXPIRY</code></td>
+<td>Secret and lifetime (seconds) of the email verification link.</td>
+</tr>
+<tr>
+<td><code>JWT_PASSWORD_RESET_SECRET</code> / <code>JWT_PASSWORD_RESET_EXPIRY</code></td>
+<td>Secret and lifetime (seconds) of the password reset link. Keep it short.</td>
+</tr>
+<tr>
+<td><code>GOOGLE_OAUTH2_CLIENT_ID</code></td>
+<td>Google client ID, used as the audience when verifying Google ID tokens on <code>POST /v1/auth/google</code>.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="admonition-title">Use plain numbers for JWT expiry</p>
+<p><code>.env.example</code> shows <code>15m</code> and <code>7d</code> for the access and refresh expiry, but <code>src/identity/auth/auth.service.ts</code> turns them into numbers. <code>+"15m"</code> is <code>NaN</code>, so use seconds, for example <code>900</code> and <code>604800</code>.</p>
+</div>
+<h3 id="redis">Redis<a class="headerlink" href="#redis" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REDIS_HOST</code> / <code>REDIS_PORT</code></td>
+<td>Shared by both Redis connections.</td>
+</tr>
+<tr>
+<td><code>REDIS_PASSWORD</code></td>
+<td>Leave blank for a local Redis with no auth.</td>
+</tr>
+<tr>
+<td><code>REDIS_DB</code></td>
+<td>Logical DB for rate-limit buckets. Default <code>0</code>.</td>
+</tr>
+<tr>
+<td><code>REDIS_COMMAND_TIMEOUT_MS</code></td>
+<td>Per-command timeout for the rate limiter. Default <code>200</code>.</td>
+</tr>
+<tr>
+<td><code>REDIS_CACHE_DB</code></td>
+<td>Logical DB for the read cache. Default <code>1</code>. Separate so a cache flush never wipes rate limits.</td>
+</tr>
+<tr>
+<td><code>REDIS_CACHE_COMMAND_TIMEOUT_MS</code></td>
+<td>Per-command timeout for the cache. Default <code>500</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rabbitmq">RabbitMQ<a class="headerlink" href="#rabbitmq" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RABBITMQ_URL</code></td>
+<td>AMQP URL, for example <code>amqp://guest:guest@localhost:5672</code>.</td>
+</tr>
+<tr>
+<td><code>CONSUMER</code></td>
+<td><code>true</code> (default) means this instance also consumes queues. <code>false</code> means it only publishes. Use <code>false</code> for an API-only instance.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="llm-providers">LLM providers<a class="headerlink" href="#llm-providers" title="Permanent link">&para;</a></h3>
+<p>Models live in the <code>ai_models</code> table. Each row stores the <strong>name</strong> of the env var that holds its key (<code>apiKeyVariable</code>) and, optionally, its base URL (<code>baseUrlVariable</code>). <code>src/ai/ai-model-registry.service.ts</code> reads those names at runtime. So the variables below only matter if a row points at them.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OPENAI_API_KEY</code></td>
+<td>OpenAI key (used by the default seeded model).</td>
+</tr>
+<tr>
+<td><code>OPENAI_MODEL</code></td>
+<td>Model code the seeder registers as the default <code>ai_models</code> row. Default <code>gpt-4</code>.</td>
+</tr>
+<tr>
+<td><code>OPENAI_BASE_URL</code></td>
+<td>Optional base URL for an OpenAI-compatible host.</td>
+</tr>
+<tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>Anthropic key, if you add an Anthropic model row.</td>
+</tr>
+<tr>
+<td><code>GOOGLE_API_KEY</code></td>
+<td>Google GenAI key, if you add a Google model row.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="code-execution">Code execution<a class="headerlink" href="#code-execution" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODE_RUNNER_PROVIDER</code></td>
+<td><code>online-compiler</code> (default) or <code>piston</code>.</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_API_KEY</code></td>
+<td>OnlineCompiler.io REST key. If unset, runs are refused.</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_BASE_URL</code></td>
+<td>Optional override.</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_MAX_CONCURRENCY</code></td>
+<td>Parallel runs per key (the API allows 4).</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_TIMEOUT_MS</code></td>
+<td>HTTP timeout. Default <code>40000</code>.</td>
+</tr>
+<tr>
+<td><code>PISTON_API_KEY</code></td>
+<td>Raw secret shared with your Piston server (the runner sends its SHA-256). If unset, runs are refused.</td>
+</tr>
+<tr>
+<td><code>PISTON_BASE_URL</code></td>
+<td>Default <code>http://127.0.0.1:2000</code>. From Docker on a Mac, use <code>http://host.docker.internal:2000</code>.</td>
+</tr>
+<tr>
+<td><code>PISTON_MAX_CONCURRENCY</code></td>
+<td>Parallel runs. Default <code>4</code>.</td>
+</tr>
+<tr>
+<td><code>PISTON_TIMEOUT_MS</code></td>
+<td>HTTP timeout. Default <code>60000</code>.</td>
+</tr>
+<tr>
+<td><code>PISTON_MAX_RUN_TIMEOUT_MS</code> / <code>PISTON_MAX_RUN_CPU_TIME_MS</code> / <code>PISTON_MAX_RUN_MEMORY_MB</code></td>
+<td>Piston's own per-run limits. Requests are clamped to these so Piston does not reply 400.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="email-smtp">Email (SMTP)<a class="headerlink" href="#email-smtp" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SMTP_HOST</code></td>
+<td>SMTP server.</td>
+</tr>
+<tr>
+<td><code>SMTP_PORT</code></td>
+<td>Default <code>587</code>.</td>
+</tr>
+<tr>
+<td><code>SMTP_SECURE</code></td>
+<td><code>true</code> for TLS on connect (usually port 465).</td>
+</tr>
+<tr>
+<td><code>SMTP_USER</code> / <code>SMTP_PASSWORD</code></td>
+<td>SMTP login.</td>
+</tr>
+<tr>
+<td><code>EMAIL_FROM</code></td>
+<td>Sender address.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="payments-razorpay">Payments (Razorpay)<a class="headerlink" href="#payments-razorpay" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RAZORPAY_KEY_ID</code> / <code>RAZORPAY_KEY_SECRET</code></td>
+<td>API keys used to create orders.</td>
+</tr>
+<tr>
+<td><code>RAZORPAY_WEBHOOK_SECRET</code></td>
+<td>Secret used to verify the <code>x-razorpay-signature</code> header on <code>POST /webhooks/razorpay</code>.</td>
+</tr>
+<tr>
+<td><code>CHECKOUT_ORDER_TTL_MINUTES</code></td>
+<td>Minutes a pending checkout order stays valid.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="newsletters">Newsletters<a class="headerlink" href="#newsletters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NEWSLETTER_SCHEDULER_ENABLED</code></td>
+<td><code>false</code> stops the every-minute cron from sending. Use it on any machine that shares a DB with real subscribers.</td>
+</tr>
+<tr>
+<td><code>NEWSLETTER_DISPATCH_BATCH_SIZE</code></td>
+<td>Due newsletters claimed per pass. Default <code>5</code>.</td>
+</tr>
+<tr>
+<td><code>NEWSLETTER_RECIPIENT_BATCH_SIZE</code></td>
+<td>Recipients per BCC email. Default <code>100</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="file-storage-s3">File storage (S3)<a class="headerlink" href="#file-storage-s3" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AWS_REGION</code></td>
+<td>Bucket region.</td>
+</tr>
+<tr>
+<td><code>AWS_S3_BUCKET</code></td>
+<td>Bucket name.</td>
+</tr>
+<tr>
+<td><code>AWS_ACCESS_KEY_ID</code> / <code>AWS_SECRET_ACCESS_KEY</code></td>
+<td>Credentials.</td>
+</tr>
+<tr>
+<td><code>AWS_S3_ENDPOINT</code></td>
+<td>Blank for AWS. Set it (for example <code>http://localhost:9000</code>) for MinIO or LocalStack; path-style URLs are turned on automatically.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scripts-only">Scripts only<a class="headerlink" href="#scripts-only" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DEFAULT_PASSWORD_EXPORT_PATH</code></td>
+<td>Where the <code>add-default-password-to-users</code> migration writes its CSV of generated passwords. Defaults to the current folder.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-swagger-api-docs">4. Swagger (API docs)<a class="headerlink" href="#4-swagger-api-docs" title="Permanent link">&para;</a></h2>
+<ul>
+<li>URL: <code>http://localhost:3000/api/docs</code>.</li>
+<li>Protected by <strong>HTTP basic auth</strong> using <code>SWAGGER_USER</code> and <code>SWAGGER_PASS</code> (see <code>src/main.ts</code>).</li>
+<li>To call protected routes, log in with <code>POST /v1/auth/login</code>, copy the access token, and click <strong>Authorize</strong> (<code>access-token</code> bearer scheme). Swagger remembers it (<code>persistAuthorization</code>).</li>
+<li>Admin routes are grouped by tags such as <code>Admin · Users</code>.</li>
+</ul>
+<hr />
+<h2 id="5-database-migrations">5. Database migrations<a class="headerlink" href="#5-database-migrations" title="Permanent link">&para;</a></h2>
+<p>The schema is managed <strong>only</strong> by migrations in <code>src/migrations/</code>. <code>synchronize</code> is off. The CLI uses <code>src/config/database/data-source.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm run migration:run</code></td>
+<td>Apply all pending migrations.</td>
+</tr>
+<tr>
+<td><code>npm run migration:show</code></td>
+<td>List migrations and which are applied.</td>
+</tr>
+<tr>
+<td><code>npm run migration:revert</code></td>
+<td>Undo the last migration.</td>
+</tr>
+<tr>
+<td><code>npm run migration:generate -- src/migrations/&lt;Name&gt;</code></td>
+<td>Create a migration from the diff between entities and the DB.</td>
+</tr>
+<tr>
+<td><code>npm run migration:run:prod</code> (and <code>show:prod</code>, <code>revert:prod</code>)</td>
+<td>Same, but from compiled <code>dist/</code>. Used in the Docker runtime image.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Adding an entity</p>
+<p>New entities live in <code>src/common/entities/</code> and must be added to <strong>both</strong> <code>src/config/database/data-source.ts</code> (for the CLI) and <code>src/config/database/database.module.ts</code> (for the app). Then generate a migration. Read the <code>typeorm-migrations</code> and <code>typeorm-entity-patterns</code> skills first.</p>
+</div>
+<hr />
+<h2 id="6-seeders-and-scripts">6. Seeders and scripts<a class="headerlink" href="#6-seeders-and-scripts" title="Permanent link">&para;</a></h2>
+<p>Run these after migrations, in this order:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm run seed</code></td>
+<td>Runs <code>src/seeder.ts</code>, which calls <code>DatabaseSeeder</code> (<code>src/seeders/index.ts</code>). It seeds roles, permissions, super-admin permissions, org role permissions, plan features, plans, the default AI model (from <code>OPENAI_MODEL</code>), and feature flags.</td>
+</tr>
+<tr>
+<td><code>npm run bootstrap-admin -- --email &lt;email&gt; --password &lt;password&gt;</code></td>
+<td>Creates the first <code>super_admin</code> user. Needs <code>npm run seed</code> first. Safe to run twice.</td>
+</tr>
+<tr>
+<td><code>npm run seed:assessment-templates</code></td>
+<td>Seeds assessment templates from <code>src/config/database/dummy-data/assessment-templates.ts</code>.</td>
+</tr>
+<tr>
+<td><code>npm run seed:roadmap-templates</code></td>
+<td>Seeds learning roadmap templates from <code>src/config/database/dummy-data/learning-roadmap-templates.ts</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The two template seeders accept <code>--owner-email &lt;email&gt;</code> (default owner is the <code>system</code> user), <code>--dry-run</code>, and <code>--help</code>. Some also accept <code>--update</code> to overwrite existing rows.</p>
+<div class="admonition note">
+<p class="admonition-title">Inside the runtime Docker image</p>
+<p>The <code>ts-node</code> scripts do not work in the slim runtime image. Use <code>node dist/seeder.js</code> and <code>node dist/scripts/bootstrap-admin.js</code> there.</p>
+</div>
+<hr />
+<h2 id="7-tests">7. Tests<a class="headerlink" href="#7-tests" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Where</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit</td>
+<td><code>tests/unit/&lt;module&gt;/...</code> mirroring <code>src/</code>, files named <code>*.spec.ts</code></td>
+<td><code>npm run test</code> (watch: <code>npm run test:watch</code>)</td>
+</tr>
+<tr>
+<td>Coverage</td>
+<td>Collected from <code>src/**</code> into <code>coverage/</code></td>
+<td><code>npm run test:cov</code></td>
+</tr>
+<tr>
+<td>E2E</td>
+<td><code>tests/*.e2e-spec.ts</code>, config in <code>tests/jest-e2e.json</code></td>
+<td><code>npm run test:e2e</code></td>
+</tr>
+<tr>
+<td>Debug</td>
+<td>Runs Jest in band with the inspector</td>
+<td><code>npm run test:debug</code></td>
+</tr>
+</tbody>
+</table>
+<p>Unit tests mock repositories, <code>ConfigService</code>, and the LLM layer. See the <code>jest-mock-patterns</code>, <code>test-naming-conventions</code>, and <code>e2e-test-setup</code> skills in <code>.claude/skills/</code>.</p>
+<hr />
+<h2 id="8-lint-and-format">8. Lint and format<a class="headerlink" href="#8-lint-and-format" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm run lint</code></td>
+<td>ESLint over <code>src</code> and <code>tests</code>, <strong>with <code>--fix</code></strong>.</td>
+</tr>
+<tr>
+<td><code>npm run format</code></td>
+<td>Prettier over <code>src/**/*.ts</code> and <code>tests/**/*.ts</code>.</td>
+</tr>
+<tr>
+<td><code>npm run build</code></td>
+<td>Compile to <code>dist/</code> with the Nest CLI. Good final check.</td>
+</tr>
+</tbody>
+</table>
+<p>A Husky pre-commit hook runs <code>npm run format</code>. CI (<code>.github/workflows/ci.yml</code>) runs lint, type checks, unit tests, build, migrations, and a container smoke test. CD (<code>cd.yml</code>) deploys the <code>dev</code> branch.</p>
+<hr />
+<h2 id="9-useful-tips">9. Useful tips<a class="headerlink" href="#9-useful-tips" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Code navigation.</strong> The repo is indexed by CodeGraph. Run <code>npm run codegraph explore "&lt;symbol or question&gt;"</code> to see a symbol's source and its callers.</li>
+<li><strong>Project skills.</strong> <code>.claude/skills/</code> holds the team's rules for folders, entities, migrations, validation, errors, guards, pagination, transactions, Swagger, and logging. Read the relevant one before you write code.</li>
+<li><strong>API-only instance.</strong> Set <code>CONSUMER=false</code> to run an instance that publishes jobs but does not consume them.</li>
+<li><strong>Watch the queues.</strong> The RabbitMQ UI at <code>http://localhost:15672</code> shows each queue and its message count. See <a href="../architecture/#rabbitmq">Architecture</a> for the full list.</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

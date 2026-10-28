@@ -1,0 +1,1923 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="What an assessment is, how it is created, scheduled, published and joined, and the rules that guard each step" name="description"/>
+<link href="../organizations/" rel="prev"/>
+<link href="../questions-and-tags/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Assessments - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#assessments">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Assessments
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-settings">
+<span class="md-ellipsis">
+      
+        4. Settings
+      
+    </span>
+</a>
+<nav aria-label="4. Settings" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-personal-vs-organization">
+<span class="md-ellipsis">
+      
+        4.1 Personal vs organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-schedule-rules">
+<span class="md-ellipsis">
+      
+        4.2 Schedule rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-other-limits-manual-create-createassessmentdto">
+<span class="md-ellipsis">
+      
+        4.3 Other limits (manual create, CreateAssessmentDto)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycle">
+<span class="md-ellipsis">
+      
+        5. Lifecycle
+      
+    </span>
+</a>
+<nav aria-label="5. Lifecycle" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-assessment-status">
+<span class="md-ellipsis">
+      
+        5.1 Assessment status
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-phase-derived">
+<span class="md-ellipsis">
+      
+        5.2 Phase (derived)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-participant-status">
+<span class="md-ellipsis">
+      
+        5.3 Participant status
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-main-flows">
+<span class="md-ellipsis">
+      
+        6. Main flows
+      
+    </span>
+</a>
+<nav aria-label="6. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-ways-to-create-an-assessment">
+<span class="md-ellipsis">
+      
+        6.1 Ways to create an assessment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-manual-creation-then-adding-questions">
+<span class="md-ellipsis">
+      
+        6.2 Manual creation, then adding questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-editing-and-publishing">
+<span class="md-ellipsis">
+      
+        6.3 Editing and publishing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-registering-for-an-assessment">
+<span class="md-ellipsis">
+      
+        6.4 Registering for an assessment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#65-inviting-people">
+<span class="md-ellipsis">
+      
+        6.5 Inviting people
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#66-managing-participants">
+<span class="md-ellipsis">
+      
+        6.6 Managing participants
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-templates-and-prompts">
+<span class="md-ellipsis">
+      
+        7. Templates and prompts
+      
+    </span>
+</a>
+<nav aria-label="7. Templates and prompts" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-assessment-templates">
+<span class="md-ellipsis">
+      
+        7.1 Assessment templates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-assessment-prompts-prompt-library">
+<span class="md-ellipsis">
+      
+        7.2 Assessment prompts (prompt library)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        8. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-endpoints-summary">
+<span class="md-ellipsis">
+      
+        9. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-work-events-and-emails">
+<span class="md-ellipsis">
+      
+        10. Async work, events and emails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-usage-limits-commerce">
+<span class="md-ellipsis">
+      
+        11. Usage limits (commerce)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-settings">
+<span class="md-ellipsis">
+      
+        4. Settings
+      
+    </span>
+</a>
+<nav aria-label="4. Settings" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-personal-vs-organization">
+<span class="md-ellipsis">
+      
+        4.1 Personal vs organization
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-schedule-rules">
+<span class="md-ellipsis">
+      
+        4.2 Schedule rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-other-limits-manual-create-createassessmentdto">
+<span class="md-ellipsis">
+      
+        4.3 Other limits (manual create, CreateAssessmentDto)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycle">
+<span class="md-ellipsis">
+      
+        5. Lifecycle
+      
+    </span>
+</a>
+<nav aria-label="5. Lifecycle" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-assessment-status">
+<span class="md-ellipsis">
+      
+        5.1 Assessment status
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-phase-derived">
+<span class="md-ellipsis">
+      
+        5.2 Phase (derived)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-participant-status">
+<span class="md-ellipsis">
+      
+        5.3 Participant status
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-main-flows">
+<span class="md-ellipsis">
+      
+        6. Main flows
+      
+    </span>
+</a>
+<nav aria-label="6. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-ways-to-create-an-assessment">
+<span class="md-ellipsis">
+      
+        6.1 Ways to create an assessment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-manual-creation-then-adding-questions">
+<span class="md-ellipsis">
+      
+        6.2 Manual creation, then adding questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-editing-and-publishing">
+<span class="md-ellipsis">
+      
+        6.3 Editing and publishing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-registering-for-an-assessment">
+<span class="md-ellipsis">
+      
+        6.4 Registering for an assessment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#65-inviting-people">
+<span class="md-ellipsis">
+      
+        6.5 Inviting people
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#66-managing-participants">
+<span class="md-ellipsis">
+      
+        6.6 Managing participants
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-templates-and-prompts">
+<span class="md-ellipsis">
+      
+        7. Templates and prompts
+      
+    </span>
+</a>
+<nav aria-label="7. Templates and prompts" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-assessment-templates">
+<span class="md-ellipsis">
+      
+        7.1 Assessment templates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-assessment-prompts-prompt-library">
+<span class="md-ellipsis">
+      
+        7.2 Assessment prompts (prompt library)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        8. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-endpoints-summary">
+<span class="md-ellipsis">
+      
+        9. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-work-events-and-emails">
+<span class="md-ellipsis">
+      
+        10. Async work, events and emails
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-usage-limits-commerce">
+<span class="md-ellipsis">
+      
+        11. Usage limits (commerce)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="assessments">Assessments<a class="headerlink" href="#assessments" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>An <strong>assessment</strong> is a test that people sit. It has a title, a schedule, a time limit, a seat limit and one or more <strong>sections</strong> of questions.</p>
+<p>The assessments module (<code>src/assessments/</code>) owns:</p>
+<ul>
+<li>creating assessments (by hand, or by AI generation),</li>
+<li>their schedule and settings,</li>
+<li>the draft → ready → published lifecycle,</li>
+<li>who can take part (registration, invitations, removal),</li>
+<li>reusable presets: <strong>assessment templates</strong> and <strong>assessment prompts</strong>,</li>
+<li>admin read access to every assessment on the platform.</li>
+</ul>
+<p>It does <strong>not</strong> own taking the test or scoring it. Those live in <code>src/assessments/attempts</code> and <code>src/assessments/evaluation</code> (see <a href="../attempts/">Attempts</a> and <a href="../evaluation/">Evaluation</a>). Questions and tags have their own page: <a href="../questions-and-tags/">Questions &amp; Tags</a>. The AI generation pipeline has its own page too: <a href="../assessment-generation/">AI Assessment Generation</a>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Personal assessment</strong></td>
+<td>Created without the <code>x-organization-id</code> header. <code>organization_id</code> is <code>NULL</code>. Owned by one user.</td>
+</tr>
+<tr>
+<td><strong>Organization assessment</strong></td>
+<td>Created with the <code>x-organization-id</code> header. Belongs to that organization. Members manage it through org roles.</td>
+</tr>
+<tr>
+<td><strong>Section</strong></td>
+<td>A group of questions of <strong>one type</strong> (<code>mcq</code>, <code>coding</code> or <code>descriptive</code>). Each section has its own question cap, difficulty and marking scheme. An assessment has 1–3 sections.</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Stored lifecycle: <code>draft</code>, <code>ready</code> or <code>published</code>. See <a href="#5-lifecycle">§5</a>.</td>
+</tr>
+<tr>
+<td><strong>Phase</strong></td>
+<td>Derived from the clock, never stored: <code>upcoming</code>, <code>ongoing</code> or <code>completed</code>, based on the <strong>attempt window</strong>.</td>
+</tr>
+<tr>
+<td><strong>Registration window</strong></td>
+<td><code>registration_start_time</code> → <code>registration_end_time</code>. People may register or be invited only inside it.</td>
+</tr>
+<tr>
+<td><strong>Attempt window</strong></td>
+<td><code>attempt_start_time</code> → <code>attempt_end_time</code>. Participants may start and answer only inside it.</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>Minutes allowed for one attempt (1–180). Separate from the attempt window.</td>
+</tr>
+<tr>
+<td><strong>Seat</strong></td>
+<td>A place on the assessment. Held by every <code>invited</code> or <code>active</code> participant <strong>except the creator</strong>. <code>max_participants</code> caps seats.</td>
+</tr>
+<tr>
+<td><strong>Participant</strong></td>
+<td>A row in <code>assessments_participants</code>: <code>invited</code>, <code>active</code> or <code>revoked</code>. The creator is always an <code>active</code> participant but holds no seat.</td>
+</tr>
+<tr>
+<td><strong>Generation status</strong></td>
+<td>The status of the background job that is generating the questions (<code>assessments.job_id</code> → <code>jobs</code>). Not the same as the assessment status.</td>
+</tr>
+<tr>
+<td><strong>Template</strong></td>
+<td>A reusable preset of settings and sections (<code>assessment_templates</code>).</td>
+</tr>
+<tr>
+<td><strong>Assessment prompt</strong></td>
+<td>A saved, reusable prompt text with tags (<code>assessment_prompts</code>), for the "prompt library".</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>All tables are described in the <a href="../../erd/">ERD</a>. This module reads and writes:</p>
+<ul>
+<li><code>assessments</code>, <code>assessment_sections</code>, <code>assessments_questions</code> (question snapshots), <code>assessments_participants</code></li>
+<li><code>assessment_templates</code></li>
+<li><code>assessment_prompts</code>, <code>assessment_prompt_tags</code>, <code>tags</code></li>
+<li><code>jobs</code> (generation progress, via <code>assessments.job_id</code>)</li>
+<li><code>questions</code> and its detail tables (when adding bank questions)</li>
+</ul>
+<p>Things worth knowing about the shape:</p>
+<ul>
+<li><strong>Marking lives on the section</strong>, not the assessment. The response field <code>correctMarks</code> / <code>incorrectMarks</code> on an assessment is read from its <strong>first</strong> section (lowest <code>order_index</code>). Each question snapshot also copies the marks, because scoring reads the per-question marks.</li>
+<li><code>max_total_questions</code> is the sum of the section caps. <code>curr_total_questions</code> counts the questions actually in place.</li>
+<li><code>current_participants</code> (column) counts <strong>seats taken</strong>. The API response replaces <code>currentParticipants</code> with a live count of invited + active people <em>including</em> the creator, and exposes the stored seat count as <code>seatsTaken</code> (<code>AssessmentsService.loadAssessments</code>).</li>
+<li>Assessments, participants, templates, prompts and tags are <strong>soft-deleted</strong> (<code>deleted_at</code>).</li>
+</ul>
+<h2 id="4-settings">4. Settings<a class="headerlink" href="#4-settings" title="Permanent link">¶</a></h2>
+<h3 id="41-personal-vs-organization">4.1 Personal vs organization<a class="headerlink" href="#41-personal-vs-organization" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Personal</th>
+<th>Organization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Schedule</td>
+<td><strong>Fixed.</strong> Registration and attempts both open at creation and close 30 days later (<code>PERSONAL_ASSESSMENT_WINDOW_DAYS</code> in <code>domain/assessment-schedule.ts</code>). Any schedule fields in the request are ignored, and cannot be edited later.</td>
+<td><code>attemptStartTime</code> and <code>attemptEndTime</code> are <strong>required</strong>. Registration defaults to "now → attempt end" when not given.</td>
+</tr>
+<tr>
+<td><code>maxParticipants</code></td>
+<td>Manual create: taken from the request. AI generation: always <strong>10</strong> (<code>GENERATED_ASSESSMENT_MAX_PARTICIPANTS</code>); the request value is ignored.</td>
+<td>Required, 1–10,000.</td>
+</tr>
+<tr>
+<td>Who can manage</td>
+<td>Creator only.</td>
+<td>Creator, or a member whose org role grants <code>org_assessments:update</code> / <code>org_assessments:delete</code>.</td>
+</tr>
+<tr>
+<td>Who can be invited</td>
+<td>Any email address. Unknown emails get a placeholder account.</td>
+<td>Only <strong>active members</strong> of the organization.</td>
+</tr>
+<tr>
+<td>Auto-publish after generation</td>
+<td>Yes. A fully generated personal assessment goes straight to <code>published</code>.</td>
+<td>No. It stops at <code>ready</code> so members can review it.</td>
+</tr>
+<tr>
+<td>Quota pool for AI</td>
+<td>The user's own plan.</td>
+<td>The organization's pooled plan.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-schedule-rules">4.2 Schedule rules<a class="headerlink" href="#42-schedule-rules" title="Permanent link">¶</a></h3>
+<p><code>scheduleErrors()</code> in <code>src/assessments/domain/assessment-schedule.ts</code> checks every schedule (on create and on update):</p>
+<ol>
+<li><code>registrationEndTime</code> must be after <code>registrationStartTime</code>.</li>
+<li><code>attemptEndTime</code> must be after <code>attemptStartTime</code>.</li>
+<li><code>registrationEndTime</code> must <strong>not</strong> be after <code>attemptEndTime</code>.</li>
+</ol>
+<p>Registration may open before attempts, and may stay open after attempts start. The DTO also uses the <code>IsAfterField</code> validator (<code>src/assessments/validators/is-after-field.validator.ts</code>) so that each "end" field is after its "start" field when both are sent in the same request.</p>
+<h3 id="43-other-limits-manual-create-createassessmentdto">4.3 Other limits (manual create, <code>CreateAssessmentDto</code>)<a class="headerlink" href="#43-other-limits-manual-create-createassessmentdto" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>Optional, 3–255 chars. If missing, a generated assessment takes the AI's suggested title, or the description.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Required, 10–500 chars.</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>1–180 minutes.</td>
+</tr>
+<tr>
+<td><code>maxTotalQuestions</code></td>
+<td>1–200.</td>
+</tr>
+<tr>
+<td><code>correctMarks</code>, <code>incorrectMarks</code></td>
+<td>0–999.99, 2 decimals. <code>incorrectMarks</code> is a positive amount that is deducted.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-lifecycle">5. Lifecycle<a class="headerlink" href="#5-lifecycle" title="Permanent link">¶</a></h2>
+<h3 id="51-assessment-status">5.1 Assessment status<a class="headerlink" href="#51-assessment-status" title="Permanent link">¶</a></h3>
+<p>The rules live in <code>src/assessments/domain/assessment-state.ts</code> and <code>assessment-transitions.ts</code>.</p>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; draft : created by hand or by generation
+    draft --&gt; ready : last question in place
+    ready --&gt; draft : cap raised or generation retried
+    ready --&gt; published : creator publishes
+    draft --&gt; published : personal generated assessment fills up
+    published --&gt; [*]
+</div>
+<ul>
+<li><strong>draft</strong>: being built. Generation may be running, may have failed, or questions are still missing.</li>
+<li><strong>ready</strong>: every section is full. The creator reviews it and may still edit anything.</li>
+<li><strong>published</strong>: open to participants. Questions are frozen. This is terminal; there is no unpublish.</li>
+</ul>
+<p>The <code>draft → published</code> arrow is the auto-publish of a <strong>personal</strong> AI-generated assessment. In code it is <code>ready</code> then <code>published</code> in the same write (<code>AssessmentsService.generatedOutcome</code>).</p>
+<p><code>settleByCapacity()</code> is the single rule that moves between <code>draft</code> and <code>ready</code>: full means ready, not full means draft. It runs after adding questions, after a generation finishes, and when <code>maxTotalQuestions</code> is edited.</p>
+<p>Generation progress and failure are <strong>not</strong> assessment statuses. They live on the parent job. A failed generation simply leaves the assessment in <code>draft</code>.</p>
+<h3 id="52-phase-derived">5.2 Phase (derived)<a class="headerlink" href="#52-phase-derived" title="Permanent link">¶</a></h3>
+<p><code>phaseAt()</code> in <code>domain/assessment-invariants.ts</code>:</p>
+<ul>
+<li>before <code>attemptStartTime</code> → <code>upcoming</code></li>
+<li>after <code>attemptEndTime</code> → <code>completed</code></li>
+<li>otherwise → <code>ongoing</code></li>
+</ul>
+<p>The list endpoint's <code>status</code> query parameter filters by <strong>phase</strong>, not by stored status.</p>
+<h3 id="53-participant-status">5.3 Participant status<a class="headerlink" href="#53-participant-status" title="Permanent link">¶</a></h3>
+<p>The rules live in <code>domain/participant-state.ts</code>, <code>participant-transitions.ts</code> and <code>participant-invariants.ts</code>.</p>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; active : registers or is the creator
+    [*] --&gt; invited : invited by email
+    invited --&gt; active : accepts or registers
+    invited --&gt; revoked : declines or invite revoked
+    active --&gt; revoked : leaves or is removed
+    revoked --&gt; invited : invited again
+    revoked --&gt; active : registers again
+</div>
+<p>Each transition returns a <code>seatDelta</code> (+1, 0 or −1). The service adds it to <code>assessments.current_participants</code> inside the same transaction. Accepting an invitation has delta 0 because the seat was taken when the invite was sent.</p>
+<h2 id="6-main-flows">6. Main flows<a class="headerlink" href="#6-main-flows" title="Permanent link">¶</a></h2>
+<h3 id="61-ways-to-create-an-assessment">6.1 Ways to create an assessment<a class="headerlink" href="#61-ways-to-create-an-assessment" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Endpoint</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Manual</strong></td>
+<td><code>POST /v1/assessments</code></td>
+<td>Creates an empty <code>draft</code> with one MCQ section. Questions are added later from the question bank.</td>
+</tr>
+<tr>
+<td><strong>AI generation (auto or manual mode)</strong></td>
+<td><code>POST /v1/assessments/generate</code></td>
+<td>Creates a <code>draft</code> with 1–3 sections and generates every section in the background. See <a href="../assessment-generation/">AI Assessment Generation</a>.</td>
+</tr>
+<tr>
+<td><strong>From a template</strong></td>
+<td>Client reads <code>GET /v1/assessment-templates</code>, then calls <code>POST /v1/assessments/generate</code> in <strong>manual mode</strong> with the template's sections</td>
+<td>There is no "create from template" endpoint. The template is a preset the client turns into a generate request. Its <code>prompt</code> fills every section that has no prompt of its own.</td>
+</tr>
+<tr>
+<td><strong>From a saved prompt</strong></td>
+<td>Client reads <code>GET /v1/assessment-prompts/...</code>, then uses its text as the <code>prompt</code> of a generate request</td>
+<td>Same idea: a prompt is only reusable text.</td>
+</tr>
+<tr>
+<td><strong>From a learning roadmap</strong></td>
+<td><code>LearningRoadmapAssessmentService</code> calls <code>AssessmentsService.generate()</code></td>
+<td>Older single-section MCQ pipeline. See <a href="../learning-roadmaps/">Learning Roadmaps</a> and <a href="#13-known-gaps-and-todos">§13</a>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-manual-creation-then-adding-questions">6.2 Manual creation, then adding questions<a class="headerlink" href="#62-manual-creation-then-adding-questions" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant Ctrl as AssessmentsController
+    participant Svc as AssessmentsService
+    participant DB as PostgreSQL
+
+    C-&gt;&gt;Ctrl: POST /v1/assessments
+    Ctrl-&gt;&gt;Svc: create(dto, userId, org)
+    Svc-&gt;&gt;Svc: scheduleFor - fixed 30 days if personal, else from request
+    Svc-&gt;&gt;DB: BEGIN
+    Svc-&gt;&gt;DB: INSERT assessments - status draft
+    Svc-&gt;&gt;DB: INSERT assessments_participants - creator, active, no seat
+    Svc-&gt;&gt;DB: INSERT assessment_sections - one MCQ section with cap and marks
+    Svc-&gt;&gt;DB: COMMIT
+    Ctrl--&gt;&gt;C: 201 assessment
+
+    C-&gt;&gt;Ctrl: POST /v1/assessments/:id/questions
+    Ctrl-&gt;&gt;Svc: addQuestions(id, dto)
+    Svc-&gt;&gt;DB: load bank questions - all must exist and be MCQ
+    Svc-&gt;&gt;DB: BEGIN
+    Svc-&gt;&gt;Svc: creator or org_assessments:update, and not published
+    Svc-&gt;&gt;Svc: fits remaining capacity, none already assigned
+    Svc-&gt;&gt;DB: INSERT assessments_questions - snapshot of each question
+    Svc-&gt;&gt;DB: UPDATE curr_total_questions and status via settleByCapacity
+    Svc-&gt;&gt;DB: COMMIT
+    Ctrl--&gt;&gt;C: 201 added questions
+</div>
+<p>When the last question is added the assessment becomes <code>ready</code>. The creator then calls <code>POST /v1/assessments/:id/publish</code>. A manually built personal assessment is <strong>not</strong> auto-published.</p>
+<h3 id="63-editing-and-publishing">6.3 Editing and publishing<a class="headerlink" href="#63-editing-and-publishing" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>PATCH /v1/assessments/:id</code> (<code>AssessmentsService.update</code>):<ul>
+<li>In <code>draft</code> or <code>ready</code>, every field may change. Changing marks rewrites the marks on the first section <strong>and on every question snapshot</strong>, so the shown and scored marks never drift apart.</li>
+<li>Once <code>published</code>, only <code>title</code>, <code>description</code> and <code>maxParticipants</code> may change (<code>PUBLISHED_EDITABLE_FIELDS</code>). Anything else is a 409.</li>
+<li>A personal assessment's schedule can never be edited (400).</li>
+<li><code>maxParticipants</code> cannot go below seats already taken. <code>maxTotalQuestions</code> cannot go below questions already in place.</li>
+</ul>
+</li>
+<li><code>PUT /v1/assessments/:id/questions/:assessmentQuestionId</code> replaces the text, options, correct option and explanation of one <strong>snapshot</strong>. MCQ only, and only before publishing. The bank question is untouched.</li>
+<li><code>POST /v1/assessments/:id/publish</code> moves <code>ready → published</code>. Publishing a <code>draft</code> fails with "Only an assessment with all its questions in place can be published".</li>
+<li><code>DELETE /v1/assessments/:id</code> soft-deletes. Needs creator or <code>org_assessments:delete</code>. There is no status check, so a published assessment with participants can be deleted.</li>
+</ul>
+<h3 id="64-registering-for-an-assessment">6.4 Registering for an assessment<a class="headerlink" href="#64-registering-for-an-assessment" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant U as User
+    participant Ctrl as AssessmentsController
+    participant Svc as AssessmentsService
+    participant Dom as Domain rules
+    participant DB as PostgreSQL
+
+    U-&gt;&gt;Ctrl: POST /v1/assessments/:id/register
+    Ctrl-&gt;&gt;Svc: register(id, userId, org)
+    Svc-&gt;&gt;DB: BEGIN
+    Svc-&gt;&gt;DB: find assessment in scope - personal or this org
+    Svc-&gt;&gt;Dom: assertOpenToParticipants - must be published
+    Svc-&gt;&gt;Dom: assertNotEnded - attempt window not closed
+    Svc-&gt;&gt;DB: find existing participant row
+    alt user holds an open invitation
+        Svc-&gt;&gt;Dom: acceptInvitation - seatDelta 0
+    else no row, or revoked
+        Svc-&gt;&gt;Dom: register - seatDelta 1
+        Svc-&gt;&gt;Dom: assertRegistrationOpen
+        Svc-&gt;&gt;Dom: assertSeatsAvailable
+    end
+    Svc-&gt;&gt;DB: upsert participant - status active
+    Svc-&gt;&gt;DB: increment current_participants by seatDelta
+    Svc-&gt;&gt;DB: COMMIT
+    Ctrl--&gt;&gt;U: 201 participant
+</div>
+<p>Leaving (<code>POST /:id/unregister</code>) does the reverse: the row becomes <code>revoked</code>, <code>revoked_at</code> is set and the seat is given back. An <code>active</code> participant may leave <strong>only while registration is open and before they have started an attempt</strong> (<code>isParticipationLocked</code>). Declining an invitation is always allowed. The creator can never leave.</p>
+<h3 id="65-inviting-people">6.5 Inviting people<a class="headerlink" href="#65-inviting-people" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant A as Creator or org admin
+    participant Inv as AssessmentInvitationsService
+    participant Users as UsersService
+    participant DB as PostgreSQL
+    participant Mail as EmailService
+
+    A-&gt;&gt;Inv: POST /v1/assessments/:id/invitations with emails
+    Inv-&gt;&gt;Users: findByEmails - dedupe case-insensitively
+    Inv-&gt;&gt;DB: BEGIN
+    Inv-&gt;&gt;Inv: can manage, published, registration open
+    Inv-&gt;&gt;Inv: skip creator, non-members on org, existing invited or active
+    Inv-&gt;&gt;Inv: assertSeatsAvailable for the whole batch
+    Inv-&gt;&gt;Users: create placeholder account for unknown emails - personal only
+    Inv-&gt;&gt;DB: upsert participants - status invited, invited_by, invited_at
+    Inv-&gt;&gt;DB: increment current_participants
+    Inv-&gt;&gt;DB: COMMIT
+    Inv-)Mail: sendAssessmentInvitationEmail - fire and forget
+    Inv--&gt;&gt;A: 201 invited list and skipped list with reasons
+</div>
+<ul>
+<li>Up to 50 emails per request (<code>MAX_INVITES_PER_REQUEST</code>).</li>
+<li>Each invite reserves a seat at once. The whole batch must fit, or nothing is saved.</li>
+<li>The invitee accepts with <code>POST /:id/invitations/accept</code>. This works <strong>until the attempt window ends</strong>, even after registration has closed and even if the assessment is now full.</li>
+<li>A placeholder account is unverified, with a random password and a placeholder username. Signing up with the same email takes over that row, so the invitation is already there.</li>
+<li>If someone signs up with one of the emails during the request, the unique email index fires and the API returns 409 "please retry".</li>
+</ul>
+<h3 id="66-managing-participants">6.6 Managing participants<a class="headerlink" href="#66-managing-participants" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /:id/participants</code> lists everyone (invited, active, revoked), newest first, cursor-paged, with <code>meta.counts</code> per status. The creator is listed with <code>isCreator: true</code>.</li>
+<li><code>DELETE /:id/participants/:userId</code> revokes an open invitation at any time, or removes an <code>active</code> participant only while registration is open and before they started an attempt. The creator cannot be removed.</li>
+<li><code>GET /v1/assessments/invited</code> lists the caller's own open invitations (org-scoped by the header).</li>
+<li><code>POST /:id/check-enrollment</code> tells the caller whether they are enrolled. An open invitation returns <code>{ enrolled: false, invited: true }</code>.</li>
+</ul>
+<h2 id="7-templates-and-prompts">7. Templates and prompts<a class="headerlink" href="#7-templates-and-prompts" title="Permanent link">¶</a></h2>
+<h3 id="71-assessment-templates">7.1 Assessment templates<a class="headerlink" href="#71-assessment-templates" title="Permanent link">¶</a></h3>
+<p>Code: <code>assessment-templates.controller.ts</code>, <code>assessment-templates.service.ts</code>.</p>
+<p>A template stores: <code>name</code>, <code>slug</code>, a public 8-character <code>uid</code>, optional <code>title</code>, <code>description</code>, <code>duration</code>, <code>maxParticipants</code>, an ordered <code>sections</code> JSON array (type, count, difficulty, marks, optional title and prompt), an optional shared <code>prompt</code>, <code>visibility</code> (<code>public</code> / <code>private</code>) and <code>isActive</code>.</p>
+<p>Rules:</p>
+<ol>
+<li>A template must always be "generatable". Its sections must pass the same limits as a manual-mode generate request (<code>sectionLimitErrors</code> in <code>generation/section-limits.ts</code>: 1–3 sections, per-type caps). Every section needs a prompt, its own or the template's.</li>
+<li><code>slug</code> is derived from <code>name</code> unless given, and must be unique among live templates. <code>uid</code> is retried up to 5 times on collision.</li>
+<li>Only the owner can update or delete. Seeded templates belong to the <code>system</code> user, so they are read-only to everyone else.</li>
+<li>The schedule is never stored on a template. It comes from the caller, or the fixed personal schedule.</li>
+<li><code>GET /v1/assessment-templates</code> is <strong>public</strong> (no login) and lists only <code>public</code> + active templates.</li>
+</ol>
+<p><strong>Seeding.</strong> <code>npm run seed:assessment-templates</code> (<code>src/scripts/seed-assessment-templates.ts</code>) inserts the 10 public templates in <code>src/config/database/dummy-data/assessment-templates.ts</code> (DSA, DBMS, networks, OS, OOP, backend, frontend, system design, DevOps, aptitude).</p>
+<ul>
+<li>Owner: the <code>system</code> user (run <code>npm run bootstrap-admin</code> first), or <code>--owner-email &lt;email&gt;</code>.</li>
+<li>Idempotent by slug: existing rows are skipped.</li>
+<li><code>--update</code> overwrites the seeded content of existing rows (never their uid, owner or active flag).</li>
+<li><code>--dry-run</code> only reports.</li>
+</ul>
+<h3 id="72-assessment-prompts-prompt-library">7.2 Assessment prompts (prompt library)<a class="headerlink" href="#72-assessment-prompts-prompt-library" title="Permanent link">¶</a></h3>
+<p>Code: <code>assessment-prompts.controller.ts</code>, <code>assessment-prompts.service.ts</code>.</p>
+<p>A prompt has <code>title</code>, <code>description</code>, <code>prompt</code> text, <code>visibility</code> (<code>public</code> / <code>private</code>), <code>status</code> (<code>draft</code> / <code>active</code> / <code>archived</code>) and tags (via <code>assessment_prompt_tags</code>, referenced by tag slug).</p>
+<ul>
+<li><code>GET /v1/assessment-prompts</code> lists the caller's own prompts.</li>
+<li><code>GET /v1/assessment-prompts/public</code> lists <code>public</code> + <code>active</code> prompts from everyone. It can filter by tag slugs (any match) and by owner username.</li>
+<li><code>PUT /:id</code> replaces the whole prompt. Missing <code>visibility</code> / <code>status</code> reset to <code>private</code> / <code>draft</code>. Tags are re-synced: removed pairs are soft-deleted, new pairs are inserted.</li>
+<li>Unknown tag slugs give a 404.</li>
+<li>Only the owner can update or delete.</li>
+</ul>
+<h2 id="8-business-rules-and-edge-cases">8. Business rules and edge cases<a class="headerlink" href="#8-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Scope check.</strong> Every user route resolves the assessment with <code>findOneInScope</code>: a personal request only sees personal assessments, an org request only sees that org's. Anything else is a 404, not a 403.</li>
+<li><strong>Who can manage.</strong> <code>assertCanManage</code> allows the creator, or in an org a member whose role grants <code>org_assessments:update</code> (or <code>:delete</code> for delete). Route guards only check <code>org_assessments:read</code> or <code>:create</code>; the update/delete check happens in the service, because a creator without those permissions may still manage their own assessment (<code>assessments.constants.ts</code>).</li>
+<li><strong>Published is open, nothing else is.</strong> Register, invite and accept all require <code>published</code> (<code>assertOpenToParticipants</code>).</li>
+<li><strong>Questions freeze on publish.</strong> Adding or editing questions on a published assessment is a 409 (<code>assertQuestionsEditable</code>).</li>
+<li><strong>The creator holds no seat.</strong> A personal assessment with 10 seats can have 10 people plus the creator.</li>
+<li><strong>Seat counting is transactional.</strong> Every change to a participant and its <code>current_participants</code> delta happen in one DB transaction.</li>
+<li><strong>Manual add is MCQ only.</strong> <code>POST /:id/questions</code> rejects coding and descriptive bank questions, and always adds into the first section.</li>
+<li><strong>Per-question marks on manual add</strong> come from the request item, not the section. A later marks edit overwrites them all with the section's marks.</li>
+<li><strong>Search</strong> on the user list matches <code>description</code> only (the admin list matches title or description).</li>
+<li><strong><code>GET /v1/assessments/:id</code> is public.</strong> It needs no login and does not check scope. It returns settings and sections, never questions.</li>
+<li><strong>Questions with answers</strong> (<code>GET /:id/questions</code>) are only for people who can manage the assessment, because they include the correct options.</li>
+<li><strong>Assistant reads are cached</strong> in Redis per user (<code>listAssessmentsForAssistant</code>, <code>getAssessmentForAssistant</code>). The phase is recomputed on read so a cached entry never shows a stale phase. Edits are not invalidated; they show after the TTL.</li>
+</ol>
+<h2 id="9-endpoints-summary">9. Endpoints summary<a class="headerlink" href="#9-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>Full details live in the <a href="../../api-design/v1/">API reference</a>. All user routes accept the optional <code>x-organization-id</code> header.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Who</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments</code></td>
+<td>logged in, org: <code>org_assessments:create</code></td>
+<td>Manual create</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/generate</code></td>
+<td>logged in, org: <code>org_assessments:create</code></td>
+<td>AI generation (<a href="../assessment-generation/">details</a>)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/generation/retry</code></td>
+<td>manager</td>
+<td>Retry failed sections</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments</code></td>
+<td>logged in</td>
+<td>List mine (personal) or the org's</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/invited</code></td>
+<td>logged in</td>
+<td>My open invitations</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id</code></td>
+<td><strong>public</strong></td>
+<td>Details with sections</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>manager</td>
+<td>Edit settings</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessments/:id</code></td>
+<td>manager (<code>:delete</code>)</td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/questions</code></td>
+<td>manager</td>
+<td>Add bank MCQs</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/questions</code></td>
+<td>manager</td>
+<td>Questions with answers</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/assessments/:id/questions/:assessmentQuestionId</code></td>
+<td>manager</td>
+<td>Edit one MCQ snapshot</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/publish</code></td>
+<td>manager</td>
+<td><code>ready → published</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/invitations</code></td>
+<td>manager</td>
+<td>Invite by email</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/invitations/accept</code></td>
+<td>invitee</td>
+<td>Accept</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/participants</code></td>
+<td>manager</td>
+<td>List participants</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/assessments/:id/participants/:userId</code></td>
+<td>manager</td>
+<td>Revoke or remove</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/register</code></td>
+<td>logged in</td>
+<td>Register</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/unregister</code></td>
+<td>participant</td>
+<td>Leave or decline</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/check-enrollment</code></td>
+<td>logged in</td>
+<td>Am I enrolled?</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-templates</code></td>
+<td><strong>public</strong></td>
+<td>Public templates</td>
+</tr>
+<tr>
+<td>POST / PATCH / DELETE</td>
+<td><code>/v1/assessment-templates[/:uid]</code></td>
+<td>logged in / owner</td>
+<td>Manage templates</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessment-prompts</code>, <code>/public</code>, <code>/:id</code></td>
+<td>logged in</td>
+<td>Prompt library</td>
+</tr>
+<tr>
+<td>POST / PUT / DELETE</td>
+<td><code>/v1/assessment-prompts[/:id]</code></td>
+<td>logged in / owner</td>
+<td>Manage prompts</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments</code>, <code>/v1/admin/assessments/:id</code></td>
+<td>platform <code>assessments:read</code></td>
+<td>See every assessment</td>
+</tr>
+</tbody>
+</table>
+<p>"Manager" means the creator, or an org member whose role grants <code>org_assessments:update</code>.</p>
+<p><strong>Admin endpoints</strong> (<code>src/assessments/admin.controller.ts</code>, <code>admin.service.ts</code>) are read-only. They list every assessment (personal and org) with filters <code>workspace</code> (personal / organization), <code>organization</code> (uid), <code>assessment_status</code>, <code>search</code>, plus the shared phase/sort/paging filters. They include the owner and organization, and report the stored seat count.</p>
+<p><strong>Rate limits.</strong> The controller uses policy <code>CLASS_B</code>. <code>generate</code> and <code>generation/retry</code> also spend 5 units of the <code>AI_GENERATION</code> scope. See <a href="../platform-services/">Platform Services</a>.</p>
+<p><strong>Leaderboard.</strong> The leaderboard lives in <code>src/assessments/attempts/leaderboard.*</code>. See <a href="../attempts/">Attempts</a>.</p>
+<h2 id="10-async-work-events-and-emails">10. Async work, events and emails<a class="headerlink" href="#10-async-work-events-and-emails" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>When</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assessment invitation email</td>
+<td>After a successful invite, one per invited person. Fire and forget; a failure is only logged.</td>
+<td><code>EmailService.sendAssessmentInvitationEmail</code> (<a href="../notifications/">Notifications</a>)</td>
+</tr>
+<tr>
+<td>Question generation jobs (RabbitMQ)</td>
+<td><code>POST /generate</code> and retry</td>
+<td><a href="../assessment-generation/">AI Assessment Generation</a></td>
+</tr>
+<tr>
+<td>WebSocket events</td>
+<td>None from this module. Clients poll <code>GET /v1/jobs/:jobId</code> for generation progress.</td>
+<td><a href="../realtime-events/">Realtime Events</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="11-usage-limits-commerce">11. Usage limits (commerce)<a class="headerlink" href="#11-usage-limits-commerce" title="Permanent link">¶</a></h2>
+<ul>
+<li>Manual creation, invitations and registration are <strong>not</strong> metered.</li>
+<li>AI generation spends one unit of the <code>AI_ASSESSMENT</code> feature and checks <code>ALLOWED_QUESTION_TYPES</code> against the plan. In an org, the org's pooled plan is used. Details in <a href="../assessment-generation/">AI Assessment Generation</a> and <a href="../commerce/">Commerce</a>.</li>
+</ul>
+<h2 id="12-where-the-code-lives">12. Where the code lives<a class="headerlink" href="#12-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/assessments/assessments.controller.ts</code></td>
+<td>User routes</td>
+</tr>
+<tr>
+<td><code>src/assessments/assessments.service.ts</code></td>
+<td>Create, update, publish, add questions, register, list, assistant reads, the older <code>generate()</code></td>
+</tr>
+<tr>
+<td><code>src/assessments/assessment-invitations.service.ts</code></td>
+<td>Invite and accept</td>
+</tr>
+<tr>
+<td><code>src/assessments/assessment-participants.service.ts</code></td>
+<td>List and remove participants</td>
+</tr>
+<tr>
+<td><code>src/assessments/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Platform admin reads</td>
+</tr>
+<tr>
+<td><code>src/assessments/assessment-templates.*</code>, <code>assessment-prompts.*</code></td>
+<td>Templates and prompt library</td>
+</tr>
+<tr>
+<td><code>src/assessments/domain/</code></td>
+<td>Pure rules (see below)</td>
+</tr>
+<tr>
+<td><code>src/assessments/validators/is-after-field.validator.ts</code></td>
+<td><code>IsAfterField</code> class-validator constraint</td>
+</tr>
+<tr>
+<td><code>src/assessments/assessments.constants.ts</code></td>
+<td>Org permission strings, personal seat limit, default section title</td>
+</tr>
+<tr>
+<td><code>src/assessments/serializers/assessments.serializer.ts</code></td>
+<td>Response shapes</td>
+</tr>
+<tr>
+<td><code>src/assessments/repositories/</code></td>
+<td>Empty. Services use TypeORM repositories and <code>DataSource</code> directly.</td>
+</tr>
+<tr>
+<td><code>src/scripts/seed-assessment-templates.ts</code></td>
+<td>Template seeding</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The <code>domain/</code> folder</strong> holds pure functions and enums with no Nest or DB code, so the rules can be unit tested on their own:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assessment-state.ts</code></td>
+<td><code>AssessmentStatus</code>, <code>AssessmentPhase</code>, shape types</td>
+</tr>
+<tr>
+<td><code>assessment-transitions.ts</code></td>
+<td>Allowed status moves, <code>settleByCapacity</code>, <code>publishAssessment</code>, <code>reopenForGeneration</code></td>
+</tr>
+<tr>
+<td><code>assessment-invariants.ts</code></td>
+<td><code>phaseAt</code>, registration open, published only, seats available, seat limit covers taken seats, locked fields after publish</td>
+</tr>
+<tr>
+<td><code>assessment-schedule.ts</code></td>
+<td>Personal 30-day schedule, org schedule defaults, schedule ordering errors</td>
+</tr>
+<tr>
+<td><code>participant-*.ts</code></td>
+<td>Participant status, transitions with seat deltas, who may leave</td>
+</tr>
+<tr>
+<td><code>generation-outcome.ts</code></td>
+<td>Generation outcome from section jobs (see <a href="../assessment-generation/">AI Assessment Generation</a>)</td>
+</tr>
+<tr>
+<td><code>descriptive-invariants.ts</code></td>
+<td>Checkpoint weight rules (see <a href="../questions-and-tags/">Questions &amp; Tags</a>)</td>
+</tr>
+<tr>
+<td><code>attempt-*.ts</code>, <code>response-*.ts</code></td>
+<td>Attempt and response rules (see <a href="../attempts/">Attempts</a>, <a href="../evaluation/">Evaluation</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>Rule violations throw <code>DomainError</code> (<code>rule</code> → 400, <code>conflict</code> → 409, <code>forbidden</code> → 403).</p>
+<h2 id="13-known-gaps-and-todos">13. Known gaps and TODOs<a class="headerlink" href="#13-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Two generation pipelines.</strong> <code>POST /generate</code> uses the new section pipeline. The older <code>AssessmentsService.generate()</code> (single MCQ section, <code>CREATE_ASSESSMENT</code> job, <code>QuestionGenerationConsumer</code>) is still used by learning roadmaps. It never refunds the quota on failure.</li>
+<li><strong>Multi-section edits only touch the first section.</strong> <code>update()</code> writes <code>maxTotalQuestions</code> and marks onto the first section only, and applies those marks to <strong>every</strong> question in the assessment. For a generated assessment with MCQ and coding sections this can give coding questions MCQ marks and give the first section the whole assessment's cap.</li>
+<li><strong>Manual add always targets the first section</strong>, even when that section is coding or descriptive.</li>
+<li><strong>No way for normal users to browse the question bank.</strong> Manual add needs bank question IDs, but listing the bank is admin-only (<code>/v1/admin/questions</code>).</li>
+<li><strong>No "my templates" or "get template by uid" endpoint.</strong> A user cannot list their own private templates.</li>
+<li><strong><code>GET /v1/assessment-prompts/:id</code> does not check visibility or owner.</strong> Any logged-in user can read anyone's private or draft prompt by ID.</li>
+<li><strong><code>GET /v1/assessments/:id</code> is public and unscoped.</strong> Org assessment settings and the description (which, for generated ones, is the full prompt) are readable without login.</li>
+<li><strong>Swagger text is out of date in a few places</strong> (publish says "draft to ready"; update says only <code>maxParticipants</code> may change after publish; invite says "has not ended" but the code requires registration to be open).</li>
+<li><strong>Delete has no status guard.</strong> A published assessment with active participants can be soft-deleted.</li>
+<li><strong><code>GET /v1/assessments/invited</code></strong> reports <code>invitedAt</code> from the row's <code>created_at</code>, which is wrong for someone invited again after being revoked.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

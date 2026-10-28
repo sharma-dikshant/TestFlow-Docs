@@ -1,0 +1,2149 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How TestFlow picks a model, calls it, forces JSON out of it, runs its LangGraph pipelines, and records the cost of every call" name="description"/>
+<link href="../code-execution/" rel="prev"/>
+<link href="../ai-assistant/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>AI Layer (LLM, Structured Output, LangGraph) - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#ai-layer-llm-structured-output-and-langgraph">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              AI Layer (LLM, Structured Output, LangGraph)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-words-you-will-see">
+<span class="md-ellipsis">
+      
+        1. Words you will see
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-module-map">
+<span class="md-ellipsis">
+      
+        2. Module map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-choosing-a-model">
+<span class="md-ellipsis">
+      
+        3. Choosing a model
+      
+    </span>
+</a>
+<nav aria-label="3. Choosing a model" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-models-live-in-the-database-not-in-code">
+<span class="md-ellipsis">
+      
+        3.1 Models live in the database, not in code
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-the-registry">
+<span class="md-ellipsis">
+      
+        3.2 The registry
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-the-selector-which-model-does-a-user-get">
+<span class="md-ellipsis">
+      
+        3.3 The selector: which model does a user get?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-the-chat-model-factory">
+<span class="md-ellipsis">
+      
+        3.4 The chat model factory
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-structured-output-getting-reliable-json">
+<span class="md-ellipsis">
+      
+        4. Structured output — getting reliable JSON
+      
+    </span>
+</a>
+<nav aria-label="4. Structured output — getting reliable JSON" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-the-request">
+<span class="md-ellipsis">
+      
+        4.1 The request
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-the-loop">
+<span class="md-ellipsis">
+      
+        4.2 The loop
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-native-output-fallbacks">
+<span class="md-ellipsis">
+      
+        4.3 Native output fallbacks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-json-extraction">
+<span class="md-ellipsis">
+      
+        4.4 JSON extraction
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#45-schemas">
+<span class="md-ellipsis">
+      
+        4.5 Schemas
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-prompts">
+<span class="md-ellipsis">
+      
+        5. Prompts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-langgraph-pipelines">
+<span class="md-ellipsis">
+      
+        6. LangGraph pipelines
+      
+    </span>
+</a>
+<nav aria-label="6. LangGraph pipelines" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-mcq-generation-graph">
+<span class="md-ellipsis">
+      
+        6.1 MCQ generation graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-coding-generation-graph">
+<span class="md-ellipsis">
+      
+        6.2 Coding generation graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-writing-a-coding-problem-with-tools">
+<span class="md-ellipsis">
+      
+        6.3 Writing a coding problem with tools
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-parallelism-and-batching-summary">
+<span class="md-ellipsis">
+      
+        6.4 Parallelism and batching summary
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-callers">
+<span class="md-ellipsis">
+      
+        7. Callers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-token-and-cost-tracking">
+<span class="md-ellipsis">
+      
+        8. Token and cost tracking
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-admin-endpoints">
+<span class="md-ellipsis">
+      
+        9. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-error-handling-summary">
+<span class="md-ellipsis">
+      
+        10. Error handling summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-how-to-add-a-new-provider">
+<span class="md-ellipsis">
+      
+        11. How to add a new provider
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-how-to-add-a-new-graph-or-llm-call">
+<span class="md-ellipsis">
+      
+        12. How to add a new graph or LLM call
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-words-you-will-see">
+<span class="md-ellipsis">
+      
+        1. Words you will see
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-module-map">
+<span class="md-ellipsis">
+      
+        2. Module map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-choosing-a-model">
+<span class="md-ellipsis">
+      
+        3. Choosing a model
+      
+    </span>
+</a>
+<nav aria-label="3. Choosing a model" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-models-live-in-the-database-not-in-code">
+<span class="md-ellipsis">
+      
+        3.1 Models live in the database, not in code
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-the-registry">
+<span class="md-ellipsis">
+      
+        3.2 The registry
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-the-selector-which-model-does-a-user-get">
+<span class="md-ellipsis">
+      
+        3.3 The selector: which model does a user get?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-the-chat-model-factory">
+<span class="md-ellipsis">
+      
+        3.4 The chat model factory
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-structured-output-getting-reliable-json">
+<span class="md-ellipsis">
+      
+        4. Structured output — getting reliable JSON
+      
+    </span>
+</a>
+<nav aria-label="4. Structured output — getting reliable JSON" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-the-request">
+<span class="md-ellipsis">
+      
+        4.1 The request
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-the-loop">
+<span class="md-ellipsis">
+      
+        4.2 The loop
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-native-output-fallbacks">
+<span class="md-ellipsis">
+      
+        4.3 Native output fallbacks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-json-extraction">
+<span class="md-ellipsis">
+      
+        4.4 JSON extraction
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#45-schemas">
+<span class="md-ellipsis">
+      
+        4.5 Schemas
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-prompts">
+<span class="md-ellipsis">
+      
+        5. Prompts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-langgraph-pipelines">
+<span class="md-ellipsis">
+      
+        6. LangGraph pipelines
+      
+    </span>
+</a>
+<nav aria-label="6. LangGraph pipelines" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-mcq-generation-graph">
+<span class="md-ellipsis">
+      
+        6.1 MCQ generation graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-coding-generation-graph">
+<span class="md-ellipsis">
+      
+        6.2 Coding generation graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-writing-a-coding-problem-with-tools">
+<span class="md-ellipsis">
+      
+        6.3 Writing a coding problem with tools
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-parallelism-and-batching-summary">
+<span class="md-ellipsis">
+      
+        6.4 Parallelism and batching summary
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-callers">
+<span class="md-ellipsis">
+      
+        7. Callers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-token-and-cost-tracking">
+<span class="md-ellipsis">
+      
+        8. Token and cost tracking
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-admin-endpoints">
+<span class="md-ellipsis">
+      
+        9. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-error-handling-summary">
+<span class="md-ellipsis">
+      
+        10. Error handling summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-how-to-add-a-new-provider">
+<span class="md-ellipsis">
+      
+        11. How to add a new provider
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-how-to-add-a-new-graph-or-llm-call">
+<span class="md-ellipsis">
+      
+        12. How to add a new graph or LLM call
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="ai-layer-llm-structured-output-and-langgraph">AI Layer — LLM, Structured Output and LangGraph<a class="headerlink" href="#ai-layer-llm-structured-output-and-langgraph" title="Permanent link">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">AI is implemented</p>
+<p>Older pages said AI was "not implemented". That is wrong. All of <code>src/ai/</code> is live code: model selection, three LLM providers, two LangGraph question-generation pipelines, roadmap prompts, descriptive grading, a chat assistant and a per-call cost audit.</p>
+</div>
+<p>This page covers the <strong>internals</strong> of <code>src/ai</code>. Other pages cover the features that call into it:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Page</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assessment generation (API → RabbitMQ → consumer → this layer)</td>
+<td><a href="../assessment-generation/">Assessment generation</a></td>
+</tr>
+<tr>
+<td>Learning roadmaps (analysis, generation, modification jobs)</td>
+<td><a href="../learning-roadmaps/">Learning roadmaps</a></td>
+</tr>
+<tr>
+<td>Descriptive answer grading</td>
+<td><a href="../evaluation/">Evaluation</a></td>
+</tr>
+<tr>
+<td>The chat assistant and its tools</td>
+<td><a href="../ai-assistant/">AI assistant</a></td>
+</tr>
+<tr>
+<td>Code runners used to check coding problems</td>
+<td><a href="../code-execution/">Code execution</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-words-you-will-see">1. Words you will see<a class="headerlink" href="#1-words-you-will-see" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LLM</strong></td>
+<td>Large Language Model. A hosted model (GPT, Claude, Gemini) that takes text and returns text.</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td>The company that hosts the model: <code>openai</code>, <code>anthropic</code> or <code>google</code> (<code>AiModelProvider</code> in <code>src/common/enums/ai.enums.ts</code>).</td>
+</tr>
+<tr>
+<td><strong>Model code</strong></td>
+<td>The exact model name sent to the provider API, e.g. <code>gpt-4o</code>. Stored in <code>ai_models.code</code>.</td>
+</tr>
+<tr>
+<td><strong>LangChain</strong></td>
+<td>The library we use to talk to every provider through one interface (<code>BaseChatModel</code>).</td>
+</tr>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>A LangChain library for writing a pipeline as a <strong>graph</strong>: <em>nodes</em> are steps (functions), <em>edges</em> say which step runs next, and <em>conditional edges</em> pick the next step from the current state. All nodes read and update one shared <strong>state</strong> object.</td>
+</tr>
+<tr>
+<td><strong>Structured output</strong></td>
+<td>Asking the model to answer with JSON that matches a schema, instead of free prose.</td>
+</tr>
+<tr>
+<td><strong>Zod schema</strong></td>
+<td>A TypeScript schema (library <code>zod</code>) that both describes the JSON shape and validates it.</td>
+</tr>
+<tr>
+<td><strong>Repair turn</strong></td>
+<td>When the model's JSON is invalid, we send it its own answer back plus the exact error, and ask for a fixed version.</td>
+</tr>
+<tr>
+<td><strong>Tool call</strong></td>
+<td>The model asks us to run a named function with JSON arguments. We run it and send the result back.</td>
+</tr>
+<tr>
+<td><strong>Tokens</strong></td>
+<td>The unit providers bill by. Input tokens = prompt, output tokens = answer.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-module-map">2. Module map<a class="headerlink" href="#2-module-map" title="Permanent link">¶</a></h2>
+<div class="mermaid">flowchart LR
+    subgraph AiModule["AiModule - src/ai/ai.module.ts"]
+        REG["AiModelRegistry"]
+        SEL["AiModelSelector"]
+        FAC["createChatModel factory"]
+        SO["StructuredOutputService"]
+        QG["QuestionGenerationGraph"]
+        CG["CodingQuestionGenerationGraph"]
+        TW["CodingProblemToolWriter"]
+        AIS["AiService"]
+        RAI["RoadmapAiService"]
+        SUG["AssessmentSuggestionAiService"]
+        AUD["LlmAuditService"]
+        ADM["AiAdminController + AiAdminService"]
+        CONV["AiConversationsService + controller"]
+    end
+    SEL --&gt; REG
+    REG --&gt; FAC
+    AIS --&gt; QG
+    AIS --&gt; CG
+    AIS --&gt; SO
+    RAI --&gt; SO
+    SUG --&gt; SO
+    QG --&gt; SO
+    CG --&gt; SO
+    CG --&gt; TW
+    SO --&gt; AUD
+    TW --&gt; AUD
+    ADM --&gt; REG
+    SEL --&gt;|"plan feature AI_MODEL"| USAGE["commerce UsageService"]
+    CG --&gt;|"CODE_RUNNER"| RUN["code-execution runner"]
+    TW --&gt;|"CODE_RUNNER"| RUN
+</div>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/ai/ai.module.ts</code></td>
+<td>Wires everything. Imports <code>CommerceModule</code> (for the user's plan) and <code>CodeExecutionModule</code> (for the code runner).</td>
+</tr>
+<tr>
+<td><code>src/ai/ai-model-registry.service.ts</code></td>
+<td>In-memory list of usable models, loaded from the <code>ai_models</code> table.</td>
+</tr>
+<tr>
+<td><code>src/ai/ai-model-selector.service.ts</code></td>
+<td>Picks the model for a given user from their plan.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/chat-model.factory.ts</code></td>
+<td>Builds the LangChain chat model for a provider.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/structured-output.service.ts</code></td>
+<td>The shared "call → validate → repair" loop for every JSON call.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/json-extraction.util.ts</code></td>
+<td>Pulls a JSON object out of messy model text.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/question-generation.graph.ts</code></td>
+<td>MCQ pipeline (LangGraph).</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/coding-question-generation.graph.ts</code></td>
+<td>Coding problem pipeline (LangGraph).</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/coding-problem-tool-writer.ts</code></td>
+<td>Writes one coding problem with a <code>run_code</code> tool.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm/concurrency.util.ts</code></td>
+<td><code>mapWithConcurrency</code> — run at most N calls at once.</td>
+</tr>
+<tr>
+<td><code>src/ai/ai.service.ts</code></td>
+<td>Public entry for question generation and descriptive grading.</td>
+</tr>
+<tr>
+<td><code>src/ai/roadmap-ai.service.ts</code></td>
+<td>Public entry for the three roadmap prompts.</td>
+</tr>
+<tr>
+<td><code>src/ai/assessment-suggestion-ai.service.ts</code></td>
+<td>Suggests the next assessment from an attempt's result. Checks the output against the generation limits and the plan's question types.</td>
+</tr>
+<tr>
+<td><code>src/ai/llm-audit.service.ts</code></td>
+<td>Writes one <code>llm_audit</code> row per provider call (tokens and cost).</td>
+</tr>
+<tr>
+<td><code>src/ai/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin API for models and audits.</td>
+</tr>
+<tr>
+<td><code>src/ai/schemas/*</code></td>
+<td>Zod schemas for every JSON output.</td>
+</tr>
+<tr>
+<td><code>src/ai/prompts/*</code></td>
+<td>System prompts.</td>
+</tr>
+<tr>
+<td><code>src/ai/assistant/*</code>, <code>src/ai/tools/*</code></td>
+<td>The chat assistant. See <a href="../ai-assistant/">AI assistant</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-choosing-a-model">3. Choosing a model<a class="headerlink" href="#3-choosing-a-model" title="Permanent link">¶</a></h2>
+<h3 id="31-models-live-in-the-database-not-in-code">3.1 Models live in the database, not in code<a class="headerlink" href="#31-models-live-in-the-database-not-in-code" title="Permanent link">¶</a></h3>
+<p>Models are rows in the <code>ai_models</code> table (entity <code>src/common/entities/ai-model.entity.ts</code>). Admins manage them through the admin API (section 9). Each row holds:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>provider</code></td>
+<td><code>openai</code>, <code>anthropic</code> or <code>google</code>.</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>Model name sent to the API. Unique among non-deleted rows.</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>Human name.</td>
+</tr>
+<tr>
+<td><code>api_key_variable</code></td>
+<td><strong>Name</strong> of the env var that holds the API key, e.g. <code>OPENAI_API_KEY</code>. The key itself is never stored in the DB.</td>
+</tr>
+<tr>
+<td><code>base_url_variable</code></td>
+<td>Optional <strong>name</strong> of an env var holding a custom base URL (for proxies or OpenAI-compatible hosts). <code>null</code> = provider default host.</td>
+</tr>
+<tr>
+<td><code>input_price_per_1m</code>, <code>output_price_per_1m</code></td>
+<td>USD per 1 million tokens. Used for cost tracking.</td>
+</tr>
+<tr>
+<td><code>capabilities</code> (JSONB)</td>
+<td><code>vision</code>, <code>toolCalling</code>, <code>structuredOutput</code>, <code>streaming</code>, <code>contextWindow</code>, <code>maxOutputTokens</code>. Only <code>structuredOutput: false</code> changes runtime behavior today (section 4).</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>Inactive rows are ignored.</td>
+</tr>
+<tr>
+<td><code>is_default</code></td>
+<td>Exactly one default. A partial unique index (<code>UQ_ai_models_is_default</code>) enforces it.</td>
+</tr>
+</tbody>
+</table>
+<p>The seeder <code>src/seeders/ai-model.seeder.ts</code> creates the first default row: an OpenAI model named by <code>OPENAI_MODEL</code> (fallback <code>gpt-4</code>), with <code>apiKeyVariable = OPENAI_API_KEY</code> and <code>baseUrlVariable = OPENAI_BASE_URL</code>, prices 0.</p>
+<h3 id="32-the-registry">3.2 The registry<a class="headerlink" href="#32-the-registry" title="Permanent link">¶</a></h3>
+<p><code>AiModelRegistry</code> loads all active rows at startup (<code>onModuleInit</code>) and after every admin write.</p>
+<p>For each row it reads the named env vars:</p>
+<ul>
+<li>API key env var missing or empty → the model is <strong>skipped</strong> (logged as a warning).</li>
+<li><code>base_url_variable</code> set but the env var is empty → the model is <strong>skipped</strong>. It does <em>not</em> fall back to the default host, because a key for a proxy probably will not work on the real host.</li>
+</ul>
+<p>The result is a map of <code>RegisteredAiModel</code> objects. Each holds the row data plus a <code>chatModel(options)</code> function that returns a cached LangChain client (one client per distinct option set, e.g. one for <code>temperature: 0</code>, one for default).</p>
+<div class="admonition warning">
+<p class="admonition-title">The registry is per process</p>
+<p>Each app instance keeps its own copy. An admin change reloads only the instance that served the request. Other instances see it after restart.</p>
+</div>
+<h3 id="33-the-selector-which-model-does-a-user-get">3.3 The selector: which model does a user get?<a class="headerlink" href="#33-the-selector-which-model-does-a-user-get" title="Permanent link">¶</a></h3>
+<p><code>AiModelSelector.forUser(userId)</code>:</p>
+<ol>
+<li>Reads the user's plan feature <code>AI_MODEL</code> through <code>UsageService.getFeatureValue</code> (see <a href="../commerce/">Commerce</a>). Its value is a model code.</li>
+<li>Blank or missing → use the default model.</li>
+<li>A code that is unknown, inactive or unavailable → log a warning and use the default model.</li>
+<li>No default available → <code>503 Service Unavailable</code>.</li>
+</ol>
+<p>So the plan decides the model. There are no feature flags involved in model choice.</p>
+<table>
+<thead>
+<tr>
+<th>Caller</th>
+<th>Model used</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCQ / coding / descriptive generation (<code>QuestionsService</code>)</td>
+<td>The requesting user's plan model</td>
+</tr>
+<tr>
+<td>Roadmap analysis, generation, modification consumers</td>
+<td>The roadmap owner's plan model</td>
+</tr>
+<tr>
+<td>Descriptive grading (<code>DescriptiveEvaluator</code>)</td>
+<td>The <strong>assessment creator's</strong> plan model (not the candidate's)</td>
+</tr>
+<tr>
+<td>Chat assistant</td>
+<td>Always the <strong>default</strong> model, whatever the plan</td>
+</tr>
+</tbody>
+</table>
+<h3 id="34-the-chat-model-factory">3.4 The chat model factory<a class="headerlink" href="#34-the-chat-model-factory" title="Permanent link">¶</a></h3>
+<p><code>createChatModel(provider, code, credentials, options)</code> in <code>src/ai/llm/chat-model.factory.ts</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>LangChain class</th>
+<th>Base URL option</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>openai</code></td>
+<td><code>ChatOpenAI</code> (<code>@langchain/openai</code>)</td>
+<td><code>configuration.baseURL</code></td>
+</tr>
+<tr>
+<td><code>anthropic</code></td>
+<td><code>ChatAnthropic</code> (<code>@langchain/anthropic</code>)</td>
+<td><code>anthropicApiUrl</code></td>
+</tr>
+<tr>
+<td><code>google</code></td>
+<td><code>ChatGoogleGenerativeAI</code> (<code>@langchain/google-genai</code>)</td>
+<td><code>baseUrl</code></td>
+</tr>
+</tbody>
+</table>
+<p>Settings:</p>
+<ul>
+<li><strong>Native integrations.</strong> Each provider uses its own LangChain class, not an OpenAI-compatible shim. This means structured output and tool calling use the provider's real mechanism.</li>
+<li><strong>Transport retries:</strong> <code>maxRetries: 2</code> for network/HTTP errors (handled inside the SDK).</li>
+<li><strong>Temperature:</strong> only set when a caller pins it. Grading, reviews and roadmap prompts use <code>0</code> (same input → same answer). Writing steps use the provider default.</li>
+<li><strong>Max tokens / timeouts:</strong> not set. The provider default applies. There is no explicit request timeout in our code.</li>
+</ul>
+<h2 id="4-structured-output-getting-reliable-json">4. Structured output — getting reliable JSON<a class="headerlink" href="#4-structured-output-getting-reliable-json" title="Permanent link">¶</a></h2>
+<p>Almost every LLM call in TestFlow must return one JSON object. All of them go through <code>StructuredOutputService.run()</code> (<code>src/ai/llm/structured-output.service.ts</code>). It is itself a tiny LangGraph loop.</p>
+<h3 id="41-the-request">4.1 The request<a class="headerlink" href="#41-the-request" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model</code>, <code>context</code></td>
+<td>Which model, and what the audit row is filed under (<code>jobId</code>, <code>jobType</code>, <code>userId</code>).</td>
+</tr>
+<tr>
+<td><code>systemPrompt</code>, <code>userMessage</code></td>
+<td>The prompts.</td>
+</tr>
+<tr>
+<td><code>parse(value)</code></td>
+<td>Turns the JSON into the result, or throws an <code>Error</code> whose <strong>message is written for the model</strong>. That message is sent back as the repair instruction.</td>
+</tr>
+<tr>
+<td><code>structured</code></td>
+<td>Optional <code>{ schema, name }</code>. If present, the provider's native structured output is used.</td>
+</tr>
+<tr>
+<td><code>maxAttempts</code></td>
+<td>Total calls allowed, including repairs. Every caller uses <strong>2</strong> (one try + one repair).</td>
+</tr>
+<tr>
+<td><code>temperature</code></td>
+<td>Optional.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-the-loop">4.2 The loop<a class="headerlink" href="#42-the-loop" title="Permanent link">¶</a></h3>
+<div class="mermaid">flowchart LR
+    S(["START"]) --&gt; G["generate: one provider call"]
+    G --&gt; V["validate: extract JSON and run parse"]
+    V --&gt;|"valid"| E(["END: return result"])
+    V --&gt;|"invalid and budget used up"| F(["END: throw 503"])
+    V --&gt;|"invalid and budget left"| R["repair: add rejected reply and reason to messages"]
+    R --&gt; G
+</div>
+<p>State fields: <code>messages</code> (the chat so far, appended to), <code>attempt</code>, <code>completion</code> (last reply), <code>lastReason</code>, <code>result</code>, <code>native</code> (use native structured output on the next call?), <code>bonusAttempts</code>.</p>
+<p>Step by step:</p>
+<ol>
+<li><strong>Build the prompt.</strong> If a schema is given, <code>STRUCTURED_JSON_CONTRACT</code> is appended to the system prompt and <code>STRUCTURED_JSON_REMINDER</code> to the user message. If native output is off, the JSON Schema itself (from <code>zod.toJSONSchema</code>) is also put into the user message so the model knows the exact keys.</li>
+<li><strong>generate.</strong> If native output is on, call <code>chatModel.withStructuredOutput(schema, { includeRaw: true })</code>. Otherwise call the model as plain chat. Every call is wrapped in <code>LlmAuditService.track()</code> (one audit row per call).</li>
+<li><strong>validate.</strong> Use the provider-decoded object if there is one, else run <code>extractJsonObject(text)</code>. Then run <code>parse</code>. On error, store the message as <code>lastReason</code>.</li>
+<li><strong>repair.</strong> Append the rejected reply (max 8000 chars) and <code>buildJsonRepairPrompt(reason)</code> ("Your previous response was REJECTED for this reason: …"). Go back to generate.</li>
+<li><strong>End.</strong> Success returns the value. Out of budget throws <code>ServiceUnavailableException("&lt;label&gt; returned an invalid response")</code>.</li>
+</ol>
+<p><strong>Why a repair turn instead of a plain retry?</strong> A plain retry samples the same mistake again. Telling the model exactly what was wrong ("<code>outline</code> had 4 items — it must have exactly 5") fixes it much more often.</p>
+<h3 id="43-native-output-fallbacks">4.3 Native output fallbacks<a class="headerlink" href="#43-native-output-fallbacks" title="Permanent link">¶</a></h3>
+<p>Some OpenAI-compatible endpoints accept a schema and then send replies the SDK cannot decode (code fences, a stray <code>{"</code> prefix). The service handles this:</p>
+<table>
+<thead>
+<tr>
+<th>What happened</th>
+<th>Treated as</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SDK could not decode the reply (<code>SyntaxError</code>, <code>OutputParserException</code>)</td>
+<td>Model output problem</td>
+<td>Switch to plain JSON for the rest of this call. This call does <strong>not</strong> use up an attempt (<code>bonusAttempts + 1</code>).</td>
+</tr>
+<tr>
+<td>Same model fails to decode natively 3 times (<code>NATIVE_DECODE_FAILURE_LIMIT</code>)</td>
+<td>Model does not honour schemas</td>
+<td>Native output is disabled for that model <strong>until restart</strong>. Set <code>capabilities.structuredOutput = false</code> to make it permanent.</td>
+</tr>
+<tr>
+<td>SDK decoded but its own Zod check failed</td>
+<td>Content problem</td>
+<td>Normal repair turn, costs an attempt, native stays on.</td>
+</tr>
+<tr>
+<td>Reply cut off at token limit / content filter</td>
+<td>Not counted against the model</td>
+<td>Repair turn with a message like "be more concise".</td>
+</tr>
+<tr>
+<td>Network or HTTP error</td>
+<td>Real outage</td>
+<td><code>503 "&lt;label&gt; is temporarily unavailable"</code>. No repair.</td>
+</tr>
+<tr>
+<td>Empty reply</td>
+<td>Outage</td>
+<td><code>503</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-json-extraction">4.4 JSON extraction<a class="headerlink" href="#44-json-extraction" title="Permanent link">¶</a></h3>
+<p><code>extractJsonObject()</code> (<code>src/ai/llm/json-extraction.util.ts</code>) is used when we parse text ourselves:</p>
+<ul>
+<li>Strips one outer code fence (<code>```json</code>).</li>
+<li>Tries every <code>{</code> (up to 8) as a possible start, and takes the first balanced object that parses. This handles gateways that prefix <code>{"</code> before the real object.</li>
+<li>Removes trailing commas before <code>}</code> or <code>]</code>.</li>
+<li>Does <strong>not</strong> guess at ambiguous damage (single quotes, unquoted keys). Those fail and go to the repair turn.</li>
+</ul>
+<h3 id="45-schemas">4.5 Schemas<a class="headerlink" href="#45-schemas" title="Permanent link">¶</a></h3>
+<p>All in <code>src/ai/schemas/</code>. <code>zodParser(schema)</code> (<code>zod-parser.ts</code>) turns a Zod schema into a <code>parse</code> function. Its errors are formatted as <code>"path": message; …</code> so they read well to the model.</p>
+<table>
+<thead>
+<tr>
+<th>Schema</th>
+<th>Used for</th>
+<th>Key rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QUESTION_PLAN_SCHEMA</code></td>
+<td>MCQ and coding plan</td>
+<td><code>assessmentTitle</code>; <code>outline[]</code> of <code>{ focus, difficulty: easy/medium/hard, topics: 1–4 kebab-case slugs }</code></td>
+</tr>
+<tr>
+<td><code>QUESTION_BATCH_SCHEMA</code></td>
+<td>One batch of MCQs</td>
+<td>Each question: text, exactly 4 options with ids 1–4, <code>correctOptionId</code> that matches an option, 1–4 weighted topics</td>
+</tr>
+<tr>
+<td><code>QUESTION_REVIEW_SCHEMA</code></td>
+<td>MCQ review</td>
+<td>Per question: <code>number</code>, <code>reasoning</code>, <code>answerOptionId</code>, <code>verdict: ok/ambiguous/incorrect</code>, <code>issue</code></td>
+</tr>
+<tr>
+<td><code>QUESTION_GENERATION_SCHEMA</code></td>
+<td>Final MCQ result check</td>
+<td>Title + at least one question</td>
+</tr>
+<tr>
+<td><code>CODING_PROBLEM_SCHEMA</code></td>
+<td>One coding problem</td>
+<td>Title, statement, input/output format, constraints, starter code for <code>python</code>, <code>java</code>, <code>cpp</code>, 7–15 test cases (≥2 visible, ≥5 hidden, all inputs unique), Python <code>referenceSolution</code>, topics</td>
+</tr>
+<tr>
+<td><code>CODING_REVIEW_SCHEMA</code></td>
+<td>Coding review</td>
+<td><code>verdict</code>, <code>issue</code>, <code>outputs[]</code> (the reviewer's traced output per test input)</td>
+</tr>
+<tr>
+<td><code>DESCRIPTIVE_GENERATION_SCHEMA</code></td>
+<td>Descriptive questions</td>
+<td>Text, 2–6 checkpoints with integer weightage 1–100, <code>maxWords</code> 30–1000, topics</td>
+</tr>
+<tr>
+<td><code>DESCRIPTIVE_GRADING_SCHEMA</code></td>
+<td>Descriptive grading</td>
+<td><code>completedCheckpointIds: number[]</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each caller adds extra checks in its <code>parse</code> function. Examples: "outline must have exactly N items", "reviews must cover questions 1..N once each", "checkpoint id 7 does not exist".</p>
+<p>Non-blank strings use a Zod <code>.refine()</code> instead of <code>.trim()</code>, because a transform cannot be expressed in the JSON Schema sent to the provider.</p>
+<p><strong>Roadmap prompts are different.</strong> They use no Zod schema and no native structured output. The JSON contract lives inside the prompt text (<code>JSON_ONLY_CONTRACT</code>), and <code>RoadmapAiService</code> validates the result with hand-written checks (<code>parseAnalyzedIntent</code>, <code>parseGeneratedRoadmap</code>, <code>parseGeneratedDiff</code>) whose error messages feed the repair turn. The reason given in the code: some gateways implement JSON mode by pre-filling the reply, which corrupts it.</p>
+<h2 id="5-prompts">5. Prompts<a class="headerlink" href="#5-prompts" title="Permanent link">¶</a></h2>
+<p>All in <code>src/ai/prompts/</code>, re-exported from <code>index.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Prompt</th>
+<th>What it asks for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QUESTION_PLAN_SYSTEM_PROMPT</code></td>
+<td>Act as an examiner. Produce exactly N distinct outline items (focus, difficulty, topic slugs) plus an assessment title. Spread coverage, stay in scope.</td>
+</tr>
+<tr>
+<td><code>QUESTION_GENERATION_SYSTEM_PROMPT</code></td>
+<td>Write one MCQ per outline item. Test understanding, not recall. Plausible distractors, Markdown-safe formatting.</td>
+</tr>
+<tr>
+<td><code>QUESTION_REVIEW_SYSTEM_PROMPT</code></td>
+<td>Act as an independent examiner. Solve each question <strong>without the answer key</strong>, pick an option, give a verdict and a one-line issue.</td>
+</tr>
+<tr>
+<td><code>CODING_PLAN_SYSTEM_PROMPT</code></td>
+<td>Plan exactly N coding problems (algorithmic idea, difficulty, topics) plus a title.</td>
+</tr>
+<tr>
+<td><code>CODING_GENERATION_SYSTEM_PROMPT</code></td>
+<td>Write one full coding problem: statement, formats, constraints, starter code, test cases, Python reference solution.</td>
+</tr>
+<tr>
+<td><code>CODING_TOOLS_SYSTEM_PROMPT</code></td>
+<td>Extra rules when writing with tools: run the reference solution with <code>run_code</code> and copy its output into <code>expectedOutput</code>, then call <code>submit_problem</code>.</td>
+</tr>
+<tr>
+<td><code>CODING_REVIEW_SYSTEM_PROMPT</code></td>
+<td>Judge the statement and trace the reference solution on each test input, without seeing the expected outputs.</td>
+</tr>
+<tr>
+<td><code>DESCRIPTIVE_GENERATION_SYSTEM_PROMPT</code></td>
+<td>Write N free-text questions, each with 2–6 concrete, non-overlapping checkpoints and weightages summing to 100.</td>
+</tr>
+<tr>
+<td><code>DESCRIPTIVE_GRADING_SYSTEM_PROMPT</code></td>
+<td>Read the answer and return only the ids of the checkpoints it completes. Marks are computed in code.</td>
+</tr>
+<tr>
+<td><code>ROADMAP_ANALYSIS_SYSTEM_PROMPT</code></td>
+<td>Name the learning goal and ask the fewest questions (3–6) that would change the roadmap.</td>
+</tr>
+<tr>
+<td><code>ROADMAP_GENERATION_SYSTEM_PROMPT</code></td>
+<td>Build a personalised DAG of <code>knowledge</code> and <code>practice</code> nodes, using <code>ref</code> numbers and <code>fromRef</code>/<code>toRef</code> edges.</td>
+</tr>
+<tr>
+<td><code>ASSESSMENT_SUGGESTION_SYSTEM_PROMPT</code></td>
+<td>Act as a tutor. From one attempt's result (overall, per section, per topic), design one follow-up assessment: weak areas first, difficulty by accuracy (&lt;40% easier, 40–75% same, &gt;75% harder), only the allowed question types, within the generation limits.</td>
+</tr>
+<tr>
+<td><code>ROADMAP_MODIFICATION_SYSTEM_PROMPT</code></td>
+<td>Change an existing roadmap from a plain-language instruction. Return a <strong>diff</strong> (<code>added</code>, <code>updated</code>, <code>removed</code>, <code>edges</code>) so surviving nodes keep their ids and progress.</td>
+</tr>
+<tr>
+<td><code>CONVERSATION_ASSISTANT_SYSTEM_PROMPT</code></td>
+<td>The chat assistant's rules: ground every fact in a tool result, never reveal answers before evaluation, keep replies short. See <a href="../ai-assistant/">AI assistant</a>.</td>
+</tr>
+<tr>
+<td><code>buildConversationContextPrompt()</code></td>
+<td>Second system message for chat: current date and what the conversation is attached to.</td>
+</tr>
+<tr>
+<td><code>JSON_ONLY_CONTRACT</code></td>
+<td>Strict "one raw JSON object, nothing else" rules, embedded in the three roadmap prompts.</td>
+</tr>
+<tr>
+<td><code>STRUCTURED_JSON_CONTRACT</code> / <code>STRUCTURED_JSON_REMINDER</code></td>
+<td>Lighter JSON rules appended to every schema call. Allows Markdown inside string values.</td>
+</tr>
+<tr>
+<td><code>buildJsonRepairPrompt(reason)</code></td>
+<td>The repair turn text.</td>
+</tr>
+<tr>
+<td><code>difficultyGuidance(level)</code></td>
+<td>Turns a section difficulty 1–5 into an easy/medium/hard mix (e.g. 3 → 30/50/20).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-langgraph-pipelines">6. LangGraph pipelines<a class="headerlink" href="#6-langgraph-pipelines" title="Permanent link">¶</a></h2>
+<p>There are four LangGraph graphs in <code>src/ai</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Graph</th>
+<th>File</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Structured output loop</td>
+<td><code>llm/structured-output.service.ts</code></td>
+<td>Every JSON call (section 4)</td>
+</tr>
+<tr>
+<td>MCQ generation</td>
+<td><code>llm/question-generation.graph.ts</code></td>
+<td><code>AiService.generateQuestions</code></td>
+</tr>
+<tr>
+<td>Coding generation</td>
+<td><code>llm/coding-question-generation.graph.ts</code></td>
+<td><code>AiService.generateCodingQuestions</code></td>
+</tr>
+<tr>
+<td>Assistant tool loop</td>
+<td><code>assistant/conversation-assistant.service.ts</code></td>
+<td>Chat. See <a href="../ai-assistant/">AI assistant</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Descriptive generation and grading, and all three roadmap prompts, are <strong>single structured-output calls</strong> (no multi-step graph).</p>
+<p>Each graph is built and compiled inside <code>run()</code> on every call. State lives only in memory for that one run. Nothing is checkpointed, so a crashed process loses the run and the job must be retried by its consumer.</p>
+<h3 id="61-mcq-generation-graph">6.1 MCQ generation graph<a class="headerlink" href="#61-mcq-generation-graph" title="Permanent link">¶</a></h3>
+<div class="mermaid">flowchart LR
+    S(["START"]) --&gt; P["plan"]
+    P --&gt; G["generate"]
+    G --&gt; RV["review"]
+    RV --&gt;|"flags and revisionRounds less than 1"| RS["revise"]
+    RS --&gt; RV
+    RV --&gt;|"no flags or budget used"| E(["END"])
+    E --&gt; B["balanceAnswerPositions and final schema check"]
+</div>
+<p><strong>State</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assessmentTitle</code></td>
+<td>From the plan.</td>
+</tr>
+<tr>
+<td><code>outline</code></td>
+<td>N items: focus, difficulty, topics.</td>
+</tr>
+<tr>
+<td><code>questions</code></td>
+<td>Written questions, same order as the outline.</td>
+</tr>
+<tr>
+<td><code>toReview</code></td>
+<td>Indexes the next review pass checks. All at first, then only revised ones.</td>
+</tr>
+<tr>
+<td><code>flagged</code></td>
+<td><code>{ index, feedback }</code> for questions the reviewer disputes.</td>
+</tr>
+<tr>
+<td><code>revisionRounds</code></td>
+<td>How many revise passes ran.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nodes</strong></p>
+<ol>
+<li><strong>plan</strong> — One call. Produces exactly <code>count</code> outline items and the title. Difficulty mix comes from <code>difficultyGuidance(section difficulty)</code>.</li>
+<li><strong>generate</strong> — Splits the outline into batches of <strong>5</strong> and writes them with at most <strong>3</strong> calls in parallel.</li>
+<li><strong>review</strong> — Batches of 5, 3 in parallel, <code>temperature 0</code>. The reviewer gets questions and options <strong>but not the answer key</strong>. A question is flagged if the verdict is not <code>ok</code> or the reviewer picks a different option than the key. If a review call fails, that batch is skipped with a warning (questions ship unreviewed).</li>
+<li><strong>revise</strong> — Rewrites each flagged question with the reviewer's feedback (3 in parallel). A failed rewrite keeps the original.</li>
+<li><strong>End</strong> — Max <strong>1</strong> revision round. Questions still flagged are <strong>kept</strong> (logged as a warning), because a short assessment is worse for the creator.</li>
+<li><strong>After the graph</strong> — <code>balanceAnswerPositions</code> moves correct answers so each group of four questions uses positions 1–4 once (models favour the same slot). Then the whole result is checked against <code>QUESTION_GENERATION_SCHEMA</code>.</li>
+</ol>
+<p>Why plan first? Writers in parallel batches cannot see each other. A shared outline stops duplicate questions and fixes the difficulty mix up front.</p>
+<h3 id="62-coding-generation-graph">6.2 Coding generation graph<a class="headerlink" href="#62-coding-generation-graph" title="Permanent link">¶</a></h3>
+<div class="mermaid">flowchart LR
+    S(["START"]) --&gt; P["plan"]
+    P --&gt; G["generate"]
+    G --&gt; VF["verify"]
+    VF --&gt; RV["review"]
+    RV --&gt;|"flags and revisionRounds less than 2"| RS["revise"]
+    RS --&gt; VF
+    RV --&gt;|"no flags or budget used"| E(["END"])
+</div>
+<p><strong>State</strong> — like MCQ (<code>assessmentTitle</code>, <code>outline</code>, <code>problems</code>, <code>toReview</code>, <code>flagged</code>, <code>revisionRounds</code>) plus:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>executed</code></td>
+<td>Problems whose expected outputs came from actually running the reference solution.</td>
+</tr>
+<tr>
+<td><code>executionUnavailable</code></td>
+<td><code>true</code> when there is no code runner, or it failed. Review then checks outputs by tracing instead.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nodes</strong></p>
+<ol>
+<li><strong>plan</strong> — Same as MCQ, with the coding plan prompt.</li>
+<li><strong>generate</strong> — One call per problem, 3 in parallel. Each problem is written by <code>writeWithTools</code> (section 6.3). If tool writing is not possible or fails, it falls back to one structured-output call.</li>
+<li><strong>verify</strong> — For every problem awaiting review, run the Python reference solution on each test input with the code runner (<code>CODE_RUNNER</code>, see <a href="../code-execution/">Code execution</a>). Default limits: 2000 ms, 256 MB. What it prints <strong>becomes</strong> the expected output. A crash, timeout or over-long output flags the problem with the stderr as feedback. The first runner error (not configured, busy, down) turns execution off for the rest of the run.</li>
+<li><strong>review</strong> — One call per problem, <code>temperature 0</code>. The reviewer sees the statement, solution and inputs, <strong>but not the expected outputs</strong>. If the verdict is not <code>ok</code>, the problem is flagged. If outputs were <strong>not</strong> executed, the reviewer's traced outputs are compared with the expected ones and any mismatch flags it. A failed review call flags the problem.</li>
+<li><strong>revise</strong> — Rewrites flagged problems. Rewritten problems lose their <code>executed</code> mark until verify runs them again.</li>
+<li><strong>End</strong> — Max <strong>2</strong> revision rounds. Unlike MCQ, <strong>any problem still flagged fails the whole run</strong> with a <code>503</code>. A wrong expected output would fail every correct submission, which is worse than a missing problem.</li>
+</ol>
+<h3 id="63-writing-a-coding-problem-with-tools">6.3 Writing a coding problem with tools<a class="headerlink" href="#63-writing-a-coding-problem-with-tools" title="Permanent link">¶</a></h3>
+<p><code>CodingProblemToolWriter</code> (<code>src/ai/llm/coding-problem-tool-writer.ts</code>) is a plain loop, not a LangGraph graph. It is used when a code runner supports Python and the chat model has <code>bindTools</code>.</p>
+<div class="mermaid">sequenceDiagram
+    participant W as CodingProblemToolWriter
+    participant M as LLM
+    participant R as Code runner
+    W-&gt;&gt;M: system and user prompt, tools run_code and submit_problem, tool_choice any
+    M--&gt;&gt;W: tool call run_code with code and stdin
+    W-&gt;&gt;R: run Python with limits
+    R--&gt;&gt;W: stdout, stderr, status, time
+    W-&gt;&gt;M: tool result as JSON
+    M--&gt;&gt;W: tool call submit_problem with the full problem
+    W-&gt;&gt;W: validate with CODING_PROBLEM_SCHEMA
+    alt valid
+        W--&gt;&gt;W: return problem
+    else invalid
+        W-&gt;&gt;M: Rejected with reason, submit again
+    end
+</div>
+<p>Limits: max <strong>8</strong> model turns (the last turn offers only <code>submit_problem</code>), max <strong>40</strong> <code>run_code</code> runs per problem, outputs echoed back are cut to 2000 chars (stderr 1000). Every turn is a tool call (<code>tool_choice: 'any'</code>). Any failure raises <code>ToolWriterError</code>, and the graph falls back to plain structured output.</p>
+<h3 id="64-parallelism-and-batching-summary">6.4 Parallelism and batching summary<a class="headerlink" href="#64-parallelism-and-batching-summary" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>MCQ</th>
+<th>Coding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Items per call</td>
+<td>5 questions</td>
+<td>1 problem</td>
+</tr>
+<tr>
+<td>Calls in flight per step (<code>MAX_PARALLEL_CALLS</code>)</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Attempts per call (incl. repair)</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Revision rounds</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Still flagged at the end</td>
+<td>Kept, warning logged</td>
+<td>Run fails (503)</td>
+</tr>
+</tbody>
+</table>
+<p><code>mapWithConcurrency</code> keeps output order equal to input order. The cap of 3 is how we stay under provider rate limits. There is no other client-side rate limiter for LLM calls.</p>
+<h2 id="7-callers">7. Callers<a class="headerlink" href="#7-callers" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Caller</th>
+<th>Method</th>
+<th>Pipeline</th>
+<th>Audit <code>jobType</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QuestionsService.generateFromPrompt</code> (sync endpoint or job)</td>
+<td><code>AiService.generateQuestions</code></td>
+<td>MCQ graph</td>
+<td>job type, or <code>INLINE_QUESTION_GENERATION</code></td>
+</tr>
+<tr>
+<td><code>QuestionsService.generateMcqSection</code> (section job)</td>
+<td><code>AiService.generateQuestions</code></td>
+<td>MCQ graph</td>
+<td>section job type</td>
+</tr>
+<tr>
+<td><code>QuestionsService.generateCodingSection</code></td>
+<td><code>AiService.generateCodingQuestions</code></td>
+<td>Coding graph</td>
+<td>section job type</td>
+</tr>
+<tr>
+<td><code>QuestionsService.generateDescriptiveSection</code></td>
+<td><code>AiService.generateDescriptiveQuestions</code></td>
+<td>1 structured call</td>
+<td>section job type</td>
+</tr>
+<tr>
+<td><code>DescriptiveEvaluator.evaluate</code></td>
+<td><code>AiService.findCompletedCheckpoints</code></td>
+<td>1 structured call, temp 0</td>
+<td><code>EVALUATE_DESCRIPTIVE_RESPONSES</code></td>
+</tr>
+<tr>
+<td><code>RoadmapAnalysisConsumer</code></td>
+<td><code>RoadmapAiService.analyzeRoadmapIntent</code></td>
+<td>1 structured call, temp 0</td>
+<td>roadmap job type</td>
+</tr>
+<tr>
+<td><code>RoadmapGenerationConsumer</code></td>
+<td><code>RoadmapAiService.generateRoadmap</code></td>
+<td>1 structured call, temp 0</td>
+<td>roadmap job type</td>
+</tr>
+<tr>
+<td><code>RoadmapModificationConsumer</code></td>
+<td><code>RoadmapAiService.modifyRoadmapGraph</code></td>
+<td>1 structured call, temp 0</td>
+<td>roadmap job type</td>
+</tr>
+<tr>
+<td><code>ConversationAssistantService.answer</code></td>
+<td>(own loop)</td>
+<td>Assistant graph</td>
+<td><code>ASSISTANT_REPLY</code></td>
+</tr>
+<tr>
+<td><code>AttemptSuggestionService.suggestNext</code> (inline, on <code>POST /v1/attempts/:uid/next-assessment</code>)</td>
+<td><code>AssessmentSuggestionAiService.suggestNextAssessment</code></td>
+<td>1 structured call (Zod schema <code>assessment_suggestion</code>), up to 3 attempts, <strong>always the default model</strong></td>
+<td><code>ASSESSMENT_SUGGESTION</code></td>
+</tr>
+</tbody>
+</table>
+<p>In the <code>testing</code> environment (<code>NODE_ENV=testing</code>) <code>QuestionsService</code> skips the LLM entirely and returns banked or fixed questions.</p>
+<p>For the full request → queue → consumer flow see <a href="../assessment-generation/">Assessment generation</a> and <a href="../learning-roadmaps/">Learning roadmaps</a>.</p>
+<h2 id="8-token-and-cost-tracking">8. Token and cost tracking<a class="headerlink" href="#8-token-and-cost-tracking" title="Permanent link">¶</a></h2>
+<p><code>LlmAuditService.track(model, context, attempt, call)</code> wraps <strong>every</strong> provider call: structured output attempts, tool-writer turns and assistant turns. It writes one row to <code>llm_audit</code> (<code>src/common/entities/llm-audit.entity.ts</code>):</p>
+<ul>
+<li><code>job_id</code>, <code>job_type</code>, <code>user_id</code> — from the <code>LlmCallContext</code>.</li>
+<li><code>ai_model_id</code>, <code>provider</code>, <code>model</code>, <code>model_code</code>.</li>
+<li><code>status</code> (<code>SUCCESS</code> / <code>FAILED</code>), <code>attempt</code>, <code>error_message</code> (max 2000 chars).</li>
+<li><code>started_at</code>, <code>completed_at</code>, <code>duration_ms</code>.</li>
+<li><code>input_tokens</code>, <code>output_tokens</code>, <code>cached_input_tokens</code>, <code>total_tokens</code> — read from LangChain's <code>usage_metadata</code>.</li>
+<li>Prices at call time and <code>input_cost</code>, <code>output_cost</code>, <code>total_cost</code> = tokens × price / 1,000,000.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Cached input tokens are billed at the full input price (no cached rate is stored).</li>
+<li>A failure to write the audit row is logged and <strong>never</strong> fails the LLM call.</li>
+<li>A repair turn is a separate, separately billed row.</li>
+</ul>
+<h2 id="9-admin-endpoints">9. Admin endpoints<a class="headerlink" href="#9-admin-endpoints" title="Permanent link">¶</a></h2>
+<p>Controller: <code>src/ai/admin.controller.ts</code>, base path <code>/v1/admin</code>. Protected by the global <code>JwtAuthGuard</code> and <code>PermissionGuard</code> (see <a href="../rbac/">RBAC</a>). Rate-limit policy <code>CLASS_C</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method &amp; path</th>
+<th>Permission</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/admin/ai-models</code></td>
+<td><code>ai_models:create</code></td>
+<td>Register a model. <code>isDefault: true</code> unsets the old default in the same transaction.</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/ai-models</code></td>
+<td><code>ai_models:read</code></td>
+<td>Paged list. Filters <code>provider</code>, <code>isActive</code>. Default model first.</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/ai-models/:id</code></td>
+<td><code>ai_models:read</code></td>
+<td>One model.</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/admin/ai-models/:id</code></td>
+<td><code>ai_models:update</code></td>
+<td>Partial update. <code>capabilities</code> replaces the whole object.</td>
+</tr>
+<tr>
+<td><code>DELETE /v1/admin/ai-models/:id</code></td>
+<td><code>ai_models:delete</code></td>
+<td>Soft delete. The default model cannot be deleted (422).</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/llm-audits</code></td>
+<td><code>llm_audits:read</code></td>
+<td>Audit rows <strong>grouped by job</strong>, newest first, with totals under <code>usage</code> and the calls under <code>calls</code>. Filters: <code>jobId</code>, <code>jobType</code>, <code>userId</code>, <code>modelCode</code>, <code>provider</code>, <code>status</code>, <code>startedFrom</code>, <code>startedTo</code>. Paging counts jobs. A call with no job is its own group.</td>
+</tr>
+</tbody>
+</table>
+<p>Rules enforced by <code>AiAdminService</code>:</p>
+<ul>
+<li>The default model must be active (422 otherwise).</li>
+<li>Duplicate <code>code</code> → 409. Two requests racing to set a default → 409 "please retry".</li>
+<li>After every committed write the registry is reloaded (on this instance only).</li>
+</ul>
+<h2 id="10-error-handling-summary">10. Error handling summary<a class="headerlink" href="#10-error-handling-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No default model available</td>
+<td><code>503 No default AI model is available</code></td>
+</tr>
+<tr>
+<td>Plan names an unavailable model</td>
+<td>Warning, falls back to the default</td>
+</tr>
+<tr>
+<td>Network / HTTP error from provider</td>
+<td>SDK retries 2 times, then <code>503 "&lt;label&gt; is temporarily unavailable"</code></td>
+</tr>
+<tr>
+<td>Invalid JSON or schema mismatch</td>
+<td>Repair turn, then <code>503 "&lt;label&gt; returned an invalid response"</code></td>
+</tr>
+<tr>
+<td>MCQ review call fails</td>
+<td>Batch ships unreviewed, warning</td>
+</tr>
+<tr>
+<td>Coding review call fails</td>
+<td>Problem flagged; may fail the run</td>
+</tr>
+<tr>
+<td>Code runner down</td>
+<td>Verify turns off; review traces outputs instead</td>
+</tr>
+<tr>
+<td>Coding problem still disputed</td>
+<td>Run fails with <code>503</code></td>
+</tr>
+</tbody>
+</table>
+<p>Inside jobs, these exceptions propagate to the RabbitMQ consumer, which marks the job failed or retries it. See <a href="../jobs-and-schedulers/">Jobs and schedulers</a>.</p>
+<h2 id="11-how-to-add-a-new-provider">11. How to add a new provider<a class="headerlink" href="#11-how-to-add-a-new-provider" title="Permanent link">¶</a></h2>
+<ol>
+<li>Add the value to <code>AiModelProvider</code> in <code>src/common/enums/ai.enums.ts</code>. The column is a Postgres enum, so <strong>write a migration</strong> that adds the value to the enum type.</li>
+<li>Ask the team before adding the LangChain package (e.g. <code>@langchain/mistralai</code>) — new npm packages need approval.</li>
+<li>Add a <code>case</code> to <code>createChatModel</code> in <code>src/ai/llm/chat-model.factory.ts</code>. Pass <code>model</code>, <code>apiKey</code>, <code>temperature</code>, <code>maxRetries: MAX_TRANSPORT_RETRIES</code> and the base URL option.</li>
+<li>Make sure the DTO enum check in <code>CreateAiModelDto</code> accepts it (it uses <code>AiModelProvider</code>, so step 1 covers it).</li>
+<li>Set the API key env var on every instance.</li>
+<li>Register a model through <code>POST /v1/admin/ai-models</code> with its prices and <code>capabilities</code>. If the provider does not honour JSON schemas, set <code>structuredOutput: false</code>.</li>
+<li>Point a plan's <code>AI_MODEL</code> feature at the new code, or make it the default.</li>
+</ol>
+<h2 id="12-how-to-add-a-new-graph-or-llm-call">12. How to add a new graph or LLM call<a class="headerlink" href="#12-how-to-add-a-new-graph-or-llm-call" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Schema.</strong> Add a Zod schema in <code>src/ai/schemas/</code>. Keep it expressible as JSON Schema (use <code>.refine()</code>, not transforms).</li>
+<li><strong>Prompt.</strong> Add a system prompt in <code>src/ai/prompts/</code> and export it from <code>index.ts</code>. Describe the fields. Do not repeat JSON formatting rules — <code>StructuredOutputService</code> adds them.</li>
+<li><strong>Single call?</strong> Call <code>StructuredOutputService.run()</code> with <code>structured: { schema, name }</code>, <code>parse: zodParser(schema)</code> plus any extra checks, and <code>maxAttempts: 2</code>. Throw plain <code>Error</code>s with messages written for the model.</li>
+<li><strong>Multi-step?</strong> Create an <code>@Injectable()</code> class in <code>src/ai/llm/</code> like <code>QuestionGenerationGraph</code>:<ul>
+<li>Define state with <code>Annotation.Root({...})</code>.</li>
+<li>Add nodes that return partial state.</li>
+<li>Use <code>addConditionalEdges</code> for loops, and always cap loops with a counter in state.</li>
+<li>Use <code>mapWithConcurrency(items, 3, fn)</code> for fan-out.</li>
+<li>Route every provider call through <code>StructuredOutputService</code> or <code>LlmAuditService.track</code> so it is audited.</li>
+</ul>
+</li>
+<li><strong>Expose it</strong> through a method on <code>AiService</code> (or a new service) that takes a <code>RegisteredAiModel</code> and an <code>LlmCallContext</code>. Register the class in <code>AiModule.providers</code>.</li>
+<li><strong>Call it</strong> from the domain module: resolve the model with <code>AiModelSelector.forUser(userId)</code>, and pass the job id and type for auditing. Long-running work should run in a RabbitMQ consumer, not in an HTTP request.</li>
+<li><strong>Test it</strong> in <code>tests/unit/ai/</code> with a mocked chat model.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

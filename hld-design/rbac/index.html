@@ -1,0 +1,1646 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How TestFlow decides what a signed-in user may do, with platform roles, organization roles and permission keys." name="description"/>
+<link href="../auth/" rel="prev"/>
+<link href="../organizations/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>RBAC (Roles and Permissions) - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#rbac-roles-and-permissions">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              RBAC (Roles and Permissions)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-roles-and-permissions">
+<span class="md-ellipsis">
+      
+        4. Roles and permissions
+      
+    </span>
+</a>
+<nav aria-label="4. Roles and permissions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-built-in-roles">
+<span class="md-ellipsis">
+      
+        4.1 Built-in roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-the-permission-catalog">
+<span class="md-ellipsis">
+      
+        4.2 The permission catalog
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-default-grants-for-org-roles">
+<span class="md-ellipsis">
+      
+        4.3 Default grants for org roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-seeding-order">
+<span class="md-ellipsis">
+      
+        4.4 Seeding order
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-decorators">
+<span class="md-ellipsis">
+      
+        5. Decorators
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-how-the-guards-decide">
+<span class="md-ellipsis">
+      
+        6. How the guards decide
+      
+    </span>
+</a>
+<nav aria-label="6. How the guards decide" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-rolesguard">
+<span class="md-ellipsis">
+      
+        6.1 RolesGuard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-permissionguard">
+<span class="md-ellipsis">
+      
+        6.2 PermissionGuard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-the-two-sql-checks">
+<span class="md-ellipsis">
+      
+        6.3 The two SQL checks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-platform-roles-and-org-roles-together">
+<span class="md-ellipsis">
+      
+        7. Platform roles and org roles together
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-admin-endpoints">
+<span class="md-ellipsis">
+      
+        8. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        9. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-events">
+<span class="md-ellipsis">
+      
+        10. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-roles-and-permissions">
+<span class="md-ellipsis">
+      
+        4. Roles and permissions
+      
+    </span>
+</a>
+<nav aria-label="4. Roles and permissions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-built-in-roles">
+<span class="md-ellipsis">
+      
+        4.1 Built-in roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-the-permission-catalog">
+<span class="md-ellipsis">
+      
+        4.2 The permission catalog
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-default-grants-for-org-roles">
+<span class="md-ellipsis">
+      
+        4.3 Default grants for org roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-seeding-order">
+<span class="md-ellipsis">
+      
+        4.4 Seeding order
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-decorators">
+<span class="md-ellipsis">
+      
+        5. Decorators
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-how-the-guards-decide">
+<span class="md-ellipsis">
+      
+        6. How the guards decide
+      
+    </span>
+</a>
+<nav aria-label="6. How the guards decide" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-rolesguard">
+<span class="md-ellipsis">
+      
+        6.1 RolesGuard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-permissionguard">
+<span class="md-ellipsis">
+      
+        6.2 PermissionGuard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-the-two-sql-checks">
+<span class="md-ellipsis">
+      
+        6.3 The two SQL checks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-platform-roles-and-org-roles-together">
+<span class="md-ellipsis">
+      
+        7. Platform roles and org roles together
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-admin-endpoints">
+<span class="md-ellipsis">
+      
+        8. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        9. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-events">
+<span class="md-ellipsis">
+      
+        10. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="rbac-roles-and-permissions">RBAC (Roles and Permissions)<a class="headerlink" href="#rbac-roles-and-permissions" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>RBAC means <strong>role-based access control</strong>. Users are not given rights one by one. A user holds a <strong>role</strong>, and the role grants a list of <strong>permissions</strong>.</p>
+<p><a href="../auth/">Authentication</a> answers "who is calling?". RBAC answers "<strong>may this caller do this action?</strong>".</p>
+<p>TestFlow has two kinds of roles that share one permission list:</p>
+<ul>
+<li><strong>Platform roles</strong>, such as <code>super_admin</code>. They apply to the whole product and mostly guard the <code>/v1/admin/...</code> routes.</li>
+<li><strong>Organization roles</strong>, such as <code>org_admin</code>. A user holds one of these per organization, through their membership. They apply only when a request acts inside that organization. See <a href="../organizations/">Organizations</a>.</li>
+</ul>
+<h2 id="2-key-terms">2. Key terms<a class="headerlink" href="#2-key-terms" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Resource</strong></td>
+<td>A kind of thing, such as <code>questions</code>, <code>users</code> or <code>org_members</code>. The list is the <code>RbacResource</code> enum in <code>src/common/enums/identity.enums.ts</code>.</td>
+</tr>
+<tr>
+<td><strong>Action</strong></td>
+<td>What you do to a resource: <code>read</code>, <code>create</code>, <code>update</code> or <code>delete</code>. (<code>upload</code> and <code>export</code> are in the enum but no resource uses them.)</td>
+</tr>
+<tr>
+<td><strong>Permission key</strong></td>
+<td><code>resource:action</code>, for example <code>questions:update</code>. One row in <code>permissions</code>.</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>A named set of permissions, for example <code>super_admin</code> or <code>org_member</code>. One row in <code>roles</code>.</td>
+</tr>
+<tr>
+<td><strong>Scope</strong></td>
+<td><code>platform</code> or <code>organization</code> (<code>RbacScope</code>). It says where a role is held.</td>
+</tr>
+<tr>
+<td><strong>Platform role</strong></td>
+<td>Held through <code>users_roles</code>. Checked on normal (personal) requests.</td>
+</tr>
+<tr>
+<td><strong>Org role</strong></td>
+<td>Held through <code>organization_members.role_id</code>. Checked when the request acts in an organization.</td>
+</tr>
+<tr>
+<td><strong>Built-in role</strong></td>
+<td>A role seeded by the app, with <code>organization_id = NULL</code>. All organizations share the built-in org roles.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>See the <a href="../../erd/">ERD</a> for the full columns. Short version:</p>
+<div class="mermaid">erDiagram
+    users ||--o{ users_roles : "holds platform role"
+    roles ||--o{ users_roles : "assigned via"
+    roles ||--o{ role_permissions : "grants"
+    permissions ||--o{ role_permissions : "granted via"
+    users ||--o{ organization_members : "member of"
+    roles ||--o{ organization_members : "org role"
+</div>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>roles</code></td>
+<td><code>key</code>, <code>scope</code>, <code>organization_id</code>. Built-in keys are unique among live rows with <code>organization_id IS NULL</code>. A custom org role would be unique per <code>(organization_id, key)</code>, but no API creates custom org roles yet.</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td><code>key</code> is unique, plus an optional <code>description</code>.</td>
+</tr>
+<tr>
+<td><code>role_permissions</code></td>
+<td>Links a role to a permission. It has a <code>meta</code> jsonb column with <code>implicitPermissions</code>, but <strong>no code reads it</strong>.</td>
+</tr>
+<tr>
+<td><code>users_roles</code></td>
+<td>Links a user to a <strong>platform</strong> role. Soft-deletable.</td>
+</tr>
+<tr>
+<td><code>organization_members</code></td>
+<td><code>role_id</code> holds the member's org role. See <a href="../organizations/">Organizations</a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-roles-and-permissions">4. Roles and permissions<a class="headerlink" href="#4-roles-and-permissions" title="Permanent link">¶</a></h2>
+<h3 id="41-built-in-roles">4.1 Built-in roles<a class="headerlink" href="#41-built-in-roles" title="Permanent link">¶</a></h3>
+<p>These are seeded by <code>src/seeders/role.seeder.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Role key</th>
+<th>Scope</th>
+<th>What it is for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>super_admin</code></td>
+<td>platform</td>
+<td>Full platform admin. It is granted <strong>every</strong> permission key in the catalog.</td>
+</tr>
+<tr>
+<td><code>beta_tester</code></td>
+<td>platform</td>
+<td>Grants no permissions. Its only use is to switch on feature flags that target it (see <a href="../platform-services/">Platform services</a>).</td>
+</tr>
+<tr>
+<td><code>org_owner</code></td>
+<td>organization</td>
+<td>Owner of an organization. Exactly one per organization, set when the organization is created.</td>
+</tr>
+<tr>
+<td><code>org_admin</code></td>
+<td>organization</td>
+<td>Manages the organization, its members and its assessments.</td>
+</tr>
+<tr>
+<td><code>org_member</code></td>
+<td>organization</td>
+<td>Normal member. The role every invite gives.</td>
+</tr>
+</tbody>
+</table>
+<p><code>super_admin</code> and the three org roles are <strong>protected</strong>. The admin API will not rename or delete them. <code>beta_tester</code> is not protected.</p>
+<h3 id="42-the-permission-catalog">4.2 The permission catalog<a class="headerlink" href="#42-the-permission-catalog" title="Permanent link">¶</a></h3>
+<p>The source of truth is <code>RBAC_RESOURCE_ACTIONS</code> in <code>src/identity/rbac/constants/resource-actions.constant.ts</code>. The seeder creates one <code>permissions</code> row for each pair. CRUD means read, create, update and delete.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Actions</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td>CRUD</td>
+<td>Admin user list and platform role changes</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td>CRUD</td>
+<td>Admin role routes</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td>CRUD</td>
+<td>Admin role-permission routes and access check</td>
+</tr>
+<tr>
+<td><code>questions</code></td>
+<td>CRUD</td>
+<td>Admin question bank</td>
+</tr>
+<tr>
+<td><code>plans</code></td>
+<td>CRUD</td>
+<td>Admin plans</td>
+</tr>
+<tr>
+<td><code>features</code></td>
+<td>read</td>
+<td>Plan features</td>
+</tr>
+<tr>
+<td><code>support_tickets</code></td>
+<td>read, update</td>
+<td>Admin support tickets</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>CRUD</td>
+<td>Admin tags</td>
+</tr>
+<tr>
+<td><code>assessment_prompts</code></td>
+<td>CRUD</td>
+<td>Admin prompts</td>
+</tr>
+<tr>
+<td><code>newsletters</code></td>
+<td>read, create, delete</td>
+<td>Admin newsletters</td>
+</tr>
+<tr>
+<td><code>ai_models</code></td>
+<td>CRUD</td>
+<td>Admin AI models</td>
+</tr>
+<tr>
+<td><code>llm_audits</code></td>
+<td>read</td>
+<td>Admin LLM audit logs</td>
+</tr>
+<tr>
+<td><code>organizations</code></td>
+<td>read, create, update</td>
+<td>Admin organization routes</td>
+</tr>
+<tr>
+<td><code>org_settings</code></td>
+<td>read, update</td>
+<td>Organization details, inside an org</td>
+</tr>
+<tr>
+<td><code>org_members</code></td>
+<td>CRUD</td>
+<td>Members and invitations, inside an org</td>
+</tr>
+<tr>
+<td><code>org_assessments</code></td>
+<td>CRUD</td>
+<td>Organization assessments, inside an org</td>
+</tr>
+<tr>
+<td><code>org_billing</code></td>
+<td>read, update</td>
+<td>Organization subscription and usage, inside an org</td>
+</tr>
+<tr>
+<td><code>payments</code>, <code>subscriptions</code>, <code>usage</code></td>
+<td>read</td>
+<td>Admin views of commerce records</td>
+</tr>
+<tr>
+<td><code>assessment_attempts</code></td>
+<td>read, update</td>
+<td>Review attempts (list, reject). Shared by platform and org roles.</td>
+</tr>
+<tr>
+<td><code>assessment_attempt_responses</code></td>
+<td>read</td>
+<td>Read the answers of an attempt. Shared by platform and org roles.</td>
+</tr>
+<tr>
+<td><code>assessments</code></td>
+<td>read</td>
+<td>Admin list of all assessments</td>
+</tr>
+<tr>
+<td><code>stats</code></td>
+<td>read</td>
+<td>Admin overview numbers</td>
+</tr>
+<tr>
+<td><code>feature_flags</code></td>
+<td>read, update</td>
+<td>Admin feature flags</td>
+</tr>
+</tbody>
+</table>
+<p>An old <code>*:*</code> "wildcard" permission may still be in older databases. The guards <strong>do not</strong> treat it as a wildcard. <code>SuperAdminPermissionsSeeder</code> replaces it with explicit grants and removes it.</p>
+<h3 id="43-default-grants-for-org-roles">4.3 Default grants for org roles<a class="headerlink" href="#43-default-grants-for-org-roles" title="Permanent link">¶</a></h3>
+<p>These come from <code>ORG_ROLE_DEFAULT_PERMISSIONS</code> in the same constants file.</p>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th style="text-align: center;"><code>org_owner</code></th>
+<th style="text-align: center;"><code>org_admin</code></th>
+<th style="text-align: center;"><code>org_member</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>org_settings:read</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><code>org_settings:update</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>org_members:read</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><code>org_members:create</code> / <code>update</code> / <code>delete</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>org_assessments:read</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><code>org_assessments:create</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td><code>org_assessments:update</code> / <code>delete</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>org_billing:read</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>org_billing:update</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>assessment_attempts:read</code> / <code>update</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td><code>assessment_attempt_responses:read</code></td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>The org seeder only <strong>adds</strong> missing grants. It never removes any. So if a platform admin changes an org role's permissions through the API, a later <code>npm run seed</code> keeps the change. Built-in org roles are shared, so <strong>a change applies to every organization at once</strong>.</p>
+<h3 id="44-seeding-order">4.4 Seeding order<a class="headerlink" href="#44-seeding-order" title="Permanent link">¶</a></h3>
+<p><code>npm run seed</code> runs <code>src/seeders/index.ts</code> in this order:</p>
+<ol>
+<li><code>RolesSeeder</code>: create the built-in roles if they are missing.</li>
+<li><code>PermissionsSeeder</code>: create a permission row for every catalog pair.</li>
+<li><code>SuperAdminPermissionsSeeder</code>: grant <code>super_admin</code> every catalog key and remove the legacy <code>*:*</code>. Runs in one transaction.</li>
+<li><code>OrgRolePermissionsSeeder</code>: add the default org grants. Runs in one transaction.</li>
+<li>Then the features, plans, AI models and feature flags seeders.</li>
+</ol>
+<p>After seeding, create the first admin with <code>npm run bootstrap-admin</code> (see <a href="../auth/#9-bootstrapping-the-first-admin">Auth</a>).</p>
+<h2 id="5-decorators">5. Decorators<a class="headerlink" href="#5-decorators" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Decorator</th>
+<th>File</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>@Roles(...keys)</code></td>
+<td><code>src/identity/rbac/decorators/roles.decorator.ts</code></td>
+<td>The caller must hold <strong>at least one</strong> of these <strong>platform</strong> roles.</td>
+</tr>
+<tr>
+<td><code>@Permissions(...keys)</code></td>
+<td><code>src/identity/rbac/decorators/permissions.decorator.ts</code></td>
+<td>The caller must have <strong>all</strong> these permissions. Checked against platform roles on a personal request, or against the org role on an org request.</td>
+</tr>
+<tr>
+<td><code>@OrgPermissions(...keys)</code></td>
+<td><code>src/identity/rbac/decorators/org-permissions.decorator.ts</code></td>
+<td>Extra permissions checked <strong>only</strong> when the request acts in an organization. A personal request skips them.</td>
+</tr>
+<tr>
+<td><code>@Public()</code></td>
+<td><code>src/common/decorators/public.decorator.ts</code></td>
+<td>Skip authentication. See <a href="../auth/">Auth</a>.</td>
+</tr>
+<tr>
+<td><code>@OrgScoped()</code>, <code>@OrgHeaderScoped()</code></td>
+<td><code>src/organizations/decorators/</code></td>
+<td>Make the request act in an organization. See <a href="../organizations/#7-org-context-how-a-request-picks-its-organization">Organizations</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>When the handler and the controller both have the same decorator, the handler's value wins (<code>getAllAndOverride</code>). The two lists are not merged.</p>
+<p>Today <code>@Roles</code> is used in only one place: <code>@Roles('super_admin')</code> on <code>POST /v1/admin/questions/generate</code> in <code>src/assessments/questions/admin.controller.ts</code>. Everything else uses permissions.</p>
+<h2 id="6-how-the-guards-decide">6. How the guards decide<a class="headerlink" href="#6-how-the-guards-decide" title="Permanent link">¶</a></h2>
+<p>All guards are global (<code>APP_GUARD</code> in <code>src/app.module.ts</code>) and run in this order:</p>
+<p><code>JwtAuthGuard</code> → <code>RateLimitGuard</code> → <code>RolesGuard</code> → <code>OrgContextGuard</code> → <code>PermissionGuard</code></p>
+<h3 id="61-rolesguard">6.1 RolesGuard<a class="headerlink" href="#61-rolesguard" title="Permanent link">¶</a></h3>
+<p>File: <code>src/identity/rbac/guards/roles.guard.ts</code>.</p>
+<ol>
+<li>Read <code>@Roles</code> from the handler, or from the class if the handler has none. If it is empty, allow.</li>
+<li>If there is no <code>request.user</code>, deny (403).</li>
+<li>Load the user's <strong>platform</strong> role keys (<code>AccessControlService.getUserRoleKeys</code>).</li>
+<li>If the user holds any required role, allow. Otherwise: <code>403 Insufficient role</code>.</li>
+</ol>
+<p><code>RolesGuard</code> runs <strong>before</strong> <code>OrgContextGuard</code>. It never looks at org roles.</p>
+<h3 id="62-permissionguard">6.2 PermissionGuard<a class="headerlink" href="#62-permissionguard" title="Permanent link">¶</a></h3>
+<p>File: <code>src/identity/rbac/guards/permission.guard.ts</code>.</p>
+<ol>
+<li>Read <code>@Permissions</code> (required) and <code>@OrgPermissions</code> (org-only). If both are empty, allow.</li>
+<li>If there is no <code>request.user</code>, deny (403).</li>
+<li>Look at <code>request.org</code>. <code>OrgContextGuard</code> sets it when the request acts in an organization.</li>
+<li>Build the list to check:<ul>
+<li><strong>Org request</strong> (<code>request.org</code> is set): <code>@Permissions</code> plus <code>@OrgPermissions</code>.</li>
+<li><strong>Personal request</strong>: <code>@Permissions</code> only.</li>
+</ul>
+</li>
+<li>Check each key, one at a time:<ul>
+<li><strong>Org request</strong>: <code>roleHasPermission(org.roleId, key)</code>. This is the member's org role only.</li>
+<li><strong>Personal request</strong>: <code>userHasPermission(userId, key)</code>. This means any of the user's platform roles.</li>
+</ul>
+</li>
+<li>The first missing key fails with <code>403 Missing permission: &lt;key&gt;</code>.</li>
+</ol>
+<div class="mermaid">flowchart TD
+    A["Request reaches PermissionGuard"] --&gt; B{"Any Permissions or OrgPermissions metadata?"}
+    B -- no --&gt; OK["Allow"]
+    B -- yes --&gt; C{"request.user set?"}
+    C -- no --&gt; F0["403 Forbidden"]
+    C -- yes --&gt; D{"request.org set?"}
+    D -- "yes, org request" --&gt; E["Check Permissions and OrgPermissions against the member's org role"]
+    D -- "no, personal request" --&gt; G["Check Permissions only, against all platform roles"]
+    E --&gt; H{"Every key granted?"}
+    G --&gt; H
+    H -- yes --&gt; OK
+    H -- no --&gt; F1["403 Missing permission"]
+</div>
+<h3 id="63-the-two-sql-checks">6.3 The two SQL checks<a class="headerlink" href="#63-the-two-sql-checks" title="Permanent link">¶</a></h3>
+<p>Both are in <code>src/identity/rbac/services/access-control.service.ts</code>, and both are a single <code>COUNT</code> query:</p>
+<ul>
+<li><code>userHasPermission</code>: <code>users_roles</code> → <code>roles</code> → <code>role_permissions</code> → <code>permissions</code>, filtered by user id and key.</li>
+<li><code>roleHasPermission</code>: <code>role_permissions</code> → <code>permissions</code>, filtered by role id and key.</li>
+</ul>
+<p><strong>There is no cache.</strong> Each key on a route costs one query, on every request. A role or permission change takes effect on the very next request.</p>
+<h2 id="7-platform-roles-and-org-roles-together">7. Platform roles and org roles together<a class="headerlink" href="#7-platform-roles-and-org-roles-together" title="Permanent link">¶</a></h2>
+<p>This is the part people most often get wrong:</p>
+<ol>
+<li><strong>Inside an organization, platform roles do not count.</strong> If a route acts in an org, <code>@Permissions</code> is checked against the member's org role. Even a <code>super_admin</code> gets <code>403</code> (or <code>404</code> from <code>OrgContextGuard</code> if they are not a member).</li>
+<li><strong>Outside an organization, org roles do not count.</strong> A personal request only looks at platform roles.</li>
+<li><strong>Some keys are shared.</strong> <code>assessment_attempts:*</code> and <code>assessment_attempt_responses:read</code> are granted to <code>super_admin</code> (platform) and to <code>org_owner</code> / <code>org_admin</code> (org). The same route checks whichever role applies to the request.</li>
+<li><strong><code>@OrgPermissions</code> adds a check only in org mode.</strong> For example, <code>POST /v1/assessments</code> has <code>@OrgHeaderScoped()</code> and <code>@OrgPermissions('org_assessments:create')</code>. A personal request needs nothing extra. A request with the <code>x-organization-id</code> header needs that org permission.</li>
+<li><strong>Some checks live in services, not guards.</strong> For example, editing an org assessment needs <code>org_assessments:update</code> <strong>unless</strong> you created it. The route checks <code>org_assessments:read</code>, and <code>AssessmentsService</code> checks the rest (<code>ORG_ASSESSMENT_MANAGE_PERMISSIONS</code> in <code>src/assessments/assessments.constants.ts</code>). See <a href="../assessments/">Assessments</a>.</li>
+<li><code>GET /v1/orgs</code> returns each org with the caller's role and the permission keys it grants, so the frontend can show or hide buttons. The list is empty while the membership or the org is suspended.</li>
+</ol>
+<h2 id="8-admin-endpoints">8. Admin endpoints<a class="headerlink" href="#8-admin-endpoints" title="Permanent link">¶</a></h2>
+<p>All of these are in <code>src/identity/rbac/admin.controller.ts</code> under <code>/v1/admin</code>, with the CLASS_C rate limit. They only work on <strong>built-in</strong> roles (<code>organization_id IS NULL</code>), of both scopes. The <a href="../../api-design/v1/">API reference</a> has the full details.</p>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /roles</code></td>
+<td><code>roles:read</code></td>
+<td>List built-in roles</td>
+</tr>
+<tr>
+<td><code>GET /roles/:roleKey</code></td>
+<td><code>roles:read</code></td>
+<td>One role</td>
+</tr>
+<tr>
+<td><code>POST /roles</code></td>
+<td><code>roles:create</code></td>
+<td>Create a role. Body: <code>{ key, scope? }</code>. <code>scope</code> defaults to <code>platform</code>.</td>
+</tr>
+<tr>
+<td><code>PATCH /roles/:roleKey</code></td>
+<td><code>roles:update</code></td>
+<td>Rename a role (<code>{ key }</code>)</td>
+</tr>
+<tr>
+<td><code>DELETE /roles/:roleKey</code></td>
+<td><code>roles:delete</code></td>
+<td>Soft-delete a role</td>
+</tr>
+<tr>
+<td><code>GET /roles/:roleKey/permissions</code></td>
+<td><code>permissions:read</code></td>
+<td>The keys a role grants</td>
+</tr>
+<tr>
+<td><code>PUT /roles/:roleKey/permissions</code></td>
+<td><code>permissions:update</code></td>
+<td>Replace all of a role's keys. Body: <code>{ permissions: [...] }</code>.</td>
+</tr>
+<tr>
+<td><code>POST /roles/:roleKey/permissions/:permissionKey</code></td>
+<td><code>permissions:create</code></td>
+<td>Grant one key</td>
+</tr>
+<tr>
+<td><code>DELETE /roles/:roleKey/permissions/:permissionKey</code></td>
+<td><code>permissions:delete</code></td>
+<td>Revoke one key</td>
+</tr>
+<tr>
+<td><code>GET /permissions</code></td>
+<td><code>permissions:read</code></td>
+<td>The full catalog, sorted by key</td>
+</tr>
+<tr>
+<td><code>POST /access-check</code></td>
+<td><code>permissions:read</code></td>
+<td><code>{ roleKey, permissionKey }</code> returns <code>{ allowed }</code></td>
+</tr>
+</tbody>
+</table>
+<p>Platform role assignment to users is on the user admin routes. See <a href="../auth/#7-endpoints-summary">Auth</a>.</p>
+<h2 id="9-business-rules-and-edge-cases">9. Business rules and edge cases<a class="headerlink" href="#9-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li>Protected roles (<code>super_admin</code>, <code>org_owner</code>, <code>org_admin</code>, <code>org_member</code>) cannot be renamed or deleted (<code>403</code>).</li>
+<li>You cannot delete a role that you hold (<code>403</code>).</li>
+<li>You cannot change the permissions of a role that you hold, <strong>unless you are <code>super_admin</code></strong> (<code>403</code>). So a <code>super_admin</code> can edit <code>super_admin</code>'s own permissions, and could remove their own access.</li>
+<li>You cannot add or remove <strong>your own</strong> platform roles (see <a href="../auth/">Auth</a>).</li>
+<li>Role keys must be unique among live built-in roles (<code>409</code>). Up to 100 characters.</li>
+<li><code>PUT .../permissions</code> with an unknown key fails with <code>404</code> and lists the missing keys. Nothing changes.</li>
+<li><code>PUT .../permissions</code> with an empty list removes every grant from the role.</li>
+<li>Changing a built-in org role changes it for <strong>every</strong> organization.</li>
+<li><code>POST /roles</code> can create a built-in role with scope <code>organization</code>. Org admins can then give it to members with <code>PATCH /v1/orgs/:orgUid/members/:userId</code>, because that route accepts any built-in org role except <code>org_owner</code>. A new role starts with no permissions, so a platform admin must grant some first.</li>
+</ol>
+<h2 id="10-async-events">10. Async events<a class="headerlink" href="#10-async-events" title="Permanent link">¶</a></h2>
+<p>None. RBAC is fully synchronous and uses the database only.</p>
+<h2 id="11-where-the-code-lives">11. Where the code lives<a class="headerlink" href="#11-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/identity/rbac/guards/roles.guard.ts</code></td>
+<td><code>RolesGuard</code></td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/guards/permission.guard.ts</code></td>
+<td><code>PermissionGuard</code></td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/decorators/</code></td>
+<td><code>@Roles</code>, <code>@Permissions</code>, <code>@OrgPermissions</code></td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/services/access-control.service.ts</code></td>
+<td>The permission queries</td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/services/user-roles.service.ts</code></td>
+<td><code>holdsRole</code>, <code>isSuperAdmin</code></td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/constants/resource-actions.constant.ts</code></td>
+<td>Permission catalog and default org grants</td>
+</tr>
+<tr>
+<td><code>src/identity/rbac/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin role routes</td>
+</tr>
+<tr>
+<td><code>src/common/enums/identity.enums.ts</code></td>
+<td><code>RbacResource</code>, <code>RbacAction</code>, <code>SystemRole</code>, <code>OrgRole</code>, <code>RbacScope</code></td>
+</tr>
+<tr>
+<td><code>src/seeders/role.seeder.ts</code>, <code>permission.seeder.ts</code>, <code>super-admin-permissions.seeder.ts</code>, <code>org-role-permissions.seeder.ts</code></td>
+<td>Seed data</td>
+</tr>
+<tr>
+<td><code>tests/unit/identity/rbac/</code></td>
+<td>Unit tests</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-known-gaps-and-todos">12. Known gaps and TODOs<a class="headerlink" href="#12-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong><code>PUT /roles/:roleKey/permissions</code> is not wrapped in a transaction</strong> (<code>src/identity/rbac/admin.service.ts</code>, <code>replaceRolePermissions</code>). It deletes all grants and then inserts the new ones. If the insert fails, the role is left with no permissions.</li>
+<li><strong>Mixed delete styles.</strong> <code>PUT</code> hard-deletes <code>role_permissions</code> rows, but <code>DELETE .../permissions/:key</code> soft-deletes them.</li>
+<li><strong>Deleting a role leaves its links behind.</strong> <code>DELETE /roles/:roleKey</code> soft-deletes the role but not its <code>users_roles</code> or <code>role_permissions</code> rows. <code>AccessControlService.getUserRoleKeys</code> then reads <code>ur.role.key</code>. If TypeORM leaves the soft-deleted role out of the join, <code>role</code> is undefined and the code crashes. This affects <code>RolesGuard</code> (the <code>@Roles</code> route) for users who held the deleted role. Needs a test.</li>
+<li><strong>No caching.</strong> Every permission check is a database query.</li>
+<li><strong><code>role_permissions.meta.implicitPermissions</code> is never read.</strong> For example, <code>update</code> does not imply <code>read</code>.</li>
+<li><strong>No API for custom org roles.</strong> The schema supports roles with an <code>organization_id</code>, but nothing creates them.</li>
+<li><strong><code>RbacAction.UPLOAD</code> and <code>EXPORT</code></strong> are defined but unused.</li>
+<li><strong><code>@Roles('super_admin')</code></strong> uses a string literal instead of <code>SystemRole.SUPER_ADMIN</code>.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

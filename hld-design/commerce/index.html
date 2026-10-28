@@ -1,0 +1,2368 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How TestFlow models plans and feature limits, sells subscriptions and credit packs through Razorpay, and meters AI usage." name="description"/>
+<link href="../ai-assistant/" rel="prev"/>
+<link href="../learning-roadmaps/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Commerce, Payments and Webhooks - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#commerce-payments-and-webhooks">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Commerce, Payments and Webhooks
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-what-this-page-covers">
+<span class="md-ellipsis">
+      
+        1. What this page covers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-plans-versions-and-features">
+<span class="md-ellipsis">
+      
+        3. Plans, versions and features
+      
+    </span>
+</a>
+<nav aria-label="3. Plans, versions and features" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-how-pricing-and-limits-are-modelled">
+<span class="md-ellipsis">
+      
+        3.1 How pricing and limits are modelled
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-feature-types">
+<span class="md-ellipsis">
+      
+        3.2 Feature types
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-the-feature-keys-today">
+<span class="md-ellipsis">
+      
+        3.3 The feature keys today
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-why-versions-exist">
+<span class="md-ellipsis">
+      
+        3.4 Why versions exist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-built-in-plans-and-seeding">
+<span class="md-ellipsis">
+      
+        3.5 Built-in plans and seeding
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-subscriptions">
+<span class="md-ellipsis">
+      
+        4. Subscriptions
+      
+    </span>
+</a>
+<nav aria-label="4. Subscriptions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-personal-vs-organization-subscriptions">
+<span class="md-ellipsis">
+      
+        4.1 Personal vs organization subscriptions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-how-a-subscription-is-created">
+<span class="md-ellipsis">
+      
+        4.2 How a subscription is created
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-lifecycle">
+<span class="md-ellipsis">
+      
+        4.3 Lifecycle
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-checkout-and-payment-with-razorpay">
+<span class="md-ellipsis">
+      
+        5. Checkout and payment with Razorpay
+      
+    </span>
+</a>
+<nav aria-label="5. Checkout and payment with Razorpay" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-why-two-steps">
+<span class="md-ellipsis">
+      
+        5.1 Why two steps
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-the-full-flow">
+<span class="md-ellipsis">
+      
+        5.2 The full flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-webhook-handling">
+<span class="md-ellipsis">
+      
+        5.3 Webhook handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-status-values">
+<span class="md-ellipsis">
+      
+        5.4 Status values
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-refunds">
+<span class="md-ellipsis">
+      
+        5.5 Refunds
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-usage-tracking-and-limits">
+<span class="md-ellipsis">
+      
+        6. Usage tracking and limits
+      
+    </span>
+</a>
+<nav aria-label="6. Usage tracking and limits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-the-three-methods">
+<span class="md-ellipsis">
+      
+        6.1 The three methods
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-how-consume-works">
+<span class="md-ellipsis">
+      
+        6.2 How consume works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-who-calls-it">
+<span class="md-ellipsis">
+      
+        6.3 Who calls it
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-what-happens-when-a-limit-is-hit">
+<span class="md-ellipsis">
+      
+        6.4 What happens when a limit is hit
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-credit-packs">
+<span class="md-ellipsis">
+      
+        7. Credit packs
+      
+    </span>
+</a>
+<nav aria-label="7. Credit packs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-credits-are">
+<span class="md-ellipsis">
+      
+        7.1 What credits are
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-the-catalog">
+<span class="md-ellipsis">
+      
+        7.2 The catalog
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-buying-a-pack">
+<span class="md-ellipsis">
+      
+        7.3 Buying a pack
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#74-spending-and-refunding">
+<span class="md-ellipsis">
+      
+        7.4 Spending and refunding
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-reading-your-subscription-usage-credits-and-orders">
+<span class="md-ellipsis">
+      
+        8. Reading your subscription, usage, credits and orders
+      
+    </span>
+</a>
+<nav aria-label="8. Reading your subscription, usage, credits and orders" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#81-order-history-get-v1orders">
+<span class="md-ellipsis">
+      
+        8.1 Order history (GET /v1/orders)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-admin-endpoints">
+<span class="md-ellipsis">
+      
+        9. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        10. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-endpoints-summary">
+<span class="md-ellipsis">
+      
+        11. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-what-this-page-covers">
+<span class="md-ellipsis">
+      
+        1. What this page covers
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-plans-versions-and-features">
+<span class="md-ellipsis">
+      
+        3. Plans, versions and features
+      
+    </span>
+</a>
+<nav aria-label="3. Plans, versions and features" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#31-how-pricing-and-limits-are-modelled">
+<span class="md-ellipsis">
+      
+        3.1 How pricing and limits are modelled
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#32-feature-types">
+<span class="md-ellipsis">
+      
+        3.2 Feature types
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#33-the-feature-keys-today">
+<span class="md-ellipsis">
+      
+        3.3 The feature keys today
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#34-why-versions-exist">
+<span class="md-ellipsis">
+      
+        3.4 Why versions exist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#35-built-in-plans-and-seeding">
+<span class="md-ellipsis">
+      
+        3.5 Built-in plans and seeding
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-subscriptions">
+<span class="md-ellipsis">
+      
+        4. Subscriptions
+      
+    </span>
+</a>
+<nav aria-label="4. Subscriptions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-personal-vs-organization-subscriptions">
+<span class="md-ellipsis">
+      
+        4.1 Personal vs organization subscriptions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-how-a-subscription-is-created">
+<span class="md-ellipsis">
+      
+        4.2 How a subscription is created
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-lifecycle">
+<span class="md-ellipsis">
+      
+        4.3 Lifecycle
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-checkout-and-payment-with-razorpay">
+<span class="md-ellipsis">
+      
+        5. Checkout and payment with Razorpay
+      
+    </span>
+</a>
+<nav aria-label="5. Checkout and payment with Razorpay" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-why-two-steps">
+<span class="md-ellipsis">
+      
+        5.1 Why two steps
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-the-full-flow">
+<span class="md-ellipsis">
+      
+        5.2 The full flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-webhook-handling">
+<span class="md-ellipsis">
+      
+        5.3 Webhook handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-status-values">
+<span class="md-ellipsis">
+      
+        5.4 Status values
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-refunds">
+<span class="md-ellipsis">
+      
+        5.5 Refunds
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-usage-tracking-and-limits">
+<span class="md-ellipsis">
+      
+        6. Usage tracking and limits
+      
+    </span>
+</a>
+<nav aria-label="6. Usage tracking and limits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-the-three-methods">
+<span class="md-ellipsis">
+      
+        6.1 The three methods
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-how-consume-works">
+<span class="md-ellipsis">
+      
+        6.2 How consume works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-who-calls-it">
+<span class="md-ellipsis">
+      
+        6.3 Who calls it
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-what-happens-when-a-limit-is-hit">
+<span class="md-ellipsis">
+      
+        6.4 What happens when a limit is hit
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-credit-packs">
+<span class="md-ellipsis">
+      
+        7. Credit packs
+      
+    </span>
+</a>
+<nav aria-label="7. Credit packs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-credits-are">
+<span class="md-ellipsis">
+      
+        7.1 What credits are
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-the-catalog">
+<span class="md-ellipsis">
+      
+        7.2 The catalog
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-buying-a-pack">
+<span class="md-ellipsis">
+      
+        7.3 Buying a pack
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#74-spending-and-refunding">
+<span class="md-ellipsis">
+      
+        7.4 Spending and refunding
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-reading-your-subscription-usage-credits-and-orders">
+<span class="md-ellipsis">
+      
+        8. Reading your subscription, usage, credits and orders
+      
+    </span>
+</a>
+<nav aria-label="8. Reading your subscription, usage, credits and orders" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#81-order-history-get-v1orders">
+<span class="md-ellipsis">
+      
+        8.1 Order history (GET /v1/orders)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-admin-endpoints">
+<span class="md-ellipsis">
+      
+        9. Admin endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        10. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-endpoints-summary">
+<span class="md-ellipsis">
+      
+        11. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="commerce-payments-and-webhooks">Commerce, Payments and Webhooks<a class="headerlink" href="#commerce-payments-and-webhooks" title="Permanent link">¶</a></h1>
+<h2 id="1-what-this-page-covers">1. What this page covers<a class="headerlink" href="#1-what-this-page-covers" title="Permanent link">¶</a></h2>
+<p>"Commerce" is everything to do with money and limits:</p>
+<ul>
+<li><strong>Plans</strong>: what we sell (price, billing cycle, and what you get).</li>
+<li><strong>Subscriptions</strong>: which plan a user or an organization is on right now.</li>
+<li><strong>Payments</strong>: taking money through <strong>Razorpay</strong> (an Indian payment gateway) and confirming it with a <strong>webhook</strong> (a server-to-server HTTP call Razorpay makes to us).</li>
+<li><strong>Usage</strong>: counting how much of a limited feature (for example, AI assessment generations) someone has used, and refusing when they run out.</li>
+<li><strong>Credits</strong>: one-time packs of extra usage, spent once a plan's own quota runs out (section 7).</li>
+<li><strong>Orders</strong>: a user's own purchase history (section 8).</li>
+<li><strong>Admin</strong>: endpoints that platform admins use to manage the plan catalog and credit packs, and to look at orders, payments, subscriptions, and usage.</li>
+</ul>
+<p>The code is split into three NestJS modules:</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Folder</th>
+<th>Owns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CommerceModule</code></td>
+<td><code>src/commerce/</code></td>
+<td>Plans, subscriptions, usage, credit packs (<code>src/commerce/credits/</code>), admin endpoints. Exports <code>UsageService</code>, <code>SubscriptionsService</code> and <code>CreditsService</code> to other modules.</td>
+</tr>
+<tr>
+<td><code>PaymentsModule</code></td>
+<td><code>src/commerce/payments/</code></td>
+<td>Orders (including <code>GET /v1/orders</code>), payments, the Razorpay client. Imports <code>CommerceModule</code>, because a captured credit payment is granted by <code>CreditsService</code>. Exports <code>PaymentsService</code> and <code>RazorpayService</code>.</td>
+</tr>
+<tr>
+<td><code>WebhooksModule</code></td>
+<td><code>src/webhooks/</code></td>
+<td>The public <code>POST /webhooks/razorpay</code> endpoint. Imports <code>PaymentsModule</code>.</td>
+</tr>
+</tbody>
+</table>
+<div class="mermaid">flowchart LR
+    auth["Identity / Auth"] --&gt;|"createFreeSubscription"| commerce
+    orgs["Organizations"] --&gt;|"createOrgTrialSubscription"| commerce
+    assess["Assessment generation"] --&gt;|"consume / release / getFeatureValue"| commerce
+    roadmaps["Learning roadmaps"] --&gt;|"consume"| commerce
+    ai["AI model selector"] --&gt;|"getFeatureValue"| commerce
+    commerce["CommerceModule"]
+    webhooks["WebhooksModule"] --&gt; payments["PaymentsModule"]
+    payments -.-&gt;|"writes Subscription rows directly"| commerce
+</div>
+<p>The dotted arrow is a shortcut: <code>PaymentsService</code> imports the <code>Subscription</code> entity and updates it itself, instead of calling <code>SubscriptionsService</code>. There is a <code>TODO</code> about this in <code>src/commerce/payments/payments.service.ts</code>.</p>
+<h2 id="2-key-terms">2. Key terms<a class="headerlink" href="#2-key-terms" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Feature</strong></td>
+<td>A thing a plan can grant, identified by a fixed <code>FeatureKey</code> (table <code>features</code>).</td>
+</tr>
+<tr>
+<td><strong>Plan</strong></td>
+<td>A product we sell, e.g. <code>FREE</code> or <code>PRO</code> (table <code>plans</code>). Has a public <code>code</code>.</td>
+</tr>
+<tr>
+<td><strong>Plan version</strong></td>
+<td>One price point of a plan: price, currency, billing cycle (table <code>plan_versions</code>).</td>
+</tr>
+<tr>
+<td><strong>Plan feature</strong></td>
+<td>One feature attached to one plan version, with its value and reset period. Entity <code>PlanVersionFeature</code>, but the <strong>table is <code>plan_features</code></strong>.</td>
+</tr>
+<tr>
+<td><strong>Subscription</strong></td>
+<td>A user's or an organization's link to one plan version, with a status and dates.</td>
+</tr>
+<tr>
+<td><strong>Order</strong></td>
+<td>"We expect this much money for this thing." Created at checkout, for a subscription or a credit pack.</td>
+</tr>
+<tr>
+<td><strong>Payment</strong></td>
+<td>One attempt to pay an order through a provider (Razorpay). An order can have several payments.</td>
+</tr>
+<tr>
+<td><strong>Usage row</strong></td>
+<td>A counter in <code>user_feature_usage</code>: how much of one plan feature was used in the current period.</td>
+</tr>
+<tr>
+<td><strong>Credit pack</strong></td>
+<td>A one-time purchase of extra usage of one feature, e.g. "10 AI assessments" (table <code>credit_packs</code>).</td>
+</tr>
+<tr>
+<td><strong>Credit balance</strong></td>
+<td>What a user bought and has spent of one feature's credits, per AI model (table <code>user_feature_credits</code>). Never resets or expires.</td>
+</tr>
+<tr>
+<td><strong>Audience</strong></td>
+<td>Who can buy a plan: <code>individual</code> (for yourself) or <code>organization</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-plans-versions-and-features">3. Plans, versions and features<a class="headerlink" href="#3-plans-versions-and-features" title="Permanent link">¶</a></h2>
+<h3 id="31-how-pricing-and-limits-are-modelled">3.1 How pricing and limits are modelled<a class="headerlink" href="#31-how-pricing-and-limits-are-modelled" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    plans ||--o{ plan_versions : "has"
+    plan_versions ||--o{ plan_features : "grants"
+    features ||--o{ plan_features : "is used in"
+    plan_versions ||--o{ subscriptions : "subscribed by"
+    plan_features ||--o{ user_feature_usage : "counted in"
+</div>
+<ul>
+<li><strong><code>plans</code></strong> (<code>src/common/entities/plan.entity.ts</code>): <code>name</code>, unique <code>code</code>, <code>description</code>, <code>audience</code>, <code>is_active</code>, <code>is_displayed</code>, <code>sort_order</code>.<ul>
+<li><code>is_active = false</code> means it cannot be bought.</li>
+<li><code>is_displayed = false</code> hides it from the public list, but existing subscribers keep it.</li>
+<li><code>sort_order</code> sets the order of the public list (lowest first, then <code>id</code>).</li>
+</ul>
+</li>
+<li><strong><code>plan_versions</code></strong> (<code>plan-version.entity.ts</code>): <code>version</code> number, <code>price</code> (decimal 10,2), <code>currency</code> (3 letters), <code>billing_cycle</code> (<code>MONTHLY</code>, <code>YEARLY</code>, <code>ONE_TIME</code>), <code>is_current</code>, <code>effective_from</code>, <code>effective_until</code>, <code>expiry_days</code>.<ul>
+<li><code>expiry_days</code> only applies to <code>ONE_TIME</code> versions. <code>null</code> means "never expires". The admin API refuses a value on a recurring version (<code>400</code>).</li>
+</ul>
+</li>
+<li><strong><code>plan_features</code></strong> (<code>plan-version-feature.entity.ts</code>): <code>feature_id</code>, <code>display_name</code>, <code>feature_value</code> (a string), <code>type</code>, <code>reset_period</code> (days, or <code>null</code>). A partial unique index allows one non-deleted row per (version, feature).</li>
+<li><strong><code>features</code></strong> (<code>feature.entity.ts</code>): one row per <code>FeatureKey</code>. Seeded, not created through the API.</li>
+</ul>
+<h3 id="32-feature-types">3.2 Feature types<a class="headerlink" href="#32-feature-types" title="Permanent link">¶</a></h3>
+<p>A plan feature has a <code>type</code> (<code>PlanFeatureType</code> in <code>src/common/enums/commerce.enums.ts</code>) that says how to read <code>feature_value</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th><code>feature_value</code> means</th>
+<th>Counted?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>limit</code></td>
+<td>A quota. A number like <code>"2"</code> is the limit. A non-number like <code>"unlimited"</code> means no limit.</td>
+<td>Yes, by <code>UsageService.consume</code></td>
+</tr>
+<tr>
+<td><code>enum</code></td>
+<td>A setting, e.g. a model code or a list of question types.</td>
+<td>No. <code>consume</code> refuses an enum feature.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-the-feature-keys-today">3.3 The feature keys today<a class="headerlink" href="#33-the-feature-keys-today" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th><code>FeatureKey</code></th>
+<th>Type in practice</th>
+<th>Used by</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AI_ASSESSMENT</code></td>
+<td><code>limit</code></td>
+<td>Assessment generation</td>
+<td>How many AI assessment generations per period.</td>
+</tr>
+<tr>
+<td><code>AI_LEARNING_ROADMAP</code></td>
+<td><code>limit</code></td>
+<td>Learning roadmaps</td>
+<td>How many AI roadmaps per period.</td>
+</tr>
+<tr>
+<td><code>AI_MODEL</code></td>
+<td><code>enum</code></td>
+<td><code>src/ai/ai-model-selector.service.ts</code></td>
+<td>Which LLM model the user's AI calls use. Missing means the default model.</td>
+</tr>
+<tr>
+<td><code>ALLOWED_QUESTION_TYPES</code></td>
+<td><code>enum</code></td>
+<td><code>src/assessments/generation/generation-entitlement.service.ts</code></td>
+<td>Comma-separated question types, e.g. <code>mcq,coding</code>. Missing or empty means <code>mcq</code> only (<code>src/commerce/plans/allowed-question-types.ts</code>).</td>
+</tr>
+<tr>
+<td><code>AI_ASSESSMENT_SUGGESTION</code></td>
+<td><code>enum</code></td>
+<td><code>src/assessments/attempts/attempt-suggestion.service.ts</code></td>
+<td>On/off. Any non-blank value (e.g. <code>enabled</code>) lets the plan's users ask for a next-assessment suggestion after an evaluated attempt. Missing or blank means <code>403</code>. Personal plan only. Added by migration <code>20261030000000</code>, attached to no plan by default.</td>
+</tr>
+</tbody>
+</table>
+<p>"Number of participants" and "number of assessments" are <strong>not</strong> metered features. Participant caps live on the assessment itself (see <a href="../assessments/">Assessments</a>).</p>
+<h3 id="34-why-versions-exist">3.4 Why versions exist<a class="headerlink" href="#34-why-versions-exist" title="Permanent link">¶</a></h3>
+<p>Prices change, but people who already paid should keep what they bought. So instead of changing a plan's price in place, an admin adds a <strong>new version</strong>:</p>
+<ol>
+<li>The old current version gets <code>is_current = false</code>, and <code>effective_until</code> is set (if it was empty) to the new version's <code>effective_from</code>.</li>
+<li>The new version is inserted with <code>version = old + 1</code> and <code>is_current = true</code>.</li>
+</ol>
+<p>Both steps run in one transaction (<code>CommerceAdminService.createPlanVersion</code> in <code>src/commerce/admin.service.ts</code>). A <strong>partial unique index</strong> (<code>UQ_plan_versions_plan_id_current</code>, <code>WHERE is_current = true</code>) makes sure a plan has at most one current version.</p>
+<p>Existing subscriptions point at a <code>plan_version_id</code>, so they keep their old version's price and features.</p>
+<p>Checkout asks for <strong>both</strong> <code>planCode</code> and <code>version</code>. So a client can buy an older version, as long as its <code>effective_until</code> has not passed.</p>
+<h3 id="35-built-in-plans-and-seeding">3.5 Built-in plans and seeding<a class="headerlink" href="#35-built-in-plans-and-seeding" title="Permanent link">¶</a></h3>
+<p>Two plans are special. Code finds them <strong>by name</strong>, so they must exist and be active (<code>src/commerce/plans/plan.constants.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Code (seeded)</th>
+<th>Audience</th>
+<th>Cycle</th>
+<th>Price</th>
+<th>Seeded feature</th>
+<th>Who gets it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FREE</code></td>
+<td><code>FREEPLAN</code></td>
+<td>individual</td>
+<td><code>MONTHLY</code></td>
+<td>0 USD</td>
+<td><code>AI_ASSESSMENT</code> = 2, reset every 1 day</td>
+<td>Every user, when their account is verified</td>
+</tr>
+<tr>
+<td><code>ORG_TRIAL</code></td>
+<td><code>ORGTRIAL</code></td>
+<td>organization</td>
+<td><code>ONE_TIME</code>, 7 days</td>
+<td>0 USD</td>
+<td><code>AI_ASSESSMENT</code> = 2, reset every 1 day</td>
+<td>Every new organization</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>npm run seed</code> runs <code>src/seeders/feature.seeder.ts</code> (creates the five features) and then <code>src/seeders/plan.seeder.ts</code> (creates each plan only if no plan with that name exists yet).</li>
+<li>Because code looks these plans up by name, admins <strong>cannot rename or deactivate</strong> <code>FREE</code> or <code>ORG_TRIAL</code> (<code>CommerceAdminService.updatePlan</code> returns <code>409</code>). Hiding, re-describing or re-ordering them is fine.</li>
+<li>Paid plans (for example <code>PRO</code>) are not seeded. Admins create them through the admin API (section 9).</li>
+<li>Admin-created plans get a random 10-character <code>code</code> from an alphabet without look-alike characters (no <code>I</code>, <code>O</code>, <code>0</code>, <code>1</code>).</li>
+</ul>
+<h2 id="4-subscriptions">4. Subscriptions<a class="headerlink" href="#4-subscriptions" title="Permanent link">¶</a></h2>
+<h3 id="41-personal-vs-organization-subscriptions">4.1 Personal vs organization subscriptions<a class="headerlink" href="#41-personal-vs-organization-subscriptions" title="Permanent link">¶</a></h3>
+<p>Both exist, in the same <code>subscriptions</code> table:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Personal</th>
+<th>Organization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>organization_id</code></td>
+<td><code>NULL</code></td>
+<td>the org's id</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>the owner</td>
+<td>the purchaser (the org creator for the trial)</td>
+</tr>
+<tr>
+<td>How it starts</td>
+<td><code>FREE</code> at verification, or a paid plan through checkout</td>
+<td><code>ORG_TRIAL</code> when the org is created</td>
+</tr>
+<tr>
+<td>Can be bought?</td>
+<td>Yes, <code>individual</code> plans via <code>POST /v1/subscriptions/checkout</code></td>
+<td><strong>No</strong>. There is no org checkout endpoint yet, and checkout refuses <code>organization</code> plans with <code>422</code>.</td>
+</tr>
+<tr>
+<td>Usage</td>
+<td>Counted per user</td>
+<td><strong>Pooled</strong>: one counter per organization and feature, shared by all members</td>
+</tr>
+</tbody>
+</table>
+<p>Which subscription applies depends on the <code>x-organization-id</code> request header (see <a href="../organizations/">Organizations</a>). With the header, the org's plan is used, and the member's personal plan is never used as a fallback. Without it, the user's personal plan is used.</p>
+<h3 id="42-how-a-subscription-is-created">4.2 How a subscription is created<a class="headerlink" href="#42-how-a-subscription-is-created" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Email verification, new Google sign-in, or claiming an unverified account</td>
+<td><code>src/identity/auth/auth.service.ts</code> calls <code>SubscriptionsService.createFreeSubscription</code></td>
+<td><code>FREE</code> current version, <code>ACTIVE</code>, <code>expires_at</code> = start + 1 month</td>
+</tr>
+<tr>
+<td>A personal user with no active subscription spends usage</td>
+<td><code>UsageService.consume</code> calls <code>createFreeSubscription</code></td>
+<td>Same as above, created lazily inside the usage transaction</td>
+</tr>
+<tr>
+<td>Organization created</td>
+<td><code>src/organizations/services/organizations.service.ts</code> calls <code>createOrgTrialSubscription</code></td>
+<td><code>ORG_TRIAL</code>, <code>ACTIVE</code>, 7 days (or the version's <code>expiry_days</code>), <code>auto_renew = false</code></td>
+</tr>
+<tr>
+<td>User buys a plan</td>
+<td><code>SubscriptionsService.checkout</code></td>
+<td><code>PENDING</code> subscription plus a <code>PENDING</code> order. Becomes <code>ACTIVE</code> after payment.</td>
+</tr>
+</tbody>
+</table>
+<p><code>expires_at</code> comes from <code>computeExpiry</code> in <code>src/commerce/subscriptions/subscriptions.service.ts</code>: +1 month for <code>MONTHLY</code>, +1 year for <code>YEARLY</code>, <code>+expiry_days</code> for <code>ONE_TIME</code> (or <code>null</code> when it has no <code>expiry_days</code>).</p>
+<h3 id="43-lifecycle">4.3 Lifecycle<a class="headerlink" href="#43-lifecycle" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; PENDING : checkout
+    [*] --&gt; ACTIVE : free plan or org trial
+    PENDING --&gt; ACTIVE : payment.captured webhook
+    ACTIVE --&gt; SUSPENDED : user pays for another personal plan
+    note right of SUSPENDED
+        PAST_DUE, CANCELLED and EXPIRED
+        exist in the enum but no code
+        sets them today
+    end note
+</div>
+<p>What the code really does today:</p>
+<ul>
+<li><strong>Upgrade or switch plan</strong>: the user checks out a different personal plan. When that payment is captured, every other <code>ACTIVE</code> personal subscription of that user (including <code>FREE</code>) is set to <strong><code>SUSPENDED</code></strong>, and the new one becomes <code>ACTIVE</code>. There is no proration and no refund of the old plan.</li>
+<li><strong>Downgrade</strong>: works the same way. Buying a cheaper plan suspends the more expensive one.</li>
+<li><strong>Cancel</strong>: no endpoint. <code>cancelled_at</code> is never written.</li>
+<li><strong>Expiry</strong>: there is <strong>no scheduler or job</strong> that expires subscriptions (<code>src/schedulers/</code> only has the newsletter scheduler). Every "which plan is this user on" query checks <code>status = ACTIVE</code> only and ignores <code>expires_at</code>. So an <code>ACTIVE</code> subscription keeps working after <code>expires_at</code>, including the 7-day org trial.</li>
+<li><strong>Renewal</strong>: <code>auto_renew</code> is stored (<code>true</code> for recurring, <code>false</code> for <code>ONE_TIME</code> and the trial), but nothing reads it. There is no recurring billing.</li>
+<li>A <code>PENDING</code> subscription whose order expired or failed stays <code>PENDING</code> forever. Nothing cleans it up. To try again, the user checks out again, which makes a new subscription and order.</li>
+</ul>
+<h2 id="5-checkout-and-payment-with-razorpay">5. Checkout and payment with Razorpay<a class="headerlink" href="#5-checkout-and-payment-with-razorpay" title="Permanent link">¶</a></h2>
+<h3 id="51-why-two-steps">5.1 Why two steps<a class="headerlink" href="#51-why-two-steps" title="Permanent link">¶</a></h3>
+<p>Checkout (<code>POST /v1/subscriptions/checkout</code>, or <code>POST /v1/credits/checkout</code> for a credit pack) <strong>does not call Razorpay</strong>. It only saves our own records: a <code>PENDING</code> order, plus a <code>PENDING</code> subscription for a plan. The Razorpay order is created by a second call, <code>POST /v1/payments/razorpay/create</code>, which works the same for both kinds of order.</p>
+<p>This keeps "what is being bought" separate from "which payment provider is used". The order can be checked (owner, status, expiry) before any money is involved, and the provider step can be retried safely.</p>
+<p>The order gets a placeholder <code>provider_order_id</code> of <code>chk_&lt;uuid&gt;</code> to fill its unique column. The real Razorpay order id is stored on the <strong>payment</strong> row, not on the order.</p>
+<h3 id="52-the-full-flow">5.2 The full flow<a class="headerlink" href="#52-the-full-flow" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client app
+    participant S as SubscriptionsController
+    participant P as PaymentsController
+    participant R as Razorpay
+    participant W as WebhooksController
+    participant DB as Postgres
+
+    C-&gt;&gt;S: POST /v1/subscriptions/checkout with planCode and version
+    S-&gt;&gt;DB: check plan, version, no ACTIVE sub for this plan
+    S-&gt;&gt;DB: insert Subscription PENDING and Order PENDING, 30 min expiry
+    S--&gt;&gt;C: subscription and order
+    C-&gt;&gt;P: POST /v1/payments/razorpay/create with orderId
+    P-&gt;&gt;DB: check owner, status PENDING, not expired, latest payment
+    P-&gt;&gt;R: orders.create with amount x 100, currency, receipt
+    R--&gt;&gt;P: razorpay order id
+    P-&gt;&gt;DB: insert Payment PENDING with providerOrderId
+    P--&gt;&gt;C: razorpayOrderId and razorpayKeyId
+    C-&gt;&gt;R: open Razorpay Checkout widget and pay
+    R-&gt;&gt;W: POST /webhooks/razorpay with x-razorpay-signature
+    W-&gt;&gt;W: verify HMAC of raw body with RAZORPAY_WEBHOOK_SECRET
+    W-&gt;&gt;DB: look up webhook_events by eventId
+    W-&gt;&gt;DB: one transaction - Payment SUCCESS, Order PAID, old subs SUSPENDED, new sub ACTIVE, Order FULFILLED
+    W-&gt;&gt;DB: save webhook_events row, processed true
+    W--&gt;&gt;R: 200 OK
+</div>
+<p>Step by step:</p>
+<ol>
+<li>
+<p><strong>Checkout</strong> (<code>SubscriptionsService.checkout</code>, one transaction). It checks, in order:</p>
+<ul>
+<li>plan exists by <code>code</code>, else <code>404</code></li>
+<li>plan <code>is_active</code>, else <code>422</code></li>
+<li>plan <code>audience</code> is <code>individual</code>, else <code>422</code> ("can only be bought for an organization")</li>
+<li>the requested <code>version</code> exists, else <code>404</code></li>
+<li><code>effective_until</code> has not passed, else <code>422</code></li>
+<li>the user has no <code>ACTIVE</code> personal subscription <strong>to this same plan</strong>, else <code>409</code></li>
+</ul>
+<p>Then it saves the subscription (<code>PENDING</code>) and the order (<code>PENDING</code>, amount = version price, expires after <code>CHECKOUT_ORDER_TTL_MINUTES</code>, default 30).
+2. <strong>Create the Razorpay payment</strong> (<code>PaymentsService.createRazorpayPayment</code>). It checks the order exists (<code>404</code>), belongs to the caller (<code>403</code>), is <code>PENDING</code> (<code>422</code>), and has not expired (<code>422</code>). Then it looks at the <strong>latest</strong> payment for the order:
+- <code>SUCCESS</code>: <code>409</code> "already been paid".
+- <code>PENDING</code> with a Razorpay order id: the same payment is <strong>returned again</strong>. This makes the call safe to retry and avoids duplicate Razorpay orders.
+- none, or <code>FAILED</code>: a new Razorpay order and a new <code>PENDING</code> payment are created. In practice a failed payment has usually failed its order too (5.3), so the order check above has already returned <code>422</code>, and the client starts a new checkout instead.</p>
+<p>The amount sent to Razorpay is <code>Math.round(amount * 100)</code> (rupees to paise). If the Razorpay call fails, the API returns <code>503</code>.
+3. <strong>Client checkout.</strong> The client opens the Razorpay widget with <code>razorpayOrderId</code> and <code>razorpayKeyId</code> (the public key id, never the secret). The backend has <strong>no</strong> "verify payment signature" endpoint for the client. The webhook is the only source of truth.
+4. <strong>Webhook</strong> (<code>WebhooksService.handleRazorpayWebhook</code> in <code>src/webhooks/webhooks.service.ts</code>), see 5.3.</p>
+</li>
+</ol>
+<h3 id="53-webhook-handling">5.3 Webhook handling<a class="headerlink" href="#53-webhook-handling" title="Permanent link">¶</a></h3>
+<p><code>POST /webhooks/razorpay</code> is marked <code>@Public()</code> (Razorpay has no user token) and hidden from Swagger.</p>
+<p><strong>Signature check.</strong> Razorpay signs the exact bytes it sends. If we parsed the JSON and serialized it again, the bytes could change and the check would fail. So:</p>
+<ul>
+<li><code>src/main.ts</code> creates the app with <code>{ rawBody: true }</code>, which keeps the original body on <code>req.rawBody</code>.</li>
+<li>The controller passes <code>req.rawBody</code> (as a UTF-8 string) and the <code>x-razorpay-signature</code> header to the service.</li>
+<li><code>RazorpayService.verifyWebhookSignature</code> calls <code>Razorpay.validateWebhookSignature</code> with <code>RAZORPAY_WEBHOOK_SECRET</code>.</li>
+<li>Missing or wrong signature: <code>401</code>. This happens before any parsing or database work.</li>
+</ul>
+<p><strong>Event filtering.</strong> Only <code>payment.captured</code> and <code>payment.failed</code> are handled. Other events are logged and get <code>200</code>. A body with no payment entity is also logged and ignored.</p>
+<p><strong>Dedup with <code>webhook_events</code>.</strong> Razorpay can send the same event more than once. We build our own key: <code>eventId = "&lt;event&gt;:&lt;razorpay payment id&gt;"</code>, for example <code>payment.captured:pay_ABC123</code>. The column has a unique index (<code>UQ_webhook_events_event_id</code>).</p>
+<ul>
+<li>If a row with that key exists and <code>processed = true</code>, the webhook does nothing.</li>
+<li>Otherwise the payment is processed, and then a row is saved with <code>provider = RAZORPAY</code>, the event type, the full JSON payload, <code>processed = true</code>, and <code>processed_at</code>.</li>
+<li>The row is written <strong>after</strong> processing, and only on success. If processing throws, nothing is stored, we return an error, and Razorpay retries later.</li>
+</ul>
+<p><strong><code>payment.captured</code></strong> (<code>PaymentsService.markPaymentCaptured</code>, one transaction):</p>
+<ol>
+<li>Find the payment by Razorpay order id. Not found: log and stop.</li>
+<li>Already <code>SUCCESS</code>: stop. This is a second layer of idempotency.</li>
+<li>Set the payment to <code>SUCCESS</code>, and store the Razorpay payment id and <code>paid_at</code>.</li>
+<li>Set the order to <code>PAID</code>. It does not check the order's status first, so a capture also wins over an order that was marked <code>FAILED</code> (a retry inside the same Razorpay window).</li>
+<li>Fulfil the order, by <code>resource_type</code>:<ul>
+<li><code>SUBSCRIPTION</code>: suspend the user's other <code>ACTIVE</code> personal subscriptions, set this one to <code>ACTIVE</code>, and set the order to <code>FULFILLED</code>.</li>
+<li><code>CREDIT</code>: <code>CreditsService.grant</code> adds the pack's credits to the user's balance and sets the order to <code>FULFILLED</code> (section 7.3).</li>
+</ul>
+</li>
+</ol>
+<p><strong><code>payment.failed</code></strong> (<code>PaymentsService.markPaymentFailed</code>, one transaction): set the payment to <code>FAILED</code> with Razorpay's <code>error_description</code>, and set the order to <code>FAILED</code> if it is still <code>PENDING</code>. A subscription stays <code>PENDING</code> (see 4.3). Each checkout opens a new order, so a failed order is never paid again through <code>POST /v1/payments/razorpay/create</code>. A later <code>payment.failed</code> never changes a payment that is already <code>FAILED</code> or <code>SUCCESS</code>, so a late failure cannot undo a capture.</p>
+<h3 id="54-status-values">5.4 Status values<a class="headerlink" href="#54-status-values" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Values</th>
+<th>Set by code today</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Order</td>
+<td><code>PENDING</code>, <code>PAID</code>, <code>FAILED</code>, <code>FULFILLED</code></td>
+<td>All four. <code>PAID</code> moves on to <code>FULFILLED</code> in the same transaction, except for a credit order with no credit metadata.</td>
+</tr>
+<tr>
+<td>Payment</td>
+<td><code>PENDING</code>, <code>SUCCESS</code>, <code>FAILED</code>, <code>REFUNDED</code></td>
+<td><code>PENDING</code>, <code>SUCCESS</code>, <code>FAILED</code></td>
+</tr>
+<tr>
+<td>Subscription</td>
+<td><code>PENDING</code>, <code>ACTIVE</code>, <code>PAST_DUE</code>, <code>CANCELLED</code>, <code>EXPIRED</code>, <code>SUSPENDED</code></td>
+<td><code>PENDING</code>, <code>ACTIVE</code>, <code>SUSPENDED</code></td>
+</tr>
+<tr>
+<td>Order resource type</td>
+<td><code>SUBSCRIPTION</code>, <code>CREDIT</code></td>
+<td>Both. <code>CREDIT</code> was called <code>AI_CREDITS</code> until migration <code>20261027000002</code>.</td>
+</tr>
+<tr>
+<td>Payment provider</td>
+<td><code>RAZORPAY</code>, <code>STRIPE</code></td>
+<td>Only <code>RAZORPAY</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="55-refunds">5.5 Refunds<a class="headerlink" href="#55-refunds" title="Permanent link">¶</a></h3>
+<p>There is <strong>no refund handling</strong>: no endpoint, no <code>refund.*</code> webhook handling, and <code>REFUNDED</code> is never set. Refunds must be done by hand in the Razorpay dashboard, and the database will not show them.</p>
+<h2 id="6-usage-tracking-and-limits">6. Usage tracking and limits<a class="headerlink" href="#6-usage-tracking-and-limits" title="Permanent link">¶</a></h2>
+<h3 id="61-the-three-methods">6.1 The three methods<a class="headerlink" href="#61-the-three-methods" title="Permanent link">¶</a></h3>
+<p>All in <code>src/commerce/usage/usage.service.ts</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>consume(userId, featureKey, amount = 1, orgId = null)</code></td>
+<td>Checks the limit and adds to the counter, in one transaction with a row lock. When the plan's quota runs out, spends purchased credits for the rest (section 7.4). Throws if neither covers it. Returns how the charge was split (<code>fromPlan</code>, <code>fromCredits</code>) and which credit balance it used.</td>
+</tr>
+<tr>
+<td><code>release(userId, featureKey, amount, orgId, chargedAt, manager?, credits?)</code></td>
+<td>Gives usage back when the work it paid for failed. <code>credits</code> says how much of it came from credits and from which balance; that part goes back to the balance, the rest to the plan counter. Never goes below 0. The plan part does nothing if the period has reset since <code>chargedAt</code>. Pass <code>manager</code> to run inside the caller's transaction.</td>
+</tr>
+<tr>
+<td><code>getFeatureValue(userId, featureKey, orgId = null)</code></td>
+<td>Reads a feature's value from the active plan without counting anything. Used for <code>enum</code> features. Never creates a free subscription.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-how-consume-works">6.2 How <code>consume</code> works<a class="headerlink" href="#62-how-consume-works" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    participant Caller as Calling service
+    participant U as UsageService
+    participant DB as Postgres
+
+    Caller-&gt;&gt;U: consume userId, featureKey, 1, orgId
+    U-&gt;&gt;DB: find Feature by key
+    U-&gt;&gt;DB: BEGIN, find ACTIVE subscriptions for user or org
+    alt no personal subscription
+        U-&gt;&gt;DB: create FREE subscription
+    else no org subscription
+        U--&gt;&gt;Caller: 422 organization has no active plan
+    end
+    U-&gt;&gt;DB: find the plan feature for these plan versions
+    U-&gt;&gt;DB: SELECT usage row FOR UPDATE
+    U-&gt;&gt;U: create the row, or reset it if periodEnd has passed
+    alt used + amount is within the limit
+        U-&gt;&gt;DB: add amount to used, COMMIT
+        U--&gt;&gt;Caller: used, limit, remaining, period
+    else personal, and a credit balance covers the rest
+        U-&gt;&gt;DB: add what the plan covers to used, spend the rest from credits, COMMIT
+        U--&gt;&gt;Caller: fromPlan, fromCredits, credit balance used
+    else no credits cover it
+        U--&gt;&gt;Caller: 422 Usage limit exceeded
+    end
+</div>
+<p>Details:</p>
+<ul>
+<li><strong>Reset period.</strong> <code>reset_period</code> is a number of days. When a new period starts, <code>period_start</code> = today and <code>period_end</code> = today + <code>reset_period</code> (UTC dates). If <code>reset_period</code> is <code>null</code>, <code>period_end</code> is <code>9999-12-31</code>, so it never resets.</li>
+<li><strong>Resets are lazy.</strong> The next <code>consume</code> that sees <code>period_end &lt;= now</code> sets <code>used = 0</code> and starts a new period. There is no reset job.</li>
+<li><strong>The counter belongs to the plan feature row.</strong> When a user moves to a new plan or version, they start a new counter for the new plan feature.</li>
+<li><strong>Org pooling.</strong> For an org, the usage row has <code>organization_id</code> set and <code>user_id</code> = the org subscription's purchaser. All members share it.</li>
+</ul>
+<h3 id="63-who-calls-it">6.3 Who calls it<a class="headerlink" href="#63-who-calls-it" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Caller</th>
+<th>File</th>
+<th>Feature</th>
+<th>Charge and refund</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generate assessment</td>
+<td><code>src/assessments/generation/generation-orchestrator.service.ts</code> <code>start</code></td>
+<td><code>AI_ASSESSMENT</code> (personal or org)</td>
+<td>Consumes 1 before creating jobs. Releases it if the transaction fails.</td>
+</tr>
+<tr>
+<td>Retry a failed generation</td>
+<td>same file, <code>retry</code></td>
+<td><code>AI_ASSESSMENT</code></td>
+<td>Consumes 1 again. Releases it if requeueing fails.</td>
+</tr>
+<tr>
+<td>Generation ends with failed sections</td>
+<td><code>src/assessments/generation/generation-aggregator.service.ts</code> <code>fail</code></td>
+<td><code>AI_ASSESSMENT</code></td>
+<td>Releases the charge once (tracked by the <code>usage.refunded</code> flag in the job payload).</td>
+</tr>
+<tr>
+<td>Question type check</td>
+<td><code>src/assessments/generation/generation-entitlement.service.ts</code></td>
+<td><code>ALLOWED_QUESTION_TYPES</code> (read)</td>
+<td>Not counted. Returns <code>403</code> naming the types the plan does not allow.</td>
+</tr>
+<tr>
+<td>Older single-shot generate, used for roadmap node assessments</td>
+<td><code>src/assessments/assessments.service.ts</code> <code>generate</code>, called from <code>src/learning-roadmaps/learning-roadmap-assessment.service.ts</code></td>
+<td><code>AI_ASSESSMENT</code></td>
+<td>Consumes 1. No release on failure.</td>
+</tr>
+<tr>
+<td>Create a learning roadmap</td>
+<td><code>src/learning-roadmaps/learning-roadmaps.service.ts</code> <code>create</code></td>
+<td><code>AI_LEARNING_ROADMAP</code> (personal only)</td>
+<td>Consumes 1. No release.</td>
+</tr>
+<tr>
+<td>Pick the LLM</td>
+<td><code>src/ai/ai-model-selector.service.ts</code></td>
+<td><code>AI_MODEL</code> (read, personal only)</td>
+<td>Not counted.</td>
+</tr>
+<tr>
+<td>Next-assessment suggestion</td>
+<td><code>src/assessments/attempts/attempt-suggestion.service.ts</code> <code>suggestNext</code></td>
+<td><code>AI_ASSESSMENT_SUGGESTION</code> and <code>ALLOWED_QUESTION_TYPES</code> (read, personal only)</td>
+<td>Not counted. <code>403</code> without the feature. Starting the suggested assessment is a normal generation and spends <code>AI_ASSESSMENT</code>.</td>
+</tr>
+<tr>
+<td>Profile (<code>GET /v1/auth/me</code>)</td>
+<td><code>src/identity/auth/auth.service.ts</code></td>
+<td>Current plan and allowed question types</td>
+<td>Read only (<code>getCurrentPlan</code>, <code>getAllowedQuestionTypes</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../assessment-generation/">Assessment generation</a> and <a href="../learning-roadmaps/">Learning roadmaps</a> for the rest of those flows.</p>
+<h3 id="64-what-happens-when-a-limit-is-hit">6.4 What happens when a limit is hit<a class="headerlink" href="#64-what-happens-when-a-limit-is-hit" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>HTTP status</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Limit reached, and no credit balance has enough left</td>
+<td><code>422</code></td>
+<td><code>Usage limit exceeded for feature AI_ASSESSMENT: 2/2 used</code></td>
+</tr>
+<tr>
+<td>Org request, org has no <code>ACTIVE</code> subscription</td>
+<td><code>422</code></td>
+<td><code>This organization has no active plan</code></td>
+</tr>
+<tr>
+<td>Feature is <code>enum</code>, not <code>limit</code></td>
+<td><code>422</code></td>
+<td><code>Feature X is not a usage-limited feature</code></td>
+</tr>
+<tr>
+<td>Active plan does not include the feature, and (personally) no credits cover it</td>
+<td><code>404</code></td>
+<td><code>Feature X is not included in the user's active plan</code></td>
+</tr>
+<tr>
+<td>Feature key missing from the <code>features</code> table</td>
+<td><code>404</code></td>
+<td><code>Feature X not found</code></td>
+</tr>
+<tr>
+<td>Plan does not allow a question type</td>
+<td><code>403</code></td>
+<td><code>Your plan does not include ... questions; it allows: ...</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-credit-packs">7. Credit packs<a class="headerlink" href="#7-credit-packs" title="Permanent link">¶</a></h2>
+<h3 id="71-what-credits-are">7.1 What credits are<a class="headerlink" href="#71-what-credits-are" title="Permanent link">¶</a></h3>
+<p>A <strong>credit pack</strong> is a one-time purchase of extra usage of one feature, for example "10 AI assessments for ₹199". Buying it adds to the user's <strong>credit balance</strong> for that feature. Credits:</p>
+<ul>
+<li>work on top of <strong>any</strong> plan, including <code>FREE</code> and a plan that does not include the feature at all;</li>
+<li>are spent only <strong>after</strong> the plan's own quota for the period runs out;</li>
+<li>never reset and never expire;</li>
+<li>are <strong>personal only</strong> for now. <code>user_feature_credits.organization_id</code> exists so organizations can be added later without a schema change, but nothing sells or spends org credits.</li>
+</ul>
+<p>Credits are not modelled as a <code>ONE_TIME</code> plan, for two reasons. A paid subscription suspends the user's other personal subscriptions, and plan quotas reset every period. So the catalog and the balances live in their own tables, and only the <strong>order → payment → webhook</strong> pipeline is shared with subscriptions. Tables: <a href="../../erd/#7c-credit-packs-and-purchased-credits"><code>credit_packs</code> and <code>user_feature_credits</code></a>.</p>
+<h3 id="72-the-catalog">7.2 The catalog<a class="headerlink" href="#72-the-catalog" title="Permanent link">¶</a></h3>
+<p>Admins manage packs through <code>/v1/admin/credit-packs</code> (section 9), gated by the <code>plans:*</code> permissions. A pack has a name, a feature, a <code>quantity</code>, a <code>price</code> and <code>currency</code>, an <code>is_active</code> flag and a <code>sort_order</code>.</p>
+<ul>
+<li>Packs are taken off sale with <code>isActive: false</code>. There is no delete.</li>
+<li>A pack for a <strong>setting</strong> feature (<code>AI_MODEL</code>, <code>ALLOWED_QUESTION_TYPES</code>) is refused with <code>400</code>: there is nothing to count.</li>
+<li>A pack may name an <strong>AI model</strong> (<code>ai_model_code</code>, by <code>ai_models.code</code>). It must be an active model when the pack is saved (<code>404</code> otherwise). No model means the free plan's <code>AI_MODEL</code>. Work paid for with those credits runs on that model (<code>AiModelSelector.forGeneration</code> in <code>src/ai/ai-model-selector.service.ts</code>), and a model removed later falls back to the default.</li>
+<li><code>GET /v1/credits/packs</code> is public and lists active packs in <code>sort_order</code>.</li>
+</ul>
+<h3 id="73-buying-a-pack">7.3 Buying a pack<a class="headerlink" href="#73-buying-a-pack" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client app
+    participant K as CreditsController
+    participant P as PaymentsController
+    participant W as Razorpay webhook
+    participant DB as Postgres
+
+    C-&gt;&gt;K: POST /v1/credits/checkout with creditPackId
+    K-&gt;&gt;DB: check the pack exists and is on sale
+    K-&gt;&gt;DB: insert Order PENDING, resource_type CREDIT, metadata with the pack's feature, quantity, model
+    K--&gt;&gt;C: creditPack and order
+    C-&gt;&gt;P: POST /v1/payments/razorpay/create with orderId
+    Note over C,W: same Razorpay flow as a plan (section 5.2)
+    W-&gt;&gt;DB: one transaction - Payment SUCCESS, Order PAID
+    W-&gt;&gt;DB: upsert user_feature_credits, granted += quantity
+    W-&gt;&gt;DB: Order FULFILLED
+</div>
+<ul>
+<li><strong>Checkout</strong> (<code>CreditsService.checkout</code>): <code>404</code> for an unknown pack, <code>422</code> for one not on sale. The order's <code>metadata</code> records <code>{ creditPackId, featureId, quantity, aiModelCode }</code> <strong>as the pack is now</strong>, so an admin editing the pack before the payment settles does not change what this buyer gets.</li>
+<li><strong>Grant</strong> (<code>CreditsService.grant</code>, on the capture transaction): an <code>INSERT ... ON CONFLICT</code> on the balance's partial unique index adds <code>quantity</code> to <code>granted</code>, so two first grants for the same user cannot both insert a row. An order that is already <code>FULFILLED</code> is skipped. An order with no credit metadata is logged and left <code>PAID</code> rather than throwing, because throwing would roll back the payment and make Razorpay retry the webhook forever.</li>
+</ul>
+<h3 id="74-spending-and-refunding">7.4 Spending and refunding<a class="headerlink" href="#74-spending-and-refunding" title="Permanent link">¶</a></h3>
+<p><code>UsageService.consume</code> takes from the plan first, then from credits:</p>
+<ol>
+<li>Resolve the plan feature as usual. If the plan lacks the feature, the whole charge is taken from credits (personal only), otherwise <code>404</code>.</li>
+<li><code>fromPlan = min(amount, plan quota left)</code> (all of it for an unlimited plan) and <code>fromCredits = amount - fromPlan</code>.</li>
+<li>If <code>fromCredits &gt; 0</code>, lock the user's balances for the feature and take it all from <strong>one</strong> balance: the oldest with enough left. One balance means the charged work runs on a single AI model. None has enough: <code>422</code>, and nothing is spent.</li>
+<li>An <code>enum</code> feature is refused before any of this. Credits only apply to <code>limit</code> features.</li>
+</ol>
+<p>Assessment generation keeps the split with the charge (<code>GenerationUsageCharge</code> in the job payload), and <code>release</code> sends a refund back to where it came from: the credit part to the same balance (never period-gated), the rest to the plan counter.</p>
+<h2 id="8-reading-your-subscription-usage-credits-and-orders">8. Reading your subscription, usage, credits and orders<a class="headerlink" href="#8-reading-your-subscription-usage-credits-and-orders" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>GET /v1/subscriptions</code>: the current <code>ACTIVE</code> subscription, with plan, version and features. With <code>x-organization-id</code>, the org's subscription (needs the org permission <code>org_billing:read</code>). <code>404</code> if there is none.</li>
+<li><code>GET /v1/usage/subscriptions/:subscriptionId</code>: every feature of that subscription's plan version, with <code>used</code>, <code>remaining</code>, and the period. A counter whose period has ended shows <code>used = 0</code>. Same org rules as above.</li>
+<li><code>GET /v1/plans</code>: public (no login). Active and displayed plans, each with only its <strong>current</strong> version and features. Paginated, and filterable by <code>name</code> and <code>audience</code>.</li>
+<li><code>GET /v1/credits/balance</code>: the user's personal credit balances, one per feature and AI model, with <code>granted</code>, <code>used</code> and <code>remaining</code>.</li>
+<li><code>GET /v1/orders</code>: the user's purchase history (<code>OrdersController</code>, served by <code>PaymentsService.listUserOrders</code>). Details below.</li>
+</ul>
+<h3 id="81-order-history-get-v1orders">8.1 Order history (<code>GET /v1/orders</code>)<a class="headerlink" href="#81-order-history-get-v1orders" title="Permanent link">¶</a></h3>
+<p>The signed-in user's orders, newest first. Cursor paged on the order id with the shared <code>PaginationDto</code>: query <code>cursor?</code>, <code>limit?</code> (1–50, default 20); <code>meta</code> holds <code>nextCursor</code> and <code>total</code>.</p>
+<ul>
+<li><strong>Which orders.</strong> Only those the user placed, including ones bought for an organization (the purchaser is always the user). Only <code>PAID</code>, <code>FULFILLED</code> and <code>FAILED</code> orders are listed. <code>PENDING</code> orders are checkouts that were never paid, so they are left out. The <code>status</code> filter accepts only those three values (<code>400</code> otherwise); <code>resourceType</code> filters by <code>SUBSCRIPTION</code> or <code>CREDIT</code>.</li>
+<li><strong>What each order carries.</strong> Amount, currency, status, <code>createdAt</code> and <code>expiresAt</code>. <code>plan</code> (name, code, version, billing cycle) for a subscription order, or <code>creditPack</code> (name, feature, and the <strong>quantity bought</strong>, taken from the order's metadata) for a credit order. Every payment attempt, newest first, with its status, amount, <code>paidAt</code>, <code>failureReason</code>, and <code>reference</code>, Razorpay's payment id, which users quote to support.</li>
+<li><strong>What it leaves out.</strong> The order's raw <code>metadata</code> and our <code>chk_</code> checkout reference.</li>
+<li><strong>How it is loaded.</strong> One query for the page of orders and one for their payments, rather than a join that would break the page size. Then one lookup per kind for what was bought (<code>loadOrderPurchases</code> in <code>src/commerce/order-purchases.helper.ts</code>, shared with the admin views). Soft-deleted subscriptions and packs still count: the purchase happened either way.</li>
+</ul>
+<p>The frontend shows this on the account page (<code>/account</code>) as the Orders card. Each order opens in a details dialog.</p>
+<h2 id="9-admin-endpoints">9. Admin endpoints<a class="headerlink" href="#9-admin-endpoints" title="Permanent link">¶</a></h2>
+<p>All under <code>/v1/admin</code>, in <code>src/commerce/admin.controller.ts</code>, served by <code>CommerceAdminService</code>. Each needs a platform permission (see <a href="../rbac/">RBAC</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /plans</code></td>
+<td><code>plans:read</code></td>
+<td>All plans, including hidden and inactive ones. Filters: <code>isActive</code>, <code>isDisplayed</code>, <code>name</code>, <code>audience</code>.</td>
+</tr>
+<tr>
+<td><code>GET /plans/:planId</code></td>
+<td><code>plans:read</code></td>
+<td>One plan with every version (newest first) and their features.</td>
+</tr>
+<tr>
+<td><code>POST /plans</code></td>
+<td><code>plans:create</code></td>
+<td>Create a plan and its version 1 (no features yet).</td>
+</tr>
+<tr>
+<td><code>PATCH /plans/:planId</code></td>
+<td><code>plans:update</code></td>
+<td>Edit name, description, <code>isActive</code>, <code>isDisplayed</code>, <code>sortOrder</code>. Built-in plans cannot be renamed or deactivated.</td>
+</tr>
+<tr>
+<td><code>POST /plans/:planId/versions</code></td>
+<td><code>plans:create</code></td>
+<td>Add a new version and make it current.</td>
+</tr>
+<tr>
+<td><code>PUT /plans/:planId/versions/:versionNo</code></td>
+<td><code>plans:update</code></td>
+<td>Edit a version in place. <code>isCurrent: true</code> makes it the current one.</td>
+</tr>
+<tr>
+<td><code>POST /plans/:planId/versions/:versionNumber/features</code></td>
+<td><code>plans:create</code></td>
+<td>Attach a feature to a version.</td>
+</tr>
+<tr>
+<td><code>PUT /plans/:planId/versions/:versionNumber/features/:featureId</code></td>
+<td><code>plans:update</code></td>
+<td>Edit a plan feature. <code>:featureId</code> is the <code>plan_features</code> row id.</td>
+</tr>
+<tr>
+<td><code>DELETE /plans/:planId/versions/:versionNumber/features/:featureId</code></td>
+<td><code>plans:delete</code></td>
+<td>Soft-delete a plan feature. Subscribers lose it at once. Usage history is kept.</td>
+</tr>
+<tr>
+<td><code>GET /features</code></td>
+<td><code>features:read</code></td>
+<td>List all features (for the "add feature" picker).</td>
+</tr>
+<tr>
+<td><code>GET /orders</code></td>
+<td><code>payments:read</code></td>
+<td>All orders, with the buyer and what was bought (plan or credit pack). Filters: status, <code>resourceType</code>, provider, user, date range, search (checkout reference, username, email).</td>
+</tr>
+<tr>
+<td><code>GET /orders/:orderId</code></td>
+<td><code>payments:read</code></td>
+<td>One order with its <code>metadata</code> and every payment attempt, newest first.</td>
+</tr>
+<tr>
+<td><code>GET /payments</code></td>
+<td><code>payments:read</code></td>
+<td>All payments, with the payer and the plan bought. Filters: status, provider, user, date range, search.</td>
+</tr>
+<tr>
+<td><code>GET /payments/:paymentId</code></td>
+<td><code>payments:read</code></td>
+<td>One payment, plus the credit pack bought for a credit order.</td>
+</tr>
+<tr>
+<td><code>GET /subscriptions</code></td>
+<td><code>subscriptions:read</code></td>
+<td>All subscriptions. Filters: status, user, plan, <code>scope</code> (personal or organization), <code>organizationUid</code>, search.</td>
+</tr>
+<tr>
+<td><code>GET /subscriptions/:subscriptionId</code></td>
+<td><code>subscriptions:read</code></td>
+<td>One subscription (soft-deleted ones too), its orders with their payments, and its owner's usage of the plan's features in the current period.</td>
+</tr>
+<tr>
+<td><code>GET /usage</code></td>
+<td><code>usage:read</code></td>
+<td>All usage rows. Filters: user, <code>featureKey</code>, <code>current</code>, <code>scope</code>, <code>organizationUid</code>, search.</td>
+</tr>
+<tr>
+<td><code>GET /usage/:usageId</code></td>
+<td><code>usage:read</code></td>
+<td>One usage row with the plan feature's type, value and reset period, what is left of the limit, and the owner's credit balances for the same feature.</td>
+</tr>
+<tr>
+<td><code>GET /credit-packs</code></td>
+<td><code>plans:read</code></td>
+<td>Every credit pack, inactive ones included. In <code>CreditPacksAdminController</code>.</td>
+</tr>
+<tr>
+<td><code>GET /credit-packs/:creditPackId</code></td>
+<td><code>plans:read</code></td>
+<td>One credit pack.</td>
+</tr>
+<tr>
+<td><code>POST /credit-packs</code></td>
+<td><code>plans:create</code></td>
+<td>Create a pack. Refuses a setting feature (<code>400</code>) and an unknown or inactive AI model (<code>404</code>).</td>
+</tr>
+<tr>
+<td><code>PATCH /credit-packs/:creditPackId</code></td>
+<td><code>plans:update</code></td>
+<td>Edit a pack, or take it off sale with <code>isActive: false</code>. Orders already placed keep what they bought.</td>
+</tr>
+</tbody>
+</table>
+<p>The order endpoints reuse <code>payments:read</code>, as orders and payments are one purchase pipeline. Admin lists are paged by page number (<code>page</code>, <code>limit</code> up to 100), unlike the user's cursor-paged <code>GET /v1/orders</code>.</p>
+<h2 id="10-business-rules-and-edge-cases">10. Business rules and edge cases<a class="headerlink" href="#10-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li>Every verified user should have one <code>ACTIVE</code> personal subscription. If they have none when they spend usage, a <code>FREE</code> one is created on the spot.</li>
+<li>Organizations never fall back to a member's personal plan. No <code>ACTIVE</code> org subscription means metered AI features are refused with <code>422</code>.</li>
+<li>Only <code>individual</code> plans can be bought. Organizations stay on <code>ORG_TRIAL</code> because there is no org checkout.</li>
+<li>Checkout blocks buying a plan you already have <code>ACTIVE</code>. It does <strong>not</strong> block a second checkout while one is still <code>PENDING</code>.</li>
+<li>Paying for a new personal plan suspends all other <code>ACTIVE</code> personal plans, <code>FREE</code> included. Org subscriptions are not touched.</li>
+<li>An order expires 30 minutes after checkout (<code>CHECKOUT_ORDER_TTL_MINUTES</code>). After that, <code>POST /v1/payments/razorpay/create</code> returns <code>422</code>, and the user must check out again. The same applies to an order whose payment failed.</li>
+<li>A <code>payment.captured</code> webhook is still honored if it arrives after the order expired or failed. Expiry and failure only block starting a payment.</li>
+<li>Only the webhook updates our database. If the webhook never arrives, the subscription stays <code>PENDING</code> even though the user paid.</li>
+<li>A limit value that is not a number (for example <code>unlimited</code>) means unlimited.</li>
+<li>Usage resets lazily on the next <code>consume</code>, using UTC dates.</li>
+<li><code>release</code> only refunds into the same period. A charge made before the current <code>period_start</code> is not given back.</li>
+<li>A plan version can be bought until its <code>effective_until</code>, even if it is no longer the current one.</li>
+<li>Editing a version's price with <code>PUT .../versions/:versionNo</code> changes it in place, so later checkouts of that version charge the new price.</li>
+<li>Credits are spent only after the plan's quota for the period runs out, and only for personal requests. An org request never touches a member's credits.</li>
+<li>One charge is taken from one credit balance. If a user's credits for a feature are split across AI models and none alone has enough, the charge is refused even though the total would cover it.</li>
+<li>A credit order grants what the pack held at checkout (its <code>metadata</code>), not what the pack holds when the payment settles.</li>
+</ol>
+<h2 id="11-endpoints-summary">11. Endpoints summary<a class="headerlink" href="#11-endpoints-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/plans</code></td>
+<td>Public</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/subscriptions</code></td>
+<td>User (org: <code>org_billing:read</code>)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/subscriptions/checkout</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/payments/razorpay/create</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/usage/subscriptions/:subscriptionId</code></td>
+<td>User (org: <code>org_billing:read</code>)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/credits/packs</code></td>
+<td>Public</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/credits/checkout</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/credits/balance</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/orders</code></td>
+<td>User</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/webhooks/razorpay</code></td>
+<td>Public, Razorpay signature</td>
+</tr>
+<tr>
+<td>various</td>
+<td><code>/v1/admin/plans...</code>, <code>/v1/admin/features</code>, <code>/v1/admin/orders...</code>, <code>/v1/admin/payments...</code>, <code>/v1/admin/subscriptions...</code>, <code>/v1/admin/usage...</code>, <code>/v1/admin/credit-packs...</code></td>
+<td>Platform permissions</td>
+</tr>
+</tbody>
+</table>
+<p>Full request and response details are in <a href="../../api-design/v1/">API Design v1</a>.</p>
+<h2 id="12-where-the-code-lives">12. Where the code lives<a class="headerlink" href="#12-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/commerce/commerce.module.ts</code></td>
+<td>Module wiring and exports</td>
+</tr>
+<tr>
+<td><code>src/commerce/plans/</code></td>
+<td>Public plan list, <code>plan.constants.ts</code>, <code>allowed-question-types.ts</code>, plan DTOs</td>
+</tr>
+<tr>
+<td><code>src/commerce/subscriptions/subscriptions.service.ts</code></td>
+<td>Checkout, free and trial subscriptions, current plan lookups</td>
+</tr>
+<tr>
+<td><code>src/commerce/usage/usage.service.ts</code></td>
+<td><code>consume</code>, <code>release</code>, <code>getFeatureValue</code>, usage report</td>
+</tr>
+<tr>
+<td><code>src/commerce/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin catalog and reporting, including order, payment, subscription and usage details</td>
+</tr>
+<tr>
+<td><code>src/commerce/serializers/commerce.serializer.ts</code></td>
+<td>Response shapes</td>
+</tr>
+<tr>
+<td><code>src/commerce/credits/</code></td>
+<td>Credit pack catalog, checkout, <code>grant</code>, balances; <code>credits.controller.ts</code> (user) and <code>credit-packs-admin.controller.ts</code> (admin)</td>
+</tr>
+<tr>
+<td><code>src/commerce/checkout.helpers.ts</code></td>
+<td>Order expiry and the <code>chk_</code> checkout reference, shared by plan and credit checkout</td>
+</tr>
+<tr>
+<td><code>src/commerce/order-purchases.helper.ts</code></td>
+<td><code>loadOrderPurchases</code>: the plan version or credit pack behind each order</td>
+</tr>
+<tr>
+<td><code>src/commerce/payments/payments.service.ts</code></td>
+<td>Razorpay payment creation, captured and failed handling, <code>listUserOrders</code></td>
+</tr>
+<tr>
+<td><code>src/commerce/payments/orders.controller.ts</code></td>
+<td><code>GET /v1/orders</code></td>
+</tr>
+<tr>
+<td><code>src/commerce/payments/razorpay/razorpay.service.ts</code></td>
+<td>Razorpay SDK client and signature check</td>
+</tr>
+<tr>
+<td><code>src/webhooks/</code></td>
+<td>Webhook controller and dedup logic</td>
+</tr>
+<tr>
+<td><code>src/common/entities/</code></td>
+<td><code>plan</code>, <code>plan-version</code>, <code>plan-version-feature</code>, <code>feature</code>, <code>subscription</code>, <code>user-feature-usage</code>, <code>credit-pack</code>, <code>user-feature-credit</code>, <code>order</code>, <code>payment</code>, <code>webhook-event</code></td>
+</tr>
+<tr>
+<td><code>src/common/enums/commerce.enums.ts</code></td>
+<td>All commerce enums</td>
+</tr>
+<tr>
+<td><code>src/seeders/feature.seeder.ts</code>, <code>plan.seeder.ts</code></td>
+<td>Seed data</td>
+</tr>
+</tbody>
+</table>
+<p>Environment variables: <code>RAZORPAY_KEY_ID</code>, <code>RAZORPAY_KEY_SECRET</code>, <code>RAZORPAY_WEBHOOK_SECRET</code>, and <code>CHECKOUT_ORDER_TTL_MINUTES</code> (optional).</p>
+<h2 id="13-known-gaps-and-todos">13. Known gaps and TODOs<a class="headerlink" href="#13-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>No expiry.</strong> Nothing moves a subscription to <code>EXPIRED</code>, and lookups ignore <code>expires_at</code>. The 7-day org trial and monthly plans never actually end.</li>
+<li><strong>No renewal, cancel, or refund.</strong> <code>auto_renew</code>, <code>cancelled_at</code>, <code>CANCELLED</code>, <code>PAST_DUE</code>, and <code>REFUNDED</code> are unused.</li>
+<li><strong>No org checkout.</strong> Organization plans and organization credits cannot be bought.</li>
+<li><strong>Fulfillment is an <code>if</code> per resource type</strong> in <code>markPaymentCaptured</code>, with a <code>TODO</code> to move to an event-driven handler per resource type.</li>
+<li><strong>Stale checkouts are never cleaned up.</strong> Expired <code>PENDING</code> orders and their <code>PENDING</code> subscriptions stay as they are. They are hidden from <code>GET /v1/orders</code>, but not from the admin lists.</li>
+<li><strong>The seeded <code>FREE</code> and <code>ORG_TRIAL</code> plans do not include <code>AI_LEARNING_ROADMAP</code></strong>, so creating a roadmap fails with <code>404</code> until an admin adds that feature to the plan.</li>
+<li><strong>No unique index on <code>user_feature_usage</code></strong> for (user or org, plan feature). Two first-time <code>consume</code> calls at the same moment can create two counter rows.</li>
+<li><strong><code>AI_MODEL</code> is read from the personal plan only</strong>, even on org requests.</li>
+<li><strong>The webhook does not check the amount.</strong> We trust that the captured payment matches the order, because the Razorpay order was created with our amount.</li>
+<li><strong>Zero-price plans through checkout</strong> would send a 0 amount order to Razorpay, which Razorpay is expected to reject, giving the user <code>503</code>.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

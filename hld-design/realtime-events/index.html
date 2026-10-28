@@ -1,0 +1,1357 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="The Socket.IO gateway — how sockets authenticate, which rooms exist, every client-to-server message and server-to-client event, error frames, and scaling limits." name="description"/>
+<link href="../learning-roadmaps/" rel="prev"/>
+<link href="../jobs-and-schedulers/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Realtime Events (Socket.IO) - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#realtime-events-socketio">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Realtime Events (Socket.IO)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data">
+<span class="md-ellipsis">
+      
+        3. Data
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-flows">
+<span class="md-ellipsis">
+      
+        4. Flows
+      
+    </span>
+</a>
+<nav aria-label="4. Flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-connection-and-authentication">
+<span class="md-ellipsis">
+      
+        4.1 Connection and authentication
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-ai-conversation-message">
+<span class="md-ellipsis">
+      
+        4.2 AI conversation message
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-code-run">
+<span class="md-ellipsis">
+      
+        4.3 Code run
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-push-to-a-user">
+<span class="md-ellipsis">
+      
+        4.4 Push to a user
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycle">
+<span class="md-ellipsis">
+      
+        5. Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-message-reference">
+<span class="md-ellipsis">
+      
+        6. Message reference
+      
+    </span>
+</a>
+<nav aria-label="6. Message reference" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-client-server-messages">
+<span class="md-ellipsis">
+      
+        6.1 Client → server messages
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-server-client-events">
+<span class="md-ellipsis">
+      
+        6.2 Server → client events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-error-frames">
+<span class="md-ellipsis">
+      
+        6.3 Error frames
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events">
+<span class="md-ellipsis">
+      
+        8. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-scaling-notes">
+<span class="md-ellipsis">
+      
+        9. Scaling notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        10. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        11. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data">
+<span class="md-ellipsis">
+      
+        3. Data
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-flows">
+<span class="md-ellipsis">
+      
+        4. Flows
+      
+    </span>
+</a>
+<nav aria-label="4. Flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-connection-and-authentication">
+<span class="md-ellipsis">
+      
+        4.1 Connection and authentication
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-ai-conversation-message">
+<span class="md-ellipsis">
+      
+        4.2 AI conversation message
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-code-run">
+<span class="md-ellipsis">
+      
+        4.3 Code run
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#44-push-to-a-user">
+<span class="md-ellipsis">
+      
+        4.4 Push to a user
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycle">
+<span class="md-ellipsis">
+      
+        5. Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-message-reference">
+<span class="md-ellipsis">
+      
+        6. Message reference
+      
+    </span>
+</a>
+<nav aria-label="6. Message reference" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-client-server-messages">
+<span class="md-ellipsis">
+      
+        6.1 Client → server messages
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-server-client-events">
+<span class="md-ellipsis">
+      
+        6.2 Server → client events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-error-frames">
+<span class="md-ellipsis">
+      
+        6.3 Error frames
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events">
+<span class="md-ellipsis">
+      
+        8. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-scaling-notes">
+<span class="md-ellipsis">
+      
+        9. Scaling notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        10. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        11. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="realtime-events-socketio">Realtime Events (Socket.IO)<a class="headerlink" href="#realtime-events-socketio" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>Most of TestFlow works over plain HTTP. Background work (AI generation, evaluation) is followed by polling <code>GET /v1/jobs/:id</code>. The WebSocket layer is used only where polling would be slow or clumsy:</p>
+<ul>
+<li><strong>AI assistant chat.</strong> The client sends a message and gets the assistant's answer back on the same socket.</li>
+<li><strong>Running code during an attempt.</strong> Test-case results stream back one by one as they finish.</li>
+<li><strong>Push notices for background work.</strong> Today there is one: the result of a bulk organization invitation import.</li>
+</ul>
+<p>The layer uses <a href="https://socket.io/">Socket.IO</a> through NestJS's <code>@nestjs/websockets</code> package. All of it lives in <code>src/events/</code>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gateway</td>
+<td><code>EventsGateway</code>, the one NestJS WebSocket gateway. It accepts connections and handles incoming messages.</td>
+</tr>
+<tr>
+<td>Handshake</td>
+<td>The first request a Socket.IO client makes. The JWT is checked here, and only here.</td>
+</tr>
+<tr>
+<td>Room</td>
+<td>A named group of sockets. The server can send to a room instead of to a single socket.</td>
+</tr>
+<tr>
+<td>User room</td>
+<td><code>user:&lt;userId&gt;</code>. Every socket a user opens joins it, so one emit reaches all of that user's tabs.</td>
+</tr>
+<tr>
+<td><code>requestId</code></td>
+<td>A client-made id (letters, digits, <code>-</code>, <code>_</code>, max 64 characters) sent with a message and echoed back in replies and errors. It lets the client match replies to requests.</td>
+</tr>
+<tr>
+<td><code>exception</code></td>
+<td>The standard Socket.IO event name NestJS uses for error frames.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data">3. Data<a class="headerlink" href="#3-data" title="Permanent link">¶</a></h2>
+<p>The gateway stores nothing in the database. State is kept in memory:</p>
+<ul>
+<li><code>client.data.userId</code>: the authenticated user for a socket.</li>
+<li><code>ConnectionManager</code>: a <code>Map&lt;userId, Set&lt;socket&gt;&gt;</code> of open sockets. It has <code>isOnline(userId)</code> and <code>get(userId)</code> helpers, but no other code uses them today.</li>
+</ul>
+<p>AI conversations and attempts are stored by their own modules. See <a href="../ai-assistant/">AI Assistant</a> and <a href="../attempts/">Attempts</a>.</p>
+<h2 id="4-flows">4. Flows<a class="headerlink" href="#4-flows" title="Permanent link">¶</a></h2>
+<h3 id="41-connection-and-authentication">4.1 Connection and authentication<a class="headerlink" href="#41-connection-and-authentication" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as EventsGateway
+    participant E as EventService
+    participant CM as ConnectionManager
+
+    C-&gt;&gt;G: connect to /socket.io with token
+    G-&gt;&gt;E: extractToken
+    E--&gt;&gt;G: token from auth, query or header
+    G-&gt;&gt;E: authenticateUser
+    E-&gt;&gt;E: jwt.verify with JWT_ACCESS_SECRET
+    alt token missing or invalid
+        G--&gt;&gt;C: emit exception Invalid token
+        G-&gt;&gt;C: disconnect
+    else token valid
+        G-&gt;&gt;G: client.data.userId = sub
+        G-&gt;&gt;G: join room user:userId
+        G-&gt;&gt;CM: add userId and socket
+    end
+</div>
+<p>The client can send the access token in one of three ways. They are checked in this order:</p>
+<table>
+<thead>
+<tr>
+<th>Order</th>
+<th>Client code</th>
+<th>Where the server reads it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>io(url, { auth: { token } })</code></td>
+<td><code>handshake.auth.token</code> (recommended)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>io(url, { query: { token } })</code></td>
+<td><code>handshake.query.token</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>io(url, { extraHeaders: { Authorization: 'Bearer ...' } })</code></td>
+<td><code>handshake.headers.authorization</code></td>
+</tr>
+</tbody>
+</table>
+<p>Important details:</p>
+<ul>
+<li>The token is the normal <strong>access token</strong> from login. It is checked once, at connect time. A socket stays open even after the token expires. The client should reconnect with a fresh token after refresh.</li>
+<li>The handshake only checks the JWT signature and expiry. It does <strong>not</strong> check that the account is still active. The HTTP <code>JwtAuthGuard</code> does check this.</li>
+<li><code>WsJwtGuard</code> (<code>src/events/guards/WsJwtGuard.guard.ts</code>) runs on each message handler. It does not re-verify the JWT. It only checks that the handshake set <code>client.data.userId</code>. If not, it throws <code>WsException('Unauthorized')</code>.</li>
+<li>On disconnect, the socket is removed from <code>ConnectionManager</code>.</li>
+</ul>
+<h3 id="42-ai-conversation-message">4.2 AI conversation message<a class="headerlink" href="#42-ai-conversation-message" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as EventsGateway
+    participant R as ConversationRouterService
+    participant A as ConversationAssistantService
+
+    C-&gt;&gt;G: ai.conversation.message with requestId, conversationId, content
+    G-&gt;&gt;G: WsJwtGuard and validation pipe
+    G-&gt;&gt;R: resolveAiConversationMessage
+    R-&gt;&gt;A: answer
+    A--&gt;&gt;R: answer content
+    R--&gt;&gt;G: reply
+    G--&gt;&gt;C: ai.conversation.message with requestId and content
+</div>
+<p>The reply goes back to the <strong>sending socket only</strong>, under the same event name. An LLM answer takes several seconds, so a client may have more than one message in flight. It uses <code>requestId</code> to match each reply.</p>
+<h3 id="43-code-run">4.3 Code run<a class="headerlink" href="#43-code-run" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as EventsGateway
+    participant S as CodeRunService
+    participant X as Code runner
+
+    C-&gt;&gt;G: code.run with requestId, attemptUid, questionId, language, code, mode
+    G-&gt;&gt;S: start with a sink bound to this socket
+    S-&gt;&gt;S: check attempt, question, language, one run at a time, 5s cooldown
+    S--&gt;&gt;C: code.run.started with total
+    loop each visible test case in samples mode
+        S-&gt;&gt;X: execute
+        X--&gt;&gt;S: output
+        S--&gt;&gt;C: code.run.case with result
+    end
+    S--&gt;&gt;C: code.run.completed with passed and total
+    Note over S,C: on runner error, code.run.failed instead
+</div>
+<p>If the run is refused before it starts (bad attempt, wrong language, a run already in progress, or cooldown), the client gets an <code>exception</code> frame, not <code>code.run.failed</code>. See <a href="../code-execution/">Code Execution</a> for how runners work.</p>
+<h3 id="44-push-to-a-user">4.4 Push to a user<a class="headerlink" href="#44-push-to-a-user" title="Permanent link">¶</a></h3>
+<p>Any module can import <code>EventsModule</code> and call:</p>
+<pre><code class="language-ts">eventsGateway.emitToUser(userId, eventName, data)
+</code></pre>
+<p>This emits to the room <code>user:&lt;userId&gt;</code>, so every open tab of that user receives it. Today only the organizations module uses it.</p>
+<h2 id="5-lifecycle">5. Lifecycle<a class="headerlink" href="#5-lifecycle" title="Permanent link">¶</a></h2>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; Handshake: client connects
+    Handshake --&gt; Rejected: no token or bad token
+    Rejected --&gt; [*]: exception then disconnect
+    Handshake --&gt; Connected: token valid, joined user room
+    Connected --&gt; Connected: messages and events
+    Connected --&gt; [*]: client or server disconnect
+</div>
+<h2 id="6-message-reference">6. Message reference<a class="headerlink" href="#6-message-reference" title="Permanent link">¶</a></h2>
+<h3 id="61-client-server-messages">6.1 Client → server messages<a class="headerlink" href="#61-client-server-messages" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Payload</th>
+<th>Validation</th>
+<th>Reply</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ai.conversation.message</code></td>
+<td><code>{ requestId, conversationId, content }</code></td>
+<td><code>requestId</code> and <code>conversationId</code>: <code>[A-Za-z0-9_-]</code>, max 64. <code>content</code>: string, max 4,000.</td>
+<td><code>ai.conversation.message</code> to the sender</td>
+</tr>
+<tr>
+<td><code>code.run</code></td>
+<td><code>{ requestId, attemptUid, questionId, language, code, mode, stdin? }</code></td>
+<td><code>attemptUid</code>: UUID v4. <code>questionId</code>: int ≥ 1. <code>language</code>: one of the coding languages. <code>mode</code>: <code>samples</code> or <code>custom</code>. <code>code</code> and <code>stdin</code>: max 50,000 characters.</td>
+<td><code>code.run.*</code> events to the sender</td>
+</tr>
+</tbody>
+</table>
+<p>DTOs: <code>src/events/dto/conversation-message.dto.ts</code> and <code>src/assessments/attempts/code-run/run-code.dto.ts</code>.</p>
+<h3 id="62-server-client-events">6.2 Server → client events<a class="headerlink" href="#62-server-client-events" title="Permanent link">¶</a></h3>
+<p>This is the full list, found by searching every <code>emit</code> and <code>emitToUser</code> call in <code>src/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Event</th>
+<th>Payload</th>
+<th>Triggered by</th>
+<th>Sent to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>exception</code></td>
+<td><code>{ status: 'error', message, errors?, requestId?, retryAfterMs? }</code></td>
+<td>Bad handshake token, failed guard, failed validation, or any error thrown in a handler</td>
+<td>The one socket</td>
+</tr>
+<tr>
+<td><code>ai.conversation.message</code></td>
+<td><code>{ requestId, conversationId, userId, content, sentAt }</code></td>
+<td>Reply to the client's <code>ai.conversation.message</code> (<code>EventsGateway.handleAiConversationMessage</code>)</td>
+<td>The sending socket</td>
+</tr>
+<tr>
+<td><code>code.run.started</code></td>
+<td><code>{ requestId, mode, total }</code></td>
+<td><code>CodeRunService</code> accepted the run</td>
+<td>The sending socket</td>
+</tr>
+<tr>
+<td><code>code.run.case</code></td>
+<td><code>{ requestId, index, input, expectedOutput, passed, status, stdout, stderr, exitCode, timeMs, memoryKb, outputTruncated }</code></td>
+<td>One visible test case finished (samples mode only)</td>
+<td>The sending socket</td>
+</tr>
+<tr>
+<td><code>code.run.completed</code></td>
+<td><code>{ requestId, mode, passed?, total?, output? }</code> (samples: <code>passed</code>, <code>total</code>. custom: <code>output</code>)</td>
+<td>The run finished</td>
+<td>The sending socket</td>
+</tr>
+<tr>
+<td><code>code.run.failed</code></td>
+<td><code>{ requestId, reason, message }</code></td>
+<td>The runner failed mid-run (for example unavailable or busy). Results already sent still count.</td>
+<td>The sending socket</td>
+</tr>
+<tr>
+<td><code>org.invitations.import.settled</code></td>
+<td>Completed: <code>{ jobId, status: 'completed', invited, skipped, failed }</code> (counts). Failed: <code>{ jobId, status: 'failed', reason }</code></td>
+<td><code>OrganizationInvitationImportService.run</code> after a CSV import job finishes (<code>src/organizations/services/organization-invitation-import.service.ts</code>)</td>
+<td>Room <code>user:&lt;uploaderId&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>Code-run payload types are in <code>src/assessments/attempts/code-run/code-run-events.interface.ts</code>. The import event name is <code>INVITATION_IMPORT_SETTLED_EVENT</code> in <code>src/organizations/organizations.constants.ts</code>. See <a href="../organizations/">Organizations</a> for the import flow.</p>
+<h3 id="63-error-frames">6.3 Error frames<a class="headerlink" href="#63-error-frames" title="Permanent link">¶</a></h3>
+<p>All errors go out as the <code>exception</code> event. Two pieces shape them:</p>
+<ul>
+<li><strong><code>wsValidationPipe</code></strong> (<code>src/events/pipes/ws-validation.pipe.ts</code>): a <code>ValidationPipe</code> with <code>whitelist</code>, <code>forbidNonWhitelisted</code> and <code>transform</code>. Unknown fields are rejected. A failure becomes <code>{ status: 'error', message: 'Validation failed', errors: [...] }</code>.</li>
+<li><strong><code>WsExceptionFilter</code></strong> (<code>src/events/filters/ws-exception.filter.ts</code>): catches everything. It:<ul>
+<li>maps domain errors to HTTP exceptions with the shared <code>asHttpException</code> mapper, then turns them into <code>{ status: 'error', message }</code>;</li>
+<li>turns class-validator message arrays into <code>message: 'Validation failed'</code> plus <code>errors</code>;</li>
+<li>copies <code>retryAfterMs</code> when present (for example the code-run cooldown);</li>
+<li>adds <code>requestId</code> from the raw incoming frame, but only if it passes the same pattern and length rules as the DTO. This is because the frame may have failed validation.</li>
+</ul>
+</li>
+</ul>
+<p>The socket stays open after an error frame. Only a bad handshake disconnects.</p>
+<h2 id="7-endpoints-summary">7. Endpoints summary<a class="headerlink" href="#7-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>There are no REST endpoints. The Socket.IO server is mounted on the same HTTP server at path <code>/socket.io</code>. CORS is open to every origin (<code>origin: '*'</code>). Security relies on the JWT, not on origin checks.</p>
+<h2 id="8-async-events">8. Async events<a class="headerlink" href="#8-async-events" title="Permanent link">¶</a></h2>
+<p>The gateway does not consume RabbitMQ. A RabbitMQ consumer can push to a user through <code>emitToUser</code>. The invitation import consumer does this.</p>
+<p>Background jobs for AI generation, evaluation and roadmaps do <strong>not</strong> emit socket events. Clients poll <code>GET /v1/jobs/:id</code> (see <a href="../jobs-and-schedulers/">Jobs and Schedulers</a>).</p>
+<h2 id="9-scaling-notes">9. Scaling notes<a class="headerlink" href="#9-scaling-notes" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>No Redis adapter.</strong> <code>main.ts</code> uses the default in-memory Socket.IO adapter. A room exists only inside one Node process.</li>
+<li><strong>What this means for <code>emitToUser</code>.</strong> With more than one app instance, the push only reaches sockets connected to the instance that emits. For the invitation import, the emitting instance is the one running the RabbitMQ consumer (<code>CONSUMER=true</code>), which may not be the instance holding the user's socket. Clients should treat the push as a hint and still poll the job.</li>
+<li><strong>Request and reply handlers are fine.</strong> <code>ai.conversation.message</code> and <code>code.run</code> reply on the same socket, so they work on any number of instances. A load balancer still needs sticky sessions if clients can fall back to HTTP long-polling.</li>
+<li><strong>Code-run limits are per instance.</strong> The "one run at a time" and 5-second cooldown rules are kept in memory in <code>CodeRunService</code>. A user connected to two instances could get around them.</li>
+<li>To scale out properly, add <code>@socket.io/redis-adapter</code> (a new package, which needs team approval) and a custom <code>IoAdapter</code> in <code>main.ts</code>.</li>
+</ul>
+<h2 id="10-where-the-code-lives">10. Where the code lives<a class="headerlink" href="#10-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/events/events.gateway.ts</code></td>
+<td>Gateway: connect, disconnect, <code>ai.conversation.message</code>, <code>code.run</code>, <code>emitToUser</code></td>
+</tr>
+<tr>
+<td><code>src/events/events.service.ts</code></td>
+<td>Token extraction and JWT verification for the handshake</td>
+</tr>
+<tr>
+<td><code>src/events/connection-manager.service.ts</code></td>
+<td>In-memory map of user → sockets</td>
+</tr>
+<tr>
+<td><code>src/events/conversation-router.service.ts</code></td>
+<td>Routes chat messages to the AI assistant</td>
+</tr>
+<tr>
+<td><code>src/events/guards/WsJwtGuard.guard.ts</code></td>
+<td>Per-message "is this socket authenticated" check</td>
+</tr>
+<tr>
+<td><code>src/events/pipes/ws-validation.pipe.ts</code></td>
+<td>Validation pipe for message bodies</td>
+</tr>
+<tr>
+<td><code>src/events/filters/ws-exception.filter.ts</code></td>
+<td>Turns any error into an <code>exception</code> frame</td>
+</tr>
+<tr>
+<td><code>src/events/interfaces/authenticated-socket.interface.ts</code></td>
+<td><code>AuthenticatedSocket</code> type and <code>userRoom()</code> helper</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/code-run/</code></td>
+<td>Code-run service, DTO and event types</td>
+</tr>
+</tbody>
+</table>
+<h2 id="11-known-gaps-and-todos">11. Known gaps and TODOs<a class="headerlink" href="#11-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>No account-status check at handshake.</strong> A deactivated user with a still-valid access token can open a socket. <code>EventService</code> injects <code>UsersService</code> but never uses it.</li>
+<li><strong>Token is never re-checked.</strong> A socket opened with a token stays authenticated until it disconnects.</li>
+<li><strong>Single-instance only.</strong> There is no Redis adapter, so <code>emitToUser</code> does not work across instances (see section 9).</li>
+<li><strong>Only one push event.</strong> Generation, evaluation and roadmap jobs could push completion events instead of being polled, but they do not.</li>
+<li><strong><code>ConnectionManager</code> is mostly unused.</strong> It tracks sockets, but nothing reads <code>isOnline</code> or <code>get</code>.</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

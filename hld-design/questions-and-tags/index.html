@@ -1,0 +1,1427 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Question types and their content, the question bank versus per-assessment snapshots, marking, and tags" name="description"/>
+<link href="../assessments/" rel="prev"/>
+<link href="../assessment-generation/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Questions &amp; Tags - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#questions-tags">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Questions &amp; Tags
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-question-types">
+<span class="md-ellipsis">
+      
+        4. Question types
+      
+    </span>
+</a>
+<nav aria-label="4. Question types" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-mcq-mcqquestioncontent">
+<span class="md-ellipsis">
+      
+        4.1 MCQ (McqQuestionContent)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-coding-codingquestioncontent">
+<span class="md-ellipsis">
+      
+        4.2 Coding (CodingQuestionContent)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-descriptive-descriptivequestioncontent">
+<span class="md-ellipsis">
+      
+        4.3 Descriptive (DescriptiveQuestionContent)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-question-bank-vs-snapshots">
+<span class="md-ellipsis">
+      
+        5. Question bank vs snapshots
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-marking-per-question">
+<span class="md-ellipsis">
+      
+        6. Marking per question
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-tags">
+<span class="md-ellipsis">
+      
+        7. Tags
+      
+    </span>
+</a>
+<nav aria-label="7. Tags" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-tags-are-for">
+<span class="md-ellipsis">
+      
+        7.1 What tags are for
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-how-tags-are-assigned">
+<span class="md-ellipsis">
+      
+        7.2 How tags are assigned
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-tag-rules">
+<span class="md-ellipsis">
+      
+        7.3 Tag rules
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-business-rules-and-validation">
+<span class="md-ellipsis">
+      
+        8. Business rules and validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-endpoints-summary">
+<span class="md-ellipsis">
+      
+        9. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-events">
+<span class="md-ellipsis">
+      
+        10. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-question-types">
+<span class="md-ellipsis">
+      
+        4. Question types
+      
+    </span>
+</a>
+<nav aria-label="4. Question types" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#41-mcq-mcqquestioncontent">
+<span class="md-ellipsis">
+      
+        4.1 MCQ (McqQuestionContent)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#42-coding-codingquestioncontent">
+<span class="md-ellipsis">
+      
+        4.2 Coding (CodingQuestionContent)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#43-descriptive-descriptivequestioncontent">
+<span class="md-ellipsis">
+      
+        4.3 Descriptive (DescriptiveQuestionContent)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-question-bank-vs-snapshots">
+<span class="md-ellipsis">
+      
+        5. Question bank vs snapshots
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-marking-per-question">
+<span class="md-ellipsis">
+      
+        6. Marking per question
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-tags">
+<span class="md-ellipsis">
+      
+        7. Tags
+      
+    </span>
+</a>
+<nav aria-label="7. Tags" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-what-tags-are-for">
+<span class="md-ellipsis">
+      
+        7.1 What tags are for
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-how-tags-are-assigned">
+<span class="md-ellipsis">
+      
+        7.2 How tags are assigned
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-tag-rules">
+<span class="md-ellipsis">
+      
+        7.3 Tag rules
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-business-rules-and-validation">
+<span class="md-ellipsis">
+      
+        8. Business rules and validation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-endpoints-summary">
+<span class="md-ellipsis">
+      
+        9. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-async-events">
+<span class="md-ellipsis">
+      
+        10. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="questions-tags">Questions &amp; Tags<a class="headerlink" href="#questions-tags" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Questions</strong> (<code>src/assessments/questions/</code>) hold the content people answer: the question bank, the three question types, and the code that saves AI-generated questions into an assessment.</li>
+<li><strong>Tags</strong> (<code>src/assessments/tags/</code>) are simple labels. Today they are only used to label <strong>assessment prompts</strong> in the prompt library.</li>
+</ul>
+<p>How an assessment is built from questions is on <a href="../assessments/">Assessments</a>. How questions are generated by AI is on <a href="../assessment-generation/">AI Assessment Generation</a>. How answers are graded is on <a href="../evaluation/">Evaluation</a>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Question bank</strong></td>
+<td>The <code>questions</code> table plus one details table per type. Every question ever created or generated lives here.</td>
+</tr>
+<tr>
+<td><strong>Snapshot</strong></td>
+<td>A copy of a question placed in one assessment: a row in <code>assessments_questions</code>. It copies the text and the type-specific content as JSON (<code>content</code>).</td>
+</tr>
+<tr>
+<td><strong>Question type</strong></td>
+<td><code>mcq</code>, <code>coding</code> or <code>descriptive</code> (<code>QuestionType</code> in <code>src/common/enums/assessments.enums.ts</code>). Stored as <code>varchar</code>, so a new type needs no Postgres enum migration.</td>
+</tr>
+<tr>
+<td><strong>Topics</strong></td>
+<td>Weighted labels on a question (<code>questions.meta.topics</code>), e.g. <code>[{ name: "mvcc", weight: 0.6 }, ...]</code>. Weights sum to 1. Copied onto the snapshot. Used by analytics.</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>One idea a good descriptive answer must contain, with a weight. The answer key for descriptive questions.</td>
+</tr>
+<tr>
+<td><strong>Test case</strong></td>
+<td>An input and expected output for a coding question. Hidden cases are used for grading but never shown.</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>A label with a unique <code>name</code> and <code>slug</code>, and an <code>isActive</code> flag.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>See the <a href="../../erd/">ERD</a> for full columns. In short:</p>
+<ul>
+<li><code>questions</code>: <code>type</code>, <code>question_text</code>, <code>meta</code> (JSON, topics), <code>created_by</code>, soft delete.</li>
+<li><code>mcq_question_details</code>, <code>coding_question_details</code>, <code>descriptive_question_details</code>: one row per question, sharing the question's primary key (<code>question_id</code>). Only the table matching <code>questions.type</code> has a row.</li>
+<li><code>assessments_questions</code>: the snapshot. <code>type</code>, <code>question_text</code>, <code>content</code> (JSON), <code>topics</code>, <code>correct_marks</code>, <code>incorrect_marks</code>, <code>order_index</code>, <code>section_id</code>. Unique on (<code>assessment_id</code>, <code>question_id</code>).</li>
+<li><code>tags</code>, and <code>assessment_prompt_tags</code> (the join to <code>assessment_prompts</code>).</li>
+</ul>
+<div class="mermaid">flowchart LR
+    Q["questions"] --&gt; MCQ["mcq_question_details"]
+    Q --&gt; COD["coding_question_details"]
+    Q --&gt; DES["descriptive_question_details"]
+    Q --&gt;|"copied into"| AQ["assessments_questions - snapshot"]
+    AQ --&gt; SEC["assessment_sections"]
+    TAG["tags"] --&gt; APT["assessment_prompt_tags"]
+    APT --&gt; AP["assessment_prompts"]
+</div>
+<h2 id="4-question-types">4. Question types<a class="headerlink" href="#4-question-types" title="Permanent link">¶</a></h2>
+<p>The interfaces live in <code>src/assessments/questions/interfaces/question-content.interface.ts</code>. The snapshot's <code>content</code> column holds exactly one of these shapes, picked by <code>type</code>.</p>
+<h3 id="41-mcq-mcqquestioncontent">4.1 MCQ (<code>McqQuestionContent</code>)<a class="headerlink" href="#41-mcq-mcqquestioncontent" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>options</code></td>
+<td>2–6 options, each <code>{ id, text }</code>. <code>id</code> is an integer ≥ 1, unique within the question. Option text up to 500 chars.</td>
+</tr>
+<tr>
+<td><code>correctOptionId</code></td>
+<td>Must match one option's <code>id</code>. Exactly one correct answer. There is no multi-select type.</td>
+</tr>
+<tr>
+<td><code>explanation</code></td>
+<td>Optional, up to 5000 chars. AI-generated MCQs have none.</td>
+</tr>
+</tbody>
+</table>
+<p>Question text: 10–1000 chars.</p>
+<h3 id="42-coding-codingquestioncontent">4.2 Coding (<code>CodingQuestionContent</code>)<a class="headerlink" href="#42-coding-codingquestioncontent" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inputFormat</code>, <code>outputFormat</code>, <code>constraints</code></td>
+<td>Optional text, up to 5000 chars each.</td>
+</tr>
+<tr>
+<td><code>starterCode</code></td>
+<td>Object keyed by language, e.g. <code>{ python: "...", java: "...", cpp: "..." }</code>. Each up to 20,000 chars.</td>
+</tr>
+<tr>
+<td><code>supportedLanguages</code></td>
+<td>Always the keys of <code>starterCode</code>. Allowed languages: <code>python</code>, <code>java</code>, <code>cpp</code> (<code>CODING_LANGUAGES</code> in <code>src/ai/interfaces/generated-coding-question.interface.ts</code>).</td>
+</tr>
+<tr>
+<td><code>timeLimitMs</code></td>
+<td>100–10,000 on edit. Generated problems get 2000.</td>
+</tr>
+<tr>
+<td><code>memoryLimitMb</code></td>
+<td>16–1024 on edit. Generated problems get 256.</td>
+</tr>
+<tr>
+<td><code>checkerType</code></td>
+<td>Only <code>exact</code> exists today (output compared line by line, ignoring trailing whitespace).</td>
+</tr>
+<tr>
+<td><code>testCases</code></td>
+<td>1–50 cases of <code>{ input, expectedOutput, isHidden }</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The problem title is put at the top of <code>questionText</code> (<code>"&lt;title&gt;\n\n&lt;statement&gt;"</code>), because the content has no title field. The AI's reference solution is <strong>dropped</strong> before saving, so it can never reach a candidate. Defaults live in <code>src/assessments/questions/coding-question.defaults.ts</code>.</p>
+<h3 id="43-descriptive-descriptivequestioncontent">4.3 Descriptive (<code>DescriptiveQuestionContent</code>)<a class="headerlink" href="#43-descriptive-descriptivequestioncontent" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>checkpoints</code></td>
+<td>List of <code>{ id, description, weightage }</code>. IDs unique. Weightages are positive integers that <strong>sum to exactly 100</strong>.</td>
+</tr>
+<tr>
+<td><code>maxWords</code></td>
+<td>Suggested answer length shown to the candidate. Not enforced when grading.</td>
+</tr>
+</tbody>
+</table>
+<p>Rules in <code>src/assessments/domain/descriptive-invariants.ts</code>:</p>
+<ul>
+<li><code>assertCheckpointWeights</code> enforces the rules above. It runs when generated descriptive questions are saved.</li>
+<li><code>normaliseWeightages</code> rescales whatever weights the AI wrote to integers that sum to 100. Leftover points go to the largest remainders, and every checkpoint keeps at least 1.</li>
+<li><code>scoreCheckpoints</code> grades an answer: each completed checkpoint earns its share of the question's marks. An answer counts as <strong>correct</strong> at 60% or more (<code>DESCRIPTIVE_CORRECT_THRESHOLD_PERCENT</code>).</li>
+</ul>
+<h2 id="5-question-bank-vs-snapshots">5. Question bank vs snapshots<a class="headerlink" href="#5-question-bank-vs-snapshots" title="Permanent link">¶</a></h2>
+<p><strong>Why snapshots?</strong> An assessment must not change under its participants. So when a question is placed into an assessment, its text and content are <strong>copied</strong> into <code>assessments_questions</code>. Later edits to the bank question do not affect assessments that already hold it.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Bank (<code>questions</code> + details)</th>
+<th>Snapshot (<code>assessments_questions</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Created by</td>
+<td>Admin create, admin generate, or AI section generation</td>
+<td>Manual add (<code>POST /v1/assessments/:id/questions</code>) or AI section generation</td>
+</tr>
+<tr>
+<td>Edited by</td>
+<td>Admins (<code>/v1/admin/questions/:id</code>)</td>
+<td>The assessment's manager (<code>PUT /v1/assessments/:id/questions/:assessmentQuestionId</code>), MCQ only, before publish</td>
+</tr>
+<tr>
+<td>Carries marks</td>
+<td>No</td>
+<td>Yes (<code>correct_marks</code>, <code>incorrect_marks</code>)</td>
+</tr>
+<tr>
+<td>Used for attempts and grading</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Every AI-generated question is saved <strong>twice</strong>: once in the bank (owned by the user who asked) and once as the snapshot. Both are written in the same transaction by <code>SectionQuestionWriter</code> (<code>src/assessments/questions/section-question-writer.ts</code>):</p>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant W as SectionGenerationWorker
+    participant SQW as SectionQuestionWriter
+    participant DB as PostgreSQL
+
+    W-&gt;&gt;DB: BEGIN
+    W-&gt;&gt;SQW: append(section, drafts, userId)
+    SQW-&gt;&gt;SQW: every draft must match the section type
+    SQW-&gt;&gt;DB: INSERT questions - one per draft
+    SQW-&gt;&gt;DB: INSERT type details rows - checks checkpoint weights for descriptive
+    SQW-&gt;&gt;DB: count existing snapshots in the section
+    SQW-&gt;&gt;DB: INSERT assessments_questions - section marks, next order_index
+    SQW-&gt;&gt;DB: increment assessments.curr_total_questions
+    W-&gt;&gt;DB: mark section job completed
+    W-&gt;&gt;DB: COMMIT
+</div>
+<p>If anything fails, nothing from that section is saved.</p>
+<h2 id="6-marking-per-question">6. Marking per question<a class="headerlink" href="#6-marking-per-question" title="Permanent link">¶</a></h2>
+<ul>
+<li>Each <strong>section</strong> has <code>correct_marks</code> and <code>incorrect_marks</code> (0–999.99). <code>incorrect_marks</code> is a positive number that is <strong>deducted</strong> for a wrong answer.</li>
+<li>Each <strong>snapshot</strong> copies those marks when it is created. Scoring reads the snapshot's marks.</li>
+<li>Manual add (<code>POST /:id/questions</code>) takes marks <strong>per item</strong> from the request instead.</li>
+<li>Editing an assessment's marks (<code>PATCH /v1/assessments/:id</code>) rewrites the first section's marks and the marks on <strong>every</strong> snapshot of that assessment.</li>
+<li>AI auto-mode defaults (<code>AUTO_MODE_DEFAULT_MARKS</code> in <code>generation/generation.constants.ts</code>): MCQ +1/0, coding +10/0, descriptive +5/0.</li>
+<li>Descriptive answers can earn partial marks by checkpoint. MCQ is all or nothing. Coding grading is covered in <a href="../evaluation/">Evaluation</a> and <a href="../code-execution/">Code Execution</a>.</li>
+</ul>
+<h2 id="7-tags">7. Tags<a class="headerlink" href="#7-tags" title="Permanent link">¶</a></h2>
+<h3 id="71-what-tags-are-for">7.1 What tags are for<a class="headerlink" href="#71-what-tags-are-for" title="Permanent link">¶</a></h3>
+<p>Tags label <strong>assessment prompts</strong> so the public prompt library can be filtered (<code>GET /v1/assessment-prompts/public?tags=...</code>). They are linked through <code>assessment_prompt_tags</code>. Tags are <strong>not</strong> attached to questions or assessments today.</p>
+<h3 id="72-how-tags-are-assigned">7.2 How tags are assigned<a class="headerlink" href="#72-how-tags-are-assigned" title="Permanent link">¶</a></h3>
+<ol>
+<li>A platform admin creates tags (<code>POST /v1/admin/tags</code>). <code>slug</code> is derived from <code>name</code> unless given (lowercase, non-alphanumerics become <code>-</code>).</li>
+<li>A user creating or replacing an assessment prompt sends <code>tagSlugs</code> (up to 50, unique).</li>
+<li><code>AssessmentPromptsService.resolveTags</code> looks the slugs up. Any unknown slug gives a 404.</li>
+<li>On <code>PUT</code>, removed links are soft-deleted and new links are inserted. A partial unique index keeps one live link per (prompt, tag).</li>
+</ol>
+<h3 id="73-tag-rules">7.3 Tag rules<a class="headerlink" href="#73-tag-rules" title="Permanent link">¶</a></h3>
+<ol>
+<li><code>name</code> and <code>slug</code> must be unique. The service checks first and returns 409.</li>
+<li>Changing <code>name</code> regenerates the slug, unless a slug is sent.</li>
+<li>Delete is by <strong>slug</strong> and is a soft delete.</li>
+<li><code>isActive</code> is a flag only. Inactive tags still show in lists unless the caller filters with <code>is_active</code>, and can still be assigned to prompts.</li>
+</ol>
+<h2 id="8-business-rules-and-validation">8. Business rules and validation<a class="headerlink" href="#8-business-rules-and-validation" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Admin create makes MCQs only.</strong> <code>POST /v1/admin/questions</code> always creates <code>type = mcq</code>. Coding and descriptive bank questions come only from AI generation.</li>
+<li><strong>Option checks.</strong> <code>HasUniqueOptionIds</code> and <code>IsCorrectOptionPresent</code> (custom validators in <code>dto/create-question.dto.ts</code>) check that option IDs are unique and that <code>correctOptionId</code> is one of them. On partial update the pair is re-checked against the final state in the service.</li>
+<li><strong>Edit refuses the wrong type's fields.</strong> Sending <code>coding</code> for an MCQ, or <code>options</code> for a coding question, is a 400 instead of being silently ignored.</li>
+<li><strong>MCQ text limit is 1000, coding text limit is 10,000</strong> (<code>QUESTION_TEXT_MAX_LENGTH</code>).</li>
+<li><strong>Coding test cases</strong> need at least one visible case, and no two cases may share the same input.</li>
+<li><strong>Starter code</strong> may only use known languages, each non-empty and up to 20,000 chars. The given languages become <code>supportedLanguages</code>, in canonical order.</li>
+<li><strong>Descriptive questions cannot be edited</strong> through the admin API yet (400).</li>
+<li><strong>Bank edits never touch snapshots.</strong> Fixing a bank question does not fix assessments that already hold it.</li>
+<li><strong>Delete is soft.</strong> Snapshots keep pointing at the soft-deleted question.</li>
+<li><strong>Testing environment.</strong> When <code>NODE_ENV=testing</code> no LLM runs: MCQ sections copy random bank MCQs, coding sections use a fixed "Sum of Two Integers" problem, descriptive sections use a fixed indexing question (<code>coding-question.defaults.ts</code>, <code>descriptive-question.defaults.ts</code>).</li>
+</ol>
+<h2 id="9-endpoints-summary">9. Endpoints summary<a class="headerlink" href="#9-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>Full reference: <a href="../../api-design/v1/">API v1</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/questions</code></td>
+<td><code>questions:create</code></td>
+<td>Create an MCQ in the bank</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/questions/generate</code></td>
+<td><code>questions:create</code></td>
+<td>Generate MCQs from a prompt (count 1–50) into the bank, inline</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/questions</code></td>
+<td><code>questions:read</code></td>
+<td>List with <code>search</code>, <code>created_by</code>, paging</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td><code>questions:read</code></td>
+<td>One question with its details</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td><code>questions:update</code></td>
+<td>Partial update (MCQ or coding)</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/admin/questions/:id/starter-code</code></td>
+<td><code>questions:update</code></td>
+<td>Replace coding starter code</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/questions/:id</code></td>
+<td><code>questions:delete</code></td>
+<td>Soft delete</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/tags</code>, <code>/v1/tags/:id</code></td>
+<td>logged in</td>
+<td>List and read tags</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/tags</code></td>
+<td><code>tags:create</code></td>
+<td>Create tag</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/tags</code>, <code>/v1/admin/tags/:id</code></td>
+<td><code>tags:read</code></td>
+<td>Admin list and read</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/v1/admin/tags/:id</code></td>
+<td><code>tags:update</code></td>
+<td>Update tag</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/admin/tags/:slug</code></td>
+<td><code>tags:delete</code></td>
+<td>Soft delete by slug</td>
+</tr>
+</tbody>
+</table>
+<p>These are platform permissions, checked by <code>@Permissions(...)</code> (see <a href="../rbac/">RBAC</a>).</p>
+<p>The admin generate endpoint runs the LLM <strong>inside the HTTP request</strong> (no job). It is audited in <code>llm_audit</code> with job type <code>GENERATE_QUESTIONS</code>. It uses the model the admin's plan assigns. See <a href="../ai/">AI Layer</a>.</p>
+<h2 id="10-async-events">10. Async events<a class="headerlink" href="#10-async-events" title="Permanent link">¶</a></h2>
+<p>None. Question and tag routes are synchronous. Questions created by the generation pipeline are written by the RabbitMQ section workers; see <a href="../assessment-generation/">AI Assessment Generation</a>.</p>
+<h2 id="11-where-the-code-lives">11. Where the code lives<a class="headerlink" href="#11-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/assessments/questions/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin bank CRUD and inline generation</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/questions.service.ts</code></td>
+<td>Generators per section type, bank helpers (<code>createBulk</code>, <code>findRandom</code>)</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/section-question-writer.ts</code></td>
+<td>Saves generated drafts to bank + snapshot</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/interfaces/</code></td>
+<td>Content, draft and meta interfaces</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/dto/</code></td>
+<td>Request/response DTOs and option validators</td>
+</tr>
+<tr>
+<td><code>src/assessments/questions/coding-question.defaults.ts</code>, <code>descriptive-question.defaults.ts</code></td>
+<td>Defaults and testing stand-ins</td>
+</tr>
+<tr>
+<td><code>src/assessments/domain/descriptive-invariants.ts</code></td>
+<td>Checkpoint rules and scoring</td>
+</tr>
+<tr>
+<td><code>src/common/entities/question.entity.ts</code> and <code>*-question-details.entity.ts</code></td>
+<td>Bank entities</td>
+</tr>
+<tr>
+<td><code>src/common/entities/assessment-question.entity.ts</code></td>
+<td>Snapshot entity</td>
+</tr>
+<tr>
+<td><code>src/assessments/tags/</code></td>
+<td>Tags module, public and admin controllers</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-known-gaps-and-todos">12. Known gaps and TODOs<a class="headerlink" href="#12-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Tag uniqueness and soft delete clash.</strong> <code>UQ_tags_name</code> and <code>UQ_tags_slug</code> are plain unique indexes (<code>src/common/entities/tag.entity.ts</code>, migration <code>20260723000000-create-tags-table.ts</code>). The service's duplicate check ignores soft-deleted rows. Re-creating a tag with the name of a deleted one passes the check and then hits the DB unique index.</li>
+<li><strong>Inactive tags are not enforced.</strong> They can still be assigned to prompts and show in default lists.</li>
+<li><strong>No user-facing bank.</strong> Only platform admins can list bank questions, yet manual assessment building needs bank question IDs.</li>
+<li><strong>No admin create for coding or descriptive questions,</strong> and no edit for descriptive questions.</li>
+<li><strong>Old flow saves bank rows outside the snapshot transaction.</strong> <code>QuestionsService.generateFromPrompt</code> saves bank questions first, and the older <code>completeGeneration</code> writes snapshots in a second transaction, so a failure in between leaves orphan bank rows.</li>
+<li><strong>A stray <code>console.log</code></strong> in <code>QuestionsService.generateFromPrompt</code> (<code>questions.service.ts:59</code>) bypasses the logger.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

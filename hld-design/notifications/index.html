@@ -1,0 +1,1347 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How TestFlow sends email — the SMTP transport, the code-based template and layout system, admin previews, every email the system sends, and how failures are handled." name="description"/>
+<link href="../jobs-and-schedulers/" rel="prev"/>
+<link href="../platform-services/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Notifications (Email) - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#notifications-email">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Notifications (Email)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data">
+<span class="md-ellipsis">
+      
+        3. Data
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-configuration">
+<span class="md-ellipsis">
+      
+        4. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-the-template-system">
+<span class="md-ellipsis">
+      
+        5. The template system
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-every-email-the-system-sends">
+<span class="md-ellipsis">
+      
+        6. Every email the system sends
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-flows">
+<span class="md-ellipsis">
+      
+        7. Flows
+      
+    </span>
+</a>
+<nav aria-label="7. Flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-fire-and-forget-send-most-emails">
+<span class="md-ellipsis">
+      
+        7.1 Fire-and-forget send (most emails)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-awaited-batch-send-organization-invitations">
+<span class="md-ellipsis">
+      
+        7.2 Awaited batch send (organization invitations)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-newsletter-batches">
+<span class="md-ellipsis">
+      
+        7.3 Newsletter batches
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-sync-vs-queued-sending">
+<span class="md-ellipsis">
+      
+        8. Sync vs queued sending
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-failure-handling">
+<span class="md-ellipsis">
+      
+        9. Failure handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-endpoints-summary">
+<span class="md-ellipsis">
+      
+        10. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-async-events">
+<span class="md-ellipsis">
+      
+        11. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data">
+<span class="md-ellipsis">
+      
+        3. Data
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-configuration">
+<span class="md-ellipsis">
+      
+        4. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-the-template-system">
+<span class="md-ellipsis">
+      
+        5. The template system
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-every-email-the-system-sends">
+<span class="md-ellipsis">
+      
+        6. Every email the system sends
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-flows">
+<span class="md-ellipsis">
+      
+        7. Flows
+      
+    </span>
+</a>
+<nav aria-label="7. Flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#71-fire-and-forget-send-most-emails">
+<span class="md-ellipsis">
+      
+        7.1 Fire-and-forget send (most emails)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#72-awaited-batch-send-organization-invitations">
+<span class="md-ellipsis">
+      
+        7.2 Awaited batch send (organization invitations)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#73-newsletter-batches">
+<span class="md-ellipsis">
+      
+        7.3 Newsletter batches
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-sync-vs-queued-sending">
+<span class="md-ellipsis">
+      
+        8. Sync vs queued sending
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-failure-handling">
+<span class="md-ellipsis">
+      
+        9. Failure handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-endpoints-summary">
+<span class="md-ellipsis">
+      
+        10. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-async-events">
+<span class="md-ellipsis">
+      
+        11. Async events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        12. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#13-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        13. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="notifications-email">Notifications (Email)<a class="headerlink" href="#notifications-email" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>The notifications module sends every email the platform sends. Today email is the only channel. There is no SMS, push or in-app inbox. (For live browser updates, see <a href="../realtime-events/">Realtime Events</a>.)</p>
+<p>The module has three jobs:</p>
+<ol>
+<li><strong>Send</strong> email through SMTP (<code>EmailService</code>).</li>
+<li><strong>Render</strong> emails from typed, code-based templates that share one layout.</li>
+<li><strong>Preview</strong> those templates for admins, without sending anything (<code>EmailPreviewService</code> and the admin controller).</li>
+</ol>
+<p>The emails carry the product brand <strong>RealPrep</strong> in subjects, header and footer.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transport</td>
+<td>The SMTP connection made with <code>nodemailer</code>. One is created when the app starts.</td>
+</tr>
+<tr>
+<td>Template</td>
+<td>A TypeScript function such as <code>buildVerificationEmail(data)</code> that returns <code>{ subject, html, text }</code>. Templates are <strong>code</strong>, not database rows.</td>
+</tr>
+<tr>
+<td>Content</td>
+<td>What a template produces before the layout is added: subject, preheader, category, footnote, a list of blocks, and plain-text lines.</td>
+</tr>
+<tr>
+<td>Block</td>
+<td>A reusable body piece from <code>email-blocks.ts</code>: <code>intro</code>, <code>paragraph</code>, <code>primaryAction</code> (button), <code>divider</code>, <code>linkFallback</code>, <code>callout</code>, <code>steps</code>, <code>detailPanel</code>, <code>prose</code>.</td>
+</tr>
+<tr>
+<td>Layout</td>
+<td><code>renderEmail()</code> wraps content in the shared page, header (wordmark plus category) and footer, for both HTML and plain text.</td>
+</tr>
+<tr>
+<td>Theme</td>
+<td><code>email-theme.ts</code> copies the frontend design tokens as literal values, because CSS variables do not work in most mail clients.</td>
+</tr>
+<tr>
+<td>Fire-and-forget</td>
+<td>The caller starts the send but does not wait for it. A failure is logged and never fails the user's request.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data">3. Data<a class="headerlink" href="#3-data" title="Permanent link">¶</a></h2>
+<p>The module has <strong>no tables of its own</strong>. Templates live in code under <code>src/notifications/email/templates/</code>. There are no database-stored email templates. The "email templates" admin API only lists and previews the code templates.</p>
+<p>Related data owned by other modules:</p>
+<ul>
+<li><code>users.is_newsletter_subscribe</code> decides who gets newsletters.</li>
+<li><code>users.last_verification_email_sent_at</code> throttles verification resends.</li>
+<li>The <code>newsletters</code> table holds newsletter content and delivery counts (see <a href="../platform-services/#newsletters">Platform Services</a>).</li>
+</ul>
+<p>See <a href="../../erd/">ERD</a>.</p>
+<h2 id="4-configuration">4. Configuration<a class="headerlink" href="#4-configuration" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Required</th>
+<th>Default</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SMTP_HOST</code></td>
+<td>Yes</td>
+<td>–</td>
+<td>SMTP server</td>
+</tr>
+<tr>
+<td><code>SMTP_PORT</code></td>
+<td>No</td>
+<td><code>587</code></td>
+<td>SMTP port</td>
+</tr>
+<tr>
+<td><code>SMTP_SECURE</code></td>
+<td>No</td>
+<td><code>false</code></td>
+<td><code>true</code> for implicit TLS (port 465)</td>
+</tr>
+<tr>
+<td><code>SMTP_USER</code> / <code>SMTP_PASSWORD</code></td>
+<td>Yes</td>
+<td>–</td>
+<td>SMTP login</td>
+</tr>
+<tr>
+<td><code>EMAIL_FROM</code></td>
+<td>Yes</td>
+<td>–</td>
+<td>The <code>From</code> address on every email</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>No</td>
+<td><code>https://app.testflow.com</code></td>
+<td>Base for every link in emails</td>
+</tr>
+</tbody>
+</table>
+<p>The provider is whatever SMTP server these point to. No provider-specific SDK is used. If a required value is missing, the app fails at startup because <code>EmailService</code> uses <code>getOrThrow</code>.</p>
+<h2 id="5-the-template-system">5. The template system<a class="headerlink" href="#5-the-template-system" title="Permanent link">¶</a></h2>
+<div class="mermaid">flowchart LR
+    Caller["Caller, for example AuthService"] --&gt; ES["EmailService.sendXxxEmail"]
+    ES --&gt; Build["buildXxxEmail data"]
+    Build --&gt; Content["EmailContent: subject, blocks, textLines"]
+    Content --&gt; Layout["renderEmail: header, body, footer"]
+    Layout --&gt; Rendered["subject, html, text"]
+    Rendered --&gt; Send["EmailService.sendEmail"]
+    Send --&gt; SMTP["nodemailer SMTP transport"]
+</div>
+<p>How to read the files:</p>
+<ul>
+<li><code>templates/&lt;name&gt;-email.template.ts</code>: one file per email. Each exports a <code>build&lt;Name&gt;EmailContent</code> (content only) and a <code>build&lt;Name&gt;Email</code> (content plus layout).</li>
+<li><code>templates/email-blocks.ts</code>: body building blocks. Everything is table-based HTML with inline styles, because that is the only thing every mail client renders the same way. User-supplied text is passed through <code>escapeHtml</code>.</li>
+<li><code>templates/layout/</code>: <code>email-layout.ts</code> (<code>renderEmail</code>), <code>email-header.ts</code>, <code>email-footer.ts</code>, <code>email-styles.ts</code> (one <code>&lt;style&gt;</code> block for dark mode and small screens) and <code>email-layout.constants.ts</code>.</li>
+<li><code>templates/email-theme.ts</code>: colours, fonts and spacing.</li>
+<li><code>email-template-previews.ts</code>: sample data for each template, used only by the preview API.</li>
+</ul>
+<p><strong>To add a new email:</strong></p>
+<ol>
+<li>Create <code>templates/&lt;name&gt;-email.template.ts</code> using blocks and <code>renderEmail</code>.</li>
+<li>Add a <code>send&lt;Name&gt;Email</code> method to <code>EmailService</code> that builds the links and calls <code>sendEmail</code>.</li>
+<li>Add an entry to <code>EMAIL_TEMPLATE_PREVIEWS</code> so admins can preview it.</li>
+</ol>
+<h2 id="6-every-email-the-system-sends">6. Every email the system sends<a class="headerlink" href="#6-every-email-the-system-sends" title="Permanent link">¶</a></h2>
+<p>Found by searching every caller of <code>EmailService</code> in <code>src/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Email</th>
+<th>Trigger</th>
+<th>Template</th>
+<th>Recipient</th>
+<th>Sync or async</th>
+<th>On failure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Email verification</td>
+<td>Signup (<code>AuthService.signup</code>). Also on login with correct credentials while unverified, if the last link has expired (<code>resendVerificationEmailIfDue</code>).</td>
+<td><code>verification-email.template.ts</code>. Link: <code>FRONTEND_URL/verify-email?token=...</code></td>
+<td>The new user</td>
+<td>Fire-and-forget</td>
+<td>Logged. The send time is still recorded, so a broken mailer is not retried on every login.</td>
+</tr>
+<tr>
+<td>Welcome</td>
+<td>Email verified for the first time (<code>AuthService.verifyEmail</code>)</td>
+<td><code>welcome-email.template.ts</code>. Link: <code>FRONTEND_URL</code></td>
+<td>The user</td>
+<td>Fire-and-forget</td>
+<td>Logged</td>
+</tr>
+<tr>
+<td>Welcome with credentials</td>
+<td>First Google sign-in that creates a new account (<code>AuthService.googleLogin</code>). Includes the generated username and password.</td>
+<td><code>welcome-email.template.ts</code> (credentials variant)</td>
+<td>The new user</td>
+<td>Fire-and-forget</td>
+<td>Logged</td>
+</tr>
+<tr>
+<td>Password reset</td>
+<td><code>POST</code> forgot-password, only if the user exists and is active (<code>AuthService.requestPasswordReset</code>)</td>
+<td><code>password-reset-email.template.ts</code>. Link: <code>FRONTEND_URL/reset-password?token=...</code> and expiry in minutes</td>
+<td>The user</td>
+<td>Fire-and-forget</td>
+<td>Logged by user id. The API always returns the same message, so it does not reveal whether the email exists.</td>
+</tr>
+<tr>
+<td>Assessment invitation</td>
+<td>Owner invites participants to a personal assessment (<code>AssessmentInvitationsService</code>, <code>src/assessments/assessment-invitations.service.ts</code>)</td>
+<td><code>assessment-invitation-email.template.ts</code>. New users go to <code>/signup?email=...</code>, others to <code>/assessments/:id</code>.</td>
+<td>Each invitee</td>
+<td>Fire-and-forget, one per invitee</td>
+<td>Logged by assessment id. The invitation stays.</td>
+</tr>
+<tr>
+<td>Organization invitation</td>
+<td>Admin invites members by list (<code>OrganizationMembersService.inviteMany</code>) or by CSV import (background job)</td>
+<td><code>organization-invitation-email.template.ts</code>. New users go to <code>/signup?email=...</code>, others to <code>/invitations</code>.</td>
+<td>Each invitee</td>
+<td><strong>Awaited</strong>, 10 at a time (<code>OrganizationInvitationMailer</code>)</td>
+<td>Collected and returned as <code>emailsFailed</code> in the API or job result. The invitation stays.</td>
+</tr>
+<tr>
+<td>Newsletter</td>
+<td>Newsletter scheduler tick or "send now" (<code>NewslettersDispatchService</code>)</td>
+<td><code>newsletter-email.template.ts</code> with the admin's HTML body</td>
+<td>All active, subscribed, not-deleted users, in pages of 100 by <strong>BCC</strong></td>
+<td>Background (cron)</td>
+<td>A failed page counts all its recipients as failed. If every recipient fails, the newsletter is marked <code>FAILED</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ul>
+<li>Auth flows are covered in <a href="../auth/">Auth</a>. Invitations are covered in <a href="../assessments/">Assessments</a> and <a href="../organizations/">Organizations</a>.</li>
+<li>Signup without a later verification gives a user only the verification email. The welcome email is sent after verification.</li>
+</ul>
+<h2 id="7-flows">7. Flows<a class="headerlink" href="#7-flows" title="Permanent link">¶</a></h2>
+<h3 id="71-fire-and-forget-send-most-emails">7.1 Fire-and-forget send (most emails)<a class="headerlink" href="#71-fire-and-forget-send-most-emails" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant U as User
+    participant A as AuthService
+    participant E as EmailService
+    participant S as SMTP server
+
+    U-&gt;&gt;A: POST signup
+    A-&gt;&gt;A: create user and tokens
+    A-&gt;&gt;E: sendVerificationEmail, not awaited
+    A--&gt;&gt;U: 201 with tokens
+    E-&gt;&gt;E: build template and layout
+    E-&gt;&gt;S: sendMail
+    alt SMTP error
+        E-&gt;&gt;E: log error, throw 503
+        Note over A,E: the caller only logs the error
+    else ok
+        S--&gt;&gt;E: messageId
+    end
+</div>
+<h3 id="72-awaited-batch-send-organization-invitations">7.2 Awaited batch send (organization invitations)<a class="headerlink" href="#72-awaited-batch-send-organization-invitations" title="Permanent link">¶</a></h3>
+<p><code>OrganizationInvitationMailer.sendInvitations</code> sends invitations in batches of 10 with <code>Promise.allSettled</code>. It waits for each batch. Failed addresses are returned to the caller, and a failed email never undoes the invitation. For the CSV import, these counts go into the job result and the <code>org.invitations.import.settled</code> socket event.</p>
+<h3 id="73-newsletter-batches">7.3 Newsletter batches<a class="headerlink" href="#73-newsletter-batches" title="Permanent link">¶</a></h3>
+<p><code>NewslettersDispatchService</code> loads subscribers 100 at a time (<code>NEWSLETTER_RECIPIENT_BATCH_SIZE</code>). For each page it sends <strong>one</strong> email with every address in <code>bcc</code>, so recipients never see each other. See <a href="../platform-services/#newsletters">Platform Services</a> for the full lifecycle.</p>
+<h2 id="8-sync-vs-queued-sending">8. Sync vs queued sending<a class="headerlink" href="#8-sync-vs-queued-sending" title="Permanent link">¶</a></h2>
+<p>There is <strong>no email queue</strong>. Nothing goes through RabbitMQ just to send email, and there is no outbox table.</p>
+<table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Used by</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fire-and-forget in the request</td>
+<td>Verification, welcome, password reset, assessment invitation</td>
+<td>The HTTP response does not wait. If the process dies, the email is lost.</td>
+</tr>
+<tr>
+<td>Awaited in the request</td>
+<td>Organization invitations from the HTTP endpoint</td>
+<td>The response waits for all sends and reports failures.</td>
+</tr>
+<tr>
+<td>Awaited in a background worker</td>
+<td>Organization invitations from CSV import (RabbitMQ job), newsletters (cron)</td>
+<td>Slow sends do not block any user request.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-failure-handling">9. Failure handling<a class="headerlink" href="#9-failure-handling" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>EmailService.sendEmail</code> logs every attempt and its <code>messageId</code>. On any SMTP error, it logs the stack and throws <code>ServiceUnavailableException('Email delivery is temporarily unavailable')</code>.</li>
+<li>Callers decide what a failure means. Every caller treats email as best-effort. The main action (signup, invitation) is never rolled back because an email failed.</li>
+<li>There is <strong>no automatic retry</strong> of a failed email. Users can trigger some again themselves: log in again to get a new verification link after the old one expires, or request another password reset.</li>
+<li>Logging rules: newer code logs user ids or assessment ids, not addresses (logging conventions keep email addresses out of logs).</li>
+</ul>
+<h2 id="10-endpoints-summary">10. Endpoints summary<a class="headerlink" href="#10-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>Admin-only. Full details are in <a href="../../api-design/v1/">API v1</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /v1/admin/email-templates</code></td>
+<td><code>newsletters:read</code></td>
+<td>List previewable templates: <code>key</code>, <code>name</code>, <code>description</code></td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/email-templates/:key/preview</code></td>
+<td><code>newsletters:read</code></td>
+<td>Render one template with sample data. Returns <code>subject</code>, <code>html</code>, <code>text</code>.</td>
+</tr>
+<tr>
+<td><code>POST /v1/admin/newsletters/preview</code></td>
+<td><code>newsletters:create</code></td>
+<td>Render a newsletter draft (see <a href="../platform-services/#newsletters">Platform Services</a>)</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/newsletters/:id/preview</code></td>
+<td><code>newsletters:read</code></td>
+<td>Render a saved newsletter</td>
+</tr>
+</tbody>
+</table>
+<p>Template keys: <code>welcome</code>, <code>welcome-google</code>, <code>verification</code>, <code>password-reset</code>, <code>assessment-invitation</code>, <code>assessment-invitation-signup</code>, <code>organization-invitation</code>, <code>organization-invitation-signup</code>, <code>newsletter</code>.</p>
+<p>Previews need no SMTP settings. <code>EmailPreviewService</code> is separate from <code>EmailService</code> for this reason. All these routes use the CLASS_C rate limit.</p>
+<h2 id="11-async-events">11. Async events<a class="headerlink" href="#11-async-events" title="Permanent link">¶</a></h2>
+<p>The module publishes and consumes no RabbitMQ messages and emits no socket events. It is called directly by other services.</p>
+<h2 id="12-where-the-code-lives">12. Where the code lives<a class="headerlink" href="#12-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/notifications/notifications.module.ts</code></td>
+<td>Exports <code>EmailService</code> and <code>EmailPreviewService</code></td>
+</tr>
+<tr>
+<td><code>src/notifications/email/email.service.ts</code></td>
+<td>SMTP transport and one <code>send...Email</code> method per email</td>
+</tr>
+<tr>
+<td><code>src/notifications/email/email-preview.service.ts</code></td>
+<td>Renders previews</td>
+</tr>
+<tr>
+<td><code>src/notifications/email/email-template-previews.ts</code></td>
+<td>Sample data per template key</td>
+</tr>
+<tr>
+<td><code>src/notifications/email/templates/</code></td>
+<td>Templates, blocks, theme, layout</td>
+</tr>
+<tr>
+<td><code>src/notifications/email-templates-admin.controller.ts</code></td>
+<td>Admin preview endpoints</td>
+</tr>
+<tr>
+<td><code>src/organizations/services/organization-invitation-mailer.service.ts</code></td>
+<td>Batched organization invitation sends</td>
+</tr>
+<tr>
+<td><code>src/newsletters/newsletters-dispatch.service.ts</code></td>
+<td>Newsletter sending</td>
+</tr>
+</tbody>
+</table>
+<h2 id="13-known-gaps-and-todos">13. Known gaps and TODOs<a class="headerlink" href="#13-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>No queue or outbox.</strong> Fire-and-forget emails are lost if the process restarts mid-send, and nothing retries them.</li>
+<li><strong>No delivery tracking.</strong> Bounces, complaints and opens are not recorded. A "sent" status only means the SMTP server accepted it.</li>
+<li><strong>Users cannot opt out of newsletters.</strong> <code>users.is_newsletter_subscribe</code> defaults to <code>true</code>, and no endpoint or service ever changes it (<code>src/common/entities/user.entity.ts:76</code>). There is also no unsubscribe link in the newsletter email.</li>
+<li><strong>Email addresses in some logs.</strong> <code>AuthService</code> still logs the address when welcome and verification emails fail (<code>src/identity/auth/auth.service.ts:276</code> and <code>:374</code>). This goes against the logging conventions that newer code follows.</li>
+<li><strong>Brand naming.</strong> Templates say "RealPrep" while the code base and docs say "TestFlow". The default <code>FRONTEND_URL</code> is <code>app.testflow.com</code>.</li>
+<li><strong>Newsletter HTML is not sanitised.</strong> The admin's <code>bodyHtml</code> is inserted as-is (<code>prose(bodyHtml)</code>). This is fine while only trusted admins can write newsletters.</li>
+</ul>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

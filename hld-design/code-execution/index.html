@@ -1,0 +1,1394 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="The pluggable code runner that executes candidate and generated code on OnlineCompiler.io or a self-hosted Piston" name="description"/>
+<link href="../evaluation/" rel="prev"/>
+<link href="../ai/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Code Execution - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#code-execution">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Code Execution
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-architecture">
+<span class="md-ellipsis">
+      
+        3. Architecture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-request-and-response-shapes">
+<span class="md-ellipsis">
+      
+        4. Request and response shapes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-supported-languages">
+<span class="md-ellipsis">
+      
+        5. Supported languages
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-the-two-runners">
+<span class="md-ellipsis">
+      
+        6. The two runners
+      
+    </span>
+</a>
+<nav aria-label="6. The two runners" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-onlinecompilerio-runnersonline-compiler">
+<span class="md-ellipsis">
+      
+        6.1 OnlineCompiler.io (runners/online-compiler/)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-piston-runnerspiston">
+<span class="md-ellipsis">
+      
+        6.2 Piston (runners/piston/)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-test-case-execution-and-judging">
+<span class="md-ellipsis">
+      
+        7. Test-case execution and judging
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-timeouts-limits-and-error-handling">
+<span class="md-ellipsis">
+      
+        8. Timeouts, limits and error handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-security-notes">
+<span class="md-ellipsis">
+      
+        9. Security notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-configuration">
+<span class="md-ellipsis">
+      
+        10. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-architecture">
+<span class="md-ellipsis">
+      
+        3. Architecture
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-request-and-response-shapes">
+<span class="md-ellipsis">
+      
+        4. Request and response shapes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-supported-languages">
+<span class="md-ellipsis">
+      
+        5. Supported languages
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-the-two-runners">
+<span class="md-ellipsis">
+      
+        6. The two runners
+      
+    </span>
+</a>
+<nav aria-label="6. The two runners" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-onlinecompilerio-runnersonline-compiler">
+<span class="md-ellipsis">
+      
+        6.1 OnlineCompiler.io (runners/online-compiler/)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-piston-runnerspiston">
+<span class="md-ellipsis">
+      
+        6.2 Piston (runners/piston/)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-test-case-execution-and-judging">
+<span class="md-ellipsis">
+      
+        7. Test-case execution and judging
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-timeouts-limits-and-error-handling">
+<span class="md-ellipsis">
+      
+        8. Timeouts, limits and error handling
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-security-notes">
+<span class="md-ellipsis">
+      
+        9. Security notes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-configuration">
+<span class="md-ellipsis">
+      
+        10. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        11. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        12. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="code-execution">Code Execution<a class="headerlink" href="#code-execution" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>TestFlow never runs user code on the backend host. The <code>code-execution</code> module sends code to an <strong>external sandbox</strong> and turns the reply into one common result shape.</p>
+<p>It sits behind one small interface, <code>CodeRunner</code>, so the rest of the app does not care which sandbox is used. Switching sandbox is a config change (<code>CODE_RUNNER_PROVIDER</code>), not a code change.</p>
+<p>The code lives in <code>src/code-execution/</code>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CodeRunner</code></td>
+<td>The interface every provider implements: <code>provider</code>, <code>supports(language)</code>, <code>run(request)</code>.</td>
+</tr>
+<tr>
+<td><code>CodeRunnerFactory</code></td>
+<td>An abstract factory. There is one per provider. It builds a runner from config.</td>
+</tr>
+<tr>
+<td><code>CODE_RUNNER</code></td>
+<td>The Nest injection token bound to the chosen runner. Callers inject this.</td>
+</tr>
+<tr>
+<td>Provider</td>
+<td>The sandbox behind a runner: <code>online-compiler</code> (OnlineCompiler.io, hosted) or <code>piston</code> (self-hosted <a href="https://github.com/engineer-man/piston">Piston</a>).</td>
+</tr>
+<tr>
+<td>Run result</td>
+<td>How a program ended: <code>success</code>, <code>error</code>, <code>time_limit_exceeded</code> or <code>memory_limit_exceeded</code>. A program that crashes is a <strong>result</strong>, not an exception.</td>
+</tr>
+<tr>
+<td><code>CodeRunnerError</code></td>
+<td>Thrown when the run <strong>could not happen</strong>. The reason is one of <code>not_configured</code>, <code>unsupported_language</code>, <code>busy</code>, <code>unavailable</code>.</td>
+</tr>
+<tr>
+<td>Judge</td>
+<td><code>judgeTestCase</code> compares one run with one test case's expected output.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-architecture">3. Architecture<a class="headerlink" href="#3-architecture" title="Permanent link">¶</a></h2>
+<div class="mermaid">flowchart LR
+    CR["CodeRunService - live runs over WebSocket"] --&gt; TOKEN
+    CE["CodingEvaluator - grading"] --&gt; TOKEN
+    GEN["AI coding question generation"] --&gt; TOKEN
+    TOKEN["CODE_RUNNER token"] --&gt; RUNNER{"Runner chosen at boot"}
+    RUNNER --&gt;|"online-compiler - default"| OC["OnlineCompilerRunner"]
+    RUNNER --&gt;|"piston"| PI["PistonRunner"]
+    OC --&gt;|"HTTPS POST /api/run-code-sync/"| OCAPI["OnlineCompiler.io"]
+    PI --&gt;|"HTTP POST /api/v2/execute"| PAPI["Self-hosted Piston"]
+    CR --&gt; JUDGE["judgeTestCase and sameOutput"]
+    CE --&gt; JUDGE
+</div>
+<p><strong>How the runner is chosen</strong> (<code>code-execution.module.ts</code>):</p>
+<ol>
+<li>Both factories (<code>OnlineCompilerRunnerFactory</code>, <code>PistonRunnerFactory</code>) are registered under <code>CODE_RUNNER_FACTORIES</code>.</li>
+<li>At boot, <code>CODE_RUNNER</code> is built by <code>selectCodeRunnerFactory(factories, CODE_RUNNER_PROVIDER)</code>. An empty value falls back to <code>online-compiler</code>.</li>
+<li>An unknown provider name <strong>fails the boot</strong> with a clear error, so the problem is not found on the first run.</li>
+<li>A missing API key does <strong>not</strong> stop the boot. That runner then refuses every run with <code>not_configured</code>.</li>
+<li>The chosen provider is logged: <code>Code runner: &lt;provider&gt;</code>.</li>
+</ol>
+<p>To add a provider, write a new <code>CodeRunner</code> and a <code>CodeRunnerFactory</code>, and add the factory to the module's list.</p>
+<h2 id="4-request-and-response-shapes">4. Request and response shapes<a class="headerlink" href="#4-request-and-response-shapes" title="Permanent link">¶</a></h2>
+<p><code>CodeRunRequest</code> (<code>interfaces/code-runner.interface.ts</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>language</code></td>
+<td><code>python</code>, <code>java</code> or <code>cpp</code></td>
+<td><code>CODING_LANGUAGES</code> in <code>src/ai/interfaces/generated-coding-question.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>string</td>
+<td>The full source file</td>
+</tr>
+<tr>
+<td><code>stdin</code></td>
+<td>string</td>
+<td>The input fed to the program</td>
+</tr>
+<tr>
+<td><code>timeLimitMs</code></td>
+<td>number</td>
+<td>The question's CPU-time limit</td>
+</tr>
+<tr>
+<td><code>memoryLimitMb</code></td>
+<td>number</td>
+<td>The question's memory limit</td>
+</tr>
+</tbody>
+</table>
+<p><code>CodeRunResult</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>success</code> (exit 0 within limits), <code>error</code> (compile or runtime error, non-zero exit), <code>time_limit_exceeded</code>, <code>memory_limit_exceeded</code></td>
+</tr>
+<tr>
+<td><code>stdout</code>, <code>stderr</code></td>
+<td>Program output. When the program left no stderr, <code>stderr</code> is filled with a reason from the provider.</td>
+</tr>
+<tr>
+<td><code>exitCode</code></td>
+<td>Null if not reported</td>
+</tr>
+<tr>
+<td><code>timeMs</code></td>
+<td>CPU time of the program, without compilation. Null if not reported.</td>
+</tr>
+<tr>
+<td><code>memoryKb</code></td>
+<td>Null if not reported</td>
+</tr>
+<tr>
+<td><code>outputTruncated</code></td>
+<td>True when the provider cut <code>stdout</code>. Truncated output can never pass a test case.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="5-supported-languages">5. Supported languages<a class="headerlink" href="#5-supported-languages" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Our language</th>
+<th>OnlineCompiler.io compiler</th>
+<th>Piston runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python</code></td>
+<td><code>python-3.14</code></td>
+<td><code>python 3.12.0</code></td>
+</tr>
+<tr>
+<td><code>java</code></td>
+<td><code>openjdk-25</code></td>
+<td><code>java 15.0.2</code></td>
+</tr>
+<tr>
+<td><code>cpp</code></td>
+<td><code>g++-15</code></td>
+<td><code>c++ 10.2.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>The Piston versions must match the packages installed on the Piston server (<code>piston.constants.ts</code>). JavaScript is not supported. A coding question may only offer languages from <code>CODING_LANGUAGES</code>. A live run is also refused if the active runner does not <code>supports()</code> the language.</p>
+<h2 id="6-the-two-runners">6. The two runners<a class="headerlink" href="#6-the-two-runners" title="Permanent link">¶</a></h2>
+<h3 id="61-onlinecompilerio-runnersonline-compiler">6.1 OnlineCompiler.io (<code>runners/online-compiler/</code>)<a class="headerlink" href="#61-onlinecompilerio-runnersonline-compiler" title="Permanent link">¶</a></h3>
+<ul>
+<li>Calls <code>POST {ONLINE_COMPILER_BASE_URL}/api/run-code-sync/</code> with header <code>Authorization: &lt;api key&gt;</code> and body <code>{ compiler, code, input }</code>.</li>
+<li><strong>Concurrency:</strong> an in-process <code>Semaphore</code> allows <code>ONLINE_COMPILER_MAX_CONCURRENCY</code> calls at once (default 4, which is the API's per-key limit). Extra calls wait in order.</li>
+<li><strong>429</strong> is retried once after 1 second. A second 429 gives <code>busy</code>.</li>
+<li><strong>401 or 403</strong> gives <code>not_configured</code> (bad key). Any other non-2xx, a network error or a timeout gives <code>unavailable</code>.</li>
+<li><strong>Request timeout:</strong> <code>ONLINE_COMPILER_TIMEOUT_MS</code> (default 40 s). The sandbox itself stops a program at 30 s.</li>
+<li><strong>Payload cap:</strong> code and stdin are each at most 100 KB (<code>unavailable</code> if larger).</li>
+<li><strong>Status mapping:</strong> a non-zero exit code maps through <code>ONLINE_COMPILER_EXIT_CODES</code>: 124 is a timeout, 137 is out of memory (the sandbox allows 512 MB), and others are <code>error</code>. The sandbox limits are much higher than a question's, so after a clean exit the runner compares the <strong>reported</strong> time and memory against the question's limits. Over a limit means TLE or MLE even though the program finished.</li>
+<li><strong>Output limit:</strong> the API cuts <code>output</code> at 999 characters, so <code>outputTruncated</code> is set when <code>stdout.length &gt;= 999</code>.</li>
+</ul>
+<h3 id="62-piston-runnerspiston">6.2 Piston (<code>runners/piston/</code>)<a class="headerlink" href="#62-piston-runnerspiston" title="Permanent link">¶</a></h3>
+<ul>
+<li>Calls <code>POST {PISTON_BASE_URL}/api/v2/execute</code> with header <code>x-api-key: sha256hex(PISTON_API_KEY)</code>. Only the digest is sent, never the raw key.</li>
+<li>The body has the runtime, <code>files: [{ content: code }]</code>, <code>stdin</code> and per-run limits:<ul>
+<li><code>run_cpu_time = timeLimitMs</code></li>
+<li><code>run_timeout = 2 x timeLimitMs</code> (wall clock, to allow for I/O and start-up)</li>
+<li><code>run_memory_limit = memoryLimitMb</code> in bytes</li>
+<li>each limit is <strong>clamped</strong> to <code>PISTON_MAX_RUN_TIMEOUT_MS</code>, <code>PISTON_MAX_RUN_CPU_TIME_MS</code> and <code>PISTON_MAX_RUN_MEMORY_MB</code> when set, because Piston answers 400 to anything above its own maximums</li>
+</ul>
+</li>
+<li><strong>Concurrency:</strong> a <code>Semaphore</code> of <code>PISTON_MAX_CONCURRENCY</code> (default 4). Keep it at or below Piston's <code>PISTON_MAX_CONCURRENT_JOBS</code> divided by the number of backend instances. The request timeout (<code>PISTON_TIMEOUT_MS</code>, default 60 s) starts only once a slot is taken.</li>
+<li><strong>Compile failure</strong> (no <code>run</code> stage) gives <code>error</code> with the compiler's stderr.</li>
+<li><strong>Status mapping:</strong> Piston <code>TO</code> is TLE. <code>OL</code> (output too long) is <code>success</code> with <code>outputTruncated</code>, which the judge treats as a wrong answer. A <code>SIGKILL</code> with memory at 95% or more of the enforced limit is MLE. A non-zero code or another signal is <code>error</code>. Otherwise the reported CPU time and memory are checked against the question's limits.</li>
+<li>Piston status <code>XX</code> (internal error) or any non-2xx gives <code>unavailable</code>. 401 gives <code>not_configured</code>.</li>
+</ul>
+<h2 id="7-test-case-execution-and-judging">7. Test-case execution and judging<a class="headerlink" href="#7-test-case-execution-and-judging" title="Permanent link">¶</a></h2>
+<p>Test cases always run <strong>one after another</strong>, never in parallel for one submission. The shared semaphore still lets runs from different users overlap.</p>
+<p><code>judgeTestCase(result, expectedOutput)</code> in <code>judge-test-case.ts</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Run status</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_limit_exceeded</code></td>
+<td><code>time_limit_exceeded</code></td>
+</tr>
+<tr>
+<td><code>memory_limit_exceeded</code></td>
+<td><code>memory_limit_exceeded</code></td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>runtime_error</code> (compile errors land here too)</td>
+</tr>
+<tr>
+<td><code>success</code>, output truncated</td>
+<td><code>wrong_answer</code></td>
+</tr>
+<tr>
+<td><code>success</code>, output matches</td>
+<td><code>passed</code></td>
+</tr>
+<tr>
+<td><code>success</code>, output differs</td>
+<td><code>wrong_answer</code></td>
+</tr>
+</tbody>
+</table>
+<p>"Matches" means <code>sameOutput</code> (<code>output-compare.ts</code>): both sides are normalised to LF line endings, trailing spaces on each line are removed, and trailing blank lines are removed. Then they must be exactly equal. This is the <code>exact</code> checker.</p>
+<p>How each feature uses it:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Which cases</th>
+<th>What happens with results</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Live code run during an attempt</td>
+<td>visible cases (<code>samples</code>) or one custom stdin (<code>custom</code>)</td>
+<td>Streamed to the socket. Nothing saved. See <a href="../attempts/#53-running-code-during-an-attempt">attempts</a>.</td>
+</tr>
+<tr>
+<td>Coding evaluation</td>
+<td><strong>all</strong> cases, hidden included</td>
+<td>Partial marks and verdict saved on the response. See <a href="../evaluation/#62-coding">evaluation</a>.</td>
+</tr>
+<tr>
+<td>AI coding question generation</td>
+<td>reference solution on generated inputs</td>
+<td>Its output becomes the expected output, and generated cases are checked. See <a href="../assessment-generation/">assessment generation</a>. The runner is injected <code>@Optional()</code> there.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-timeouts-limits-and-error-handling">8. Timeouts, limits and error handling<a class="headerlink" href="#8-timeouts-limits-and-error-handling" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code or stdin size, live run</td>
+<td>50,000 characters</td>
+<td><code>RunCodeDto</code> (<code>CODE_RUN_MAX_LENGTH</code>)</td>
+</tr>
+<tr>
+<td>Code or stdin size, OnlineCompiler</td>
+<td>100 KB each</td>
+<td><code>ONLINE_COMPILER_MAX_PAYLOAD_BYTES</code></td>
+</tr>
+<tr>
+<td>Live runs per user</td>
+<td>1 in flight, 1 start every 5 s</td>
+<td><code>CodeRunService</code> (in memory, per instance)</td>
+</tr>
+<tr>
+<td>Concurrent provider calls</td>
+<td>4 per instance by default</td>
+<td><code>*_MAX_CONCURRENCY</code></td>
+</tr>
+<tr>
+<td>HTTP timeout</td>
+<td>40 s (OnlineCompiler), 60 s (Piston)</td>
+<td><code>*_TIMEOUT_MS</code></td>
+</tr>
+<tr>
+<td>Program CPU time and memory</td>
+<td>the question's <code>timeLimitMs</code> and <code>memoryLimitMb</code></td>
+<td>from the coding question</td>
+</tr>
+</tbody>
+</table>
+<p>How errors flow:</p>
+<ul>
+<li><strong>A program failure</strong> (wrong output, crash, TLE, MLE) is a normal result. The user gets a verdict.</li>
+<li><strong>A <code>CodeRunnerError</code></strong> means the run did not happen:<ul>
+<li>live run: the socket gets <code>code.run.failed</code> with <code>reason</code> and <code>message</code>. Results already sent still stand.</li>
+<li>evaluation: the response and its child job are marked failed, and a retry grades them later. It is never scored as wrong.</li>
+</ul>
+</li>
+<li>Any other exception in a live run gives <code>code.run.failed</code> with <code>reason: "internal_error"</code>.</li>
+</ul>
+<h2 id="9-security-notes">9. Security notes<a class="headerlink" href="#9-security-notes" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>No local execution.</strong> User code is only sent over HTTP to a sandbox. The backend never runs it.</li>
+<li><strong>Hidden test cases stay private.</strong> Live runs only use visible cases. Graded results shown to the candidate never include a hidden case's input, expected output, stdout or stderr. Reviewers see them.</li>
+<li><strong>Secrets:</strong> the Piston key is sent as a SHA-256 digest. The OnlineCompiler key is sent as is in <code>Authorization</code> over HTTPS. Both come from env (<code>.env.example</code>).</li>
+<li><strong>Third-party exposure:</strong> with <code>online-compiler</code>, candidate code and test inputs (hidden ones included, during grading) are sent to OnlineCompiler.io. Use <code>piston</code> to keep them in-house.</li>
+<li><strong>Abuse limits:</strong> these are the DTO size caps, the per-user cooldown and in-flight limit, and the semaphores. The cooldown is per process, so with N instances a user could run up to N times as often.</li>
+<li><strong>Sandbox limits</strong> (processes, output size, memory) are enforced by the provider, not by TestFlow.</li>
+</ol>
+<h2 id="10-configuration">10. Configuration<a class="headerlink" href="#10-configuration" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Default</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODE_RUNNER_PROVIDER</code></td>
+<td><code>online-compiler</code></td>
+<td>module (<code>online-compiler</code> or <code>piston</code>)</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_API_KEY</code></td>
+<td>none (runs refused)</td>
+<td>OnlineCompiler</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_BASE_URL</code></td>
+<td><code>https://api.onlinecompiler.io</code></td>
+<td>OnlineCompiler</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_MAX_CONCURRENCY</code></td>
+<td>4</td>
+<td>OnlineCompiler</td>
+</tr>
+<tr>
+<td><code>ONLINE_COMPILER_TIMEOUT_MS</code></td>
+<td>40000</td>
+<td>OnlineCompiler</td>
+</tr>
+<tr>
+<td><code>PISTON_API_KEY</code></td>
+<td>none (runs refused)</td>
+<td>Piston, the same raw secret as the Piston server's</td>
+</tr>
+<tr>
+<td><code>PISTON_BASE_URL</code></td>
+<td><code>http://127.0.0.1:2000</code></td>
+<td>Piston</td>
+</tr>
+<tr>
+<td><code>PISTON_MAX_CONCURRENCY</code></td>
+<td>4</td>
+<td>Piston</td>
+</tr>
+<tr>
+<td><code>PISTON_TIMEOUT_MS</code></td>
+<td>60000</td>
+<td>Piston</td>
+</tr>
+<tr>
+<td><code>PISTON_MAX_RUN_TIMEOUT_MS</code>, <code>PISTON_MAX_RUN_CPU_TIME_MS</code>, <code>PISTON_MAX_RUN_MEMORY_MB</code></td>
+<td>unset (no clamp). <code>.env.example</code> uses 2000 / 2000 / 256</td>
+<td>Piston</td>
+</tr>
+</tbody>
+</table>
+<p>Values that are not positive integers fall back to the default. See <a href="../../getting-started/">getting started</a>.</p>
+<h2 id="11-where-the-code-lives">11. Where the code lives<a class="headerlink" href="#11-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/code-execution/code-execution.module.ts</code></td>
+<td>Provider selection, exports <code>CODE_RUNNER</code></td>
+</tr>
+<tr>
+<td><code>src/code-execution/code-execution.constants.ts</code></td>
+<td>Tokens, provider enum, default</td>
+</tr>
+<tr>
+<td><code>src/code-execution/code-runner.factory.ts</code></td>
+<td>Abstract factory</td>
+</tr>
+<tr>
+<td><code>src/code-execution/interfaces/code-runner.interface.ts</code></td>
+<td><code>CodeRunner</code>, request and result types</td>
+</tr>
+<tr>
+<td><code>src/code-execution/code-runner.errors.ts</code></td>
+<td><code>CodeRunnerError</code> and reasons</td>
+</tr>
+<tr>
+<td><code>src/code-execution/judge-test-case.ts</code>, <code>output-compare.ts</code></td>
+<td>Judging and output normalising</td>
+</tr>
+<tr>
+<td><code>src/code-execution/semaphore.ts</code></td>
+<td>FIFO concurrency limiter</td>
+</tr>
+<tr>
+<td><code>src/code-execution/runners/online-compiler/</code></td>
+<td>OnlineCompiler.io runner, factory, constants</td>
+</tr>
+<tr>
+<td><code>src/code-execution/runners/piston/</code></td>
+<td>Piston runner, factory, constants</td>
+</tr>
+<tr>
+<td>Consumers: <code>src/assessments/attempts/code-run/code-run.service.ts</code>, <code>src/assessments/evaluation/evaluators/coding.evaluator.ts</code>, <code>src/ai/llm/coding-question-generation.graph.ts</code>, <code>src/ai/llm/coding-problem-tool-writer.ts</code></td>
+<td>Features that run code</td>
+</tr>
+</tbody>
+</table>
+<h2 id="12-known-gaps-and-todos-found-in-code">12. Known gaps and TODOs found in code<a class="headerlink" href="#12-known-gaps-and-todos-found-in-code" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Off-by-one truncation on OnlineCompiler.</strong> <code>outputTruncated</code> is <code>stdout.length &gt;= 999</code> (<code>online-compiler.runner.ts:128</code>). A correct answer that is exactly 999 characters long is treated as truncated and judged <code>wrong_answer</code>.</li>
+<li><strong><code>checkerType</code> is unused.</strong> Questions store it, but judging is always <code>exact</code> (<code>judge-test-case.ts:19</code>). There is no float tolerance or custom checker.</li>
+<li><strong>Limits are per process.</strong> The semaphores and the live-run cooldown do not coordinate across instances. The provider's real concurrency limit is shared, which is why OnlineCompiler retries a 429 once.</li>
+<li><strong>Compile errors are reported as <code>runtime_error</code></strong>, because both providers' results are folded into <code>error</code> before judging. There is a <code>compilation_error</code> code verdict, but it is never produced.</li>
+<li><strong>Language versions differ between providers</strong> (for example Java 25 against 15), so the same code may behave differently after switching provider.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

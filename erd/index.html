@@ -1,0 +1,6957 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Every table in the TestFlow database, grouped by domain, with columns, keys, indexes, enums and jsonb shapes, checked against the entities and the 108 migrations" name="description"/>
+<link href="../architecture/" rel="prev"/>
+<link href="../data-access-pattern/" rel="next"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Data Model (ERD) - TestFlow | Docs</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#data-model-erd">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Data Model (ERD)
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href=".." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conventions">
+<span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+</a>
+<nav aria-label="Conventions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#naming">
+<span class="md-ellipsis">
+      
+        Naming
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#there-is-no-base-entity-class">
+<span class="md-ellipsis">
+      
+        There is no base entity class
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-ids">
+<span class="md-ellipsis">
+      
+        Public ids
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#soft-delete">
+<span class="md-ellipsis">
+      
+        Soft delete
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#enums-postgres-enum-or-varchar">
+<span class="md-ellipsis">
+      
+        Enums: Postgres enum or varchar?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#money-and-marks">
+<span class="md-ellipsis">
+      
+        Money and marks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#domain-map">
+<span class="md-ellipsis">
+      
+        Domain map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-identity-and-rbac">
+<span class="md-ellipsis">
+      
+        1. Identity and RBAC
+      
+    </span>
+</a>
+<nav aria-label="1. Identity and RBAC" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#users">
+<span class="md-ellipsis">
+      
+        users
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#refresh_tokens">
+<span class="md-ellipsis">
+      
+        refresh_tokens
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#roles">
+<span class="md-ellipsis">
+      
+        roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permissions">
+<span class="md-ellipsis">
+      
+        permissions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#role_permissions">
+<span class="md-ellipsis">
+      
+        role_permissions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#users_roles">
+<span class="md-ellipsis">
+      
+        users_roles
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-organizations">
+<span class="md-ellipsis">
+      
+        2. Organizations
+      
+    </span>
+</a>
+<nav aria-label="2. Organizations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#organizations">
+<span class="md-ellipsis">
+      
+        organizations
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#organization_members">
+<span class="md-ellipsis">
+      
+        organization_members
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-assessments-questions-and-the-content-library">
+<span class="md-ellipsis">
+      
+        3. Assessments, questions and the content library
+      
+    </span>
+</a>
+<nav aria-label="3. Assessments, questions and the content library" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3a-assessments-sections-and-participants">
+<span class="md-ellipsis">
+      
+        3a. Assessments, sections and participants
+      
+    </span>
+</a>
+<nav aria-label="3a. Assessments, sections and participants" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments">
+<span class="md-ellipsis">
+      
+        assessments
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_sections">
+<span class="md-ellipsis">
+      
+        assessment_sections
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments_questions">
+<span class="md-ellipsis">
+      
+        assessments_questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments_participants">
+<span class="md-ellipsis">
+      
+        assessments_participants
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3b-question-bank">
+<span class="md-ellipsis">
+      
+        3b. Question bank
+      
+    </span>
+</a>
+<nav aria-label="3b. Question bank" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#questions">
+<span class="md-ellipsis">
+      
+        questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mcq_question_details">
+<span class="md-ellipsis">
+      
+        mcq_question_details
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coding_question_details">
+<span class="md-ellipsis">
+      
+        coding_question_details
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#descriptive_question_details">
+<span class="md-ellipsis">
+      
+        descriptive_question_details
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3c-content-library-tags-prompts-templates">
+<span class="md-ellipsis">
+      
+        3c. Content library: tags, prompts, templates
+      
+    </span>
+</a>
+<nav aria-label="3c. Content library: tags, prompts, templates" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tags">
+<span class="md-ellipsis">
+      
+        tags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_prompts">
+<span class="md-ellipsis">
+      
+        assessment_prompts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_prompt_tags">
+<span class="md-ellipsis">
+      
+        assessment_prompt_tags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_templates">
+<span class="md-ellipsis">
+      
+        assessment_templates
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-attempts-and-evaluation">
+<span class="md-ellipsis">
+      
+        4. Attempts and evaluation
+      
+    </span>
+</a>
+<nav aria-label="4. Attempts and evaluation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_attempts">
+<span class="md-ellipsis">
+      
+        assessment_attempts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_attempt_responses">
+<span class="md-ellipsis">
+      
+        assessment_attempt_responses
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-jobs">
+<span class="md-ellipsis">
+      
+        5. Jobs
+      
+    </span>
+</a>
+<nav aria-label="5. Jobs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#jobs">
+<span class="md-ellipsis">
+      
+        jobs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-ai">
+<span class="md-ellipsis">
+      
+        6. AI
+      
+    </span>
+</a>
+<nav aria-label="6. AI" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_models">
+<span class="md-ellipsis">
+      
+        ai_models
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#llm_audit">
+<span class="md-ellipsis">
+      
+        llm_audit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_conversations">
+<span class="md-ellipsis">
+      
+        ai_conversations
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_conversation_messages">
+<span class="md-ellipsis">
+      
+        ai_conversation_messages
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-commerce-plans-subscriptions-usage-orders-payments-credits">
+<span class="md-ellipsis">
+      
+        7. Commerce: plans, subscriptions, usage, orders, payments, credits
+      
+    </span>
+</a>
+<nav aria-label="7. Commerce: plans, subscriptions, usage, orders, payments, credits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7a-plans-features-subscriptions-and-usage">
+<span class="md-ellipsis">
+      
+        7a. Plans, features, subscriptions and usage
+      
+    </span>
+</a>
+<nav aria-label="7a. Plans, features, subscriptions and usage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plans">
+<span class="md-ellipsis">
+      
+        plans
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plan_versions">
+<span class="md-ellipsis">
+      
+        plan_versions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+<span class="md-ellipsis">
+      
+        features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plan_features">
+<span class="md-ellipsis">
+      
+        plan_features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#subscriptions">
+<span class="md-ellipsis">
+      
+        subscriptions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user_feature_usage">
+<span class="md-ellipsis">
+      
+        user_feature_usage
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7b-orders-payments-and-webhooks">
+<span class="md-ellipsis">
+      
+        7b. Orders, payments and webhooks
+      
+    </span>
+</a>
+<nav aria-label="7b. Orders, payments and webhooks" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#orders">
+<span class="md-ellipsis">
+      
+        orders
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#payments">
+<span class="md-ellipsis">
+      
+        payments
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#webhook_events">
+<span class="md-ellipsis">
+      
+        webhook_events
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7c-credit-packs-and-purchased-credits">
+<span class="md-ellipsis">
+      
+        7c. Credit packs and purchased credits
+      
+    </span>
+</a>
+<nav aria-label="7c. Credit packs and purchased credits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#credit_packs">
+<span class="md-ellipsis">
+      
+        credit_packs
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user_feature_credits">
+<span class="md-ellipsis">
+      
+        user_feature_credits
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-learning-roadmaps">
+<span class="md-ellipsis">
+      
+        8. Learning roadmaps
+      
+    </span>
+</a>
+<nav aria-label="8. Learning roadmaps" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmaps">
+<span class="md-ellipsis">
+      
+        learning_roadmaps
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmap_nodes">
+<span class="md-ellipsis">
+      
+        learning_roadmap_nodes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_node_edges">
+<span class="md-ellipsis">
+      
+        learning_node_edges
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmap_templates">
+<span class="md-ellipsis">
+      
+        learning_roadmap_templates
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-notifications-and-newsletters">
+<span class="md-ellipsis">
+      
+        9. Notifications and newsletters
+      
+    </span>
+</a>
+<nav aria-label="9. Notifications and newsletters" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#newsletters">
+<span class="md-ellipsis">
+      
+        newsletters
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-platform-feature-flags-and-support-tickets">
+<span class="md-ellipsis">
+      
+        10. Platform: feature flags and support tickets
+      
+    </span>
+</a>
+<nav aria-label="10. Platform: feature flags and support tickets" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature_flags">
+<span class="md-ellipsis">
+      
+        feature_flags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature_flag_roles">
+<span class="md-ellipsis">
+      
+        feature_flag_roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support_tickets">
+<span class="md-ellipsis">
+      
+        support_tickets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#modules-with-no-tables">
+<span class="md-ellipsis">
+      
+        Modules with no tables
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-tables-connect-across-domains">
+<span class="md-ellipsis">
+      
+        How tables connect across domains
+      
+    </span>
+</a>
+<nav aria-label="How tables connect across domains" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-foreign-keys-between-domains">
+<span class="md-ellipsis">
+      
+        Real foreign keys between domains
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#app-level-links-no-foreign-key">
+<span class="md-ellipsis">
+      
+        App-level links (no foreign key)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#jsonb-columns-at-a-glance">
+<span class="md-ellipsis">
+      
+        jsonb columns at a glance
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-schema-gaps">
+<span class="md-ellipsis">
+      
+        Known schema gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../hld-design/platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#conventions">
+<span class="md-ellipsis">
+      
+        Conventions
+      
+    </span>
+</a>
+<nav aria-label="Conventions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#naming">
+<span class="md-ellipsis">
+      
+        Naming
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#there-is-no-base-entity-class">
+<span class="md-ellipsis">
+      
+        There is no base entity class
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-ids">
+<span class="md-ellipsis">
+      
+        Public ids
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#soft-delete">
+<span class="md-ellipsis">
+      
+        Soft delete
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#enums-postgres-enum-or-varchar">
+<span class="md-ellipsis">
+      
+        Enums: Postgres enum or varchar?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#money-and-marks">
+<span class="md-ellipsis">
+      
+        Money and marks
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#domain-map">
+<span class="md-ellipsis">
+      
+        Domain map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-identity-and-rbac">
+<span class="md-ellipsis">
+      
+        1. Identity and RBAC
+      
+    </span>
+</a>
+<nav aria-label="1. Identity and RBAC" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#users">
+<span class="md-ellipsis">
+      
+        users
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#refresh_tokens">
+<span class="md-ellipsis">
+      
+        refresh_tokens
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#roles">
+<span class="md-ellipsis">
+      
+        roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#permissions">
+<span class="md-ellipsis">
+      
+        permissions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#role_permissions">
+<span class="md-ellipsis">
+      
+        role_permissions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#users_roles">
+<span class="md-ellipsis">
+      
+        users_roles
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-organizations">
+<span class="md-ellipsis">
+      
+        2. Organizations
+      
+    </span>
+</a>
+<nav aria-label="2. Organizations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#organizations">
+<span class="md-ellipsis">
+      
+        organizations
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#organization_members">
+<span class="md-ellipsis">
+      
+        organization_members
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-assessments-questions-and-the-content-library">
+<span class="md-ellipsis">
+      
+        3. Assessments, questions and the content library
+      
+    </span>
+</a>
+<nav aria-label="3. Assessments, questions and the content library" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3a-assessments-sections-and-participants">
+<span class="md-ellipsis">
+      
+        3a. Assessments, sections and participants
+      
+    </span>
+</a>
+<nav aria-label="3a. Assessments, sections and participants" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments">
+<span class="md-ellipsis">
+      
+        assessments
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_sections">
+<span class="md-ellipsis">
+      
+        assessment_sections
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments_questions">
+<span class="md-ellipsis">
+      
+        assessments_questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessments_participants">
+<span class="md-ellipsis">
+      
+        assessments_participants
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3b-question-bank">
+<span class="md-ellipsis">
+      
+        3b. Question bank
+      
+    </span>
+</a>
+<nav aria-label="3b. Question bank" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#questions">
+<span class="md-ellipsis">
+      
+        questions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mcq_question_details">
+<span class="md-ellipsis">
+      
+        mcq_question_details
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#coding_question_details">
+<span class="md-ellipsis">
+      
+        coding_question_details
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#descriptive_question_details">
+<span class="md-ellipsis">
+      
+        descriptive_question_details
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3c-content-library-tags-prompts-templates">
+<span class="md-ellipsis">
+      
+        3c. Content library: tags, prompts, templates
+      
+    </span>
+</a>
+<nav aria-label="3c. Content library: tags, prompts, templates" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tags">
+<span class="md-ellipsis">
+      
+        tags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_prompts">
+<span class="md-ellipsis">
+      
+        assessment_prompts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_prompt_tags">
+<span class="md-ellipsis">
+      
+        assessment_prompt_tags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_templates">
+<span class="md-ellipsis">
+      
+        assessment_templates
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-attempts-and-evaluation">
+<span class="md-ellipsis">
+      
+        4. Attempts and evaluation
+      
+    </span>
+</a>
+<nav aria-label="4. Attempts and evaluation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_attempts">
+<span class="md-ellipsis">
+      
+        assessment_attempts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assessment_attempt_responses">
+<span class="md-ellipsis">
+      
+        assessment_attempt_responses
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-jobs">
+<span class="md-ellipsis">
+      
+        5. Jobs
+      
+    </span>
+</a>
+<nav aria-label="5. Jobs" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#jobs">
+<span class="md-ellipsis">
+      
+        jobs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-ai">
+<span class="md-ellipsis">
+      
+        6. AI
+      
+    </span>
+</a>
+<nav aria-label="6. AI" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_models">
+<span class="md-ellipsis">
+      
+        ai_models
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#llm_audit">
+<span class="md-ellipsis">
+      
+        llm_audit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_conversations">
+<span class="md-ellipsis">
+      
+        ai_conversations
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#ai_conversation_messages">
+<span class="md-ellipsis">
+      
+        ai_conversation_messages
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-commerce-plans-subscriptions-usage-orders-payments-credits">
+<span class="md-ellipsis">
+      
+        7. Commerce: plans, subscriptions, usage, orders, payments, credits
+      
+    </span>
+</a>
+<nav aria-label="7. Commerce: plans, subscriptions, usage, orders, payments, credits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7a-plans-features-subscriptions-and-usage">
+<span class="md-ellipsis">
+      
+        7a. Plans, features, subscriptions and usage
+      
+    </span>
+</a>
+<nav aria-label="7a. Plans, features, subscriptions and usage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plans">
+<span class="md-ellipsis">
+      
+        plans
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plan_versions">
+<span class="md-ellipsis">
+      
+        plan_versions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+<span class="md-ellipsis">
+      
+        features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plan_features">
+<span class="md-ellipsis">
+      
+        plan_features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#subscriptions">
+<span class="md-ellipsis">
+      
+        subscriptions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user_feature_usage">
+<span class="md-ellipsis">
+      
+        user_feature_usage
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7b-orders-payments-and-webhooks">
+<span class="md-ellipsis">
+      
+        7b. Orders, payments and webhooks
+      
+    </span>
+</a>
+<nav aria-label="7b. Orders, payments and webhooks" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#orders">
+<span class="md-ellipsis">
+      
+        orders
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#payments">
+<span class="md-ellipsis">
+      
+        payments
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#webhook_events">
+<span class="md-ellipsis">
+      
+        webhook_events
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7c-credit-packs-and-purchased-credits">
+<span class="md-ellipsis">
+      
+        7c. Credit packs and purchased credits
+      
+    </span>
+</a>
+<nav aria-label="7c. Credit packs and purchased credits" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#credit_packs">
+<span class="md-ellipsis">
+      
+        credit_packs
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#user_feature_credits">
+<span class="md-ellipsis">
+      
+        user_feature_credits
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-learning-roadmaps">
+<span class="md-ellipsis">
+      
+        8. Learning roadmaps
+      
+    </span>
+</a>
+<nav aria-label="8. Learning roadmaps" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmaps">
+<span class="md-ellipsis">
+      
+        learning_roadmaps
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmap_nodes">
+<span class="md-ellipsis">
+      
+        learning_roadmap_nodes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_node_edges">
+<span class="md-ellipsis">
+      
+        learning_node_edges
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#learning_roadmap_templates">
+<span class="md-ellipsis">
+      
+        learning_roadmap_templates
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-notifications-and-newsletters">
+<span class="md-ellipsis">
+      
+        9. Notifications and newsletters
+      
+    </span>
+</a>
+<nav aria-label="9. Notifications and newsletters" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#newsletters">
+<span class="md-ellipsis">
+      
+        newsletters
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-platform-feature-flags-and-support-tickets">
+<span class="md-ellipsis">
+      
+        10. Platform: feature flags and support tickets
+      
+    </span>
+</a>
+<nav aria-label="10. Platform: feature flags and support tickets" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature_flags">
+<span class="md-ellipsis">
+      
+        feature_flags
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature_flag_roles">
+<span class="md-ellipsis">
+      
+        feature_flag_roles
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support_tickets">
+<span class="md-ellipsis">
+      
+        support_tickets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#modules-with-no-tables">
+<span class="md-ellipsis">
+      
+        Modules with no tables
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-tables-connect-across-domains">
+<span class="md-ellipsis">
+      
+        How tables connect across domains
+      
+    </span>
+</a>
+<nav aria-label="How tables connect across domains" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#real-foreign-keys-between-domains">
+<span class="md-ellipsis">
+      
+        Real foreign keys between domains
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#app-level-links-no-foreign-key">
+<span class="md-ellipsis">
+      
+        App-level links (no foreign key)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#jsonb-columns-at-a-glance">
+<span class="md-ellipsis">
+      
+        jsonb columns at a glance
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-schema-gaps">
+<span class="md-ellipsis">
+      
+        Known schema gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="data-model-erd">Data Model (ERD)<a class="headerlink" href="#data-model-erd" title="Permanent link">¶</a></h1>
+<p>This page describes the <strong>current</strong> PostgreSQL schema of the TestFlow backend. It was built from every <code>*.entity.ts</code> file and checked against the migrations in <code>src/migrations</code> (108 files, the newest is <code>20261029000000-backfill-order-statuses.ts</code>). A local database migrated to the latest version was also compared with the entities using <code>typeorm schema:log</code>. The few differences it found are listed in <a href="#known-schema-gaps">Known schema gaps</a>.</p>
+<p>It replaces three older pages: <code>erd.md</code>, <code>erd-organisation.md</code> (a draft "workspaces" design that was never built; the real design is the <code>organizations</code> tables below) and <code>complete-erd.md</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Where the code lives</p>
+<ul>
+<li>All 44 entity classes: <code>src/common/entities/</code> (re-exported from <code>src/common/entities/index.ts</code>).</li>
+<li>All enums: <code>src/common/enums/</code>. Status enums live next to their rules in each module's <code>domain/</code> folder (for example <code>src/assessments/domain/attempt-state.ts</code>) and are re-exported from <code>src/common/enums</code>.</li>
+<li>Migrations: <code>src/migrations/</code>. How to write one: <a href="../data-access-pattern/#migrations">Data access patterns → Migrations</a>.</li>
+</ul>
+</div>
+<h2 id="conventions">Conventions<a class="headerlink" href="#conventions" title="Permanent link">¶</a></h2>
+<h3 id="naming">Naming<a class="headerlink" href="#naming" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Rule</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>snake_case, usually plural</td>
+<td><code>assessment_attempts</code>, <code>users_roles</code></td>
+</tr>
+<tr>
+<td>Column</td>
+<td>snake_case, set with <code>name:</code> on every <code>@Column</code></td>
+<td><code>created_by</code>, <code>is_active</code></td>
+</tr>
+<tr>
+<td>Entity property</td>
+<td>camelCase</td>
+<td><code>createdBy</code>, <code>isActive</code></td>
+</tr>
+<tr>
+<td>Index</td>
+<td><code>IDX_&lt;table&gt;_&lt;column&gt;</code></td>
+<td><code>IDX_jobs_status</code></td>
+</tr>
+<tr>
+<td>Unique index</td>
+<td><code>UQ_&lt;table&gt;_&lt;column(s)&gt;</code></td>
+<td><code>UQ_users_email</code></td>
+</tr>
+<tr>
+<td>Foreign key (in migrations)</td>
+<td><code>FK_&lt;table&gt;_&lt;column&gt;</code></td>
+<td><code>FK_assessments_created_by</code></td>
+</tr>
+<tr>
+<td>Check constraint</td>
+<td><code>CHK_&lt;table&gt;_&lt;rule&gt;</code></td>
+<td><code>CHK_assessment_sections_difficulty</code></td>
+</tr>
+</tbody>
+</table>
+<p>Two table names do not match their class names. The class <code>PlanVersionFeature</code> maps to the table <code>plan_features</code>, and <code>UserRole</code> maps to <code>users_roles</code>.</p>
+<h3 id="there-is-no-base-entity-class">There is no base entity class<a class="headerlink" href="#there-is-no-base-entity-class" title="Permanent link">¶</a></h3>
+<p><code>src/common/entities</code> holds the entity files, but there is <strong>no</strong> shared <code>BaseEntity</code>. Every entity declares its own columns. The usual set is:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Decorator</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>@PrimaryGeneratedColumn('increment')</code></td>
+<td><code>int</code></td>
+<td>Auto-increment. <code>jobs.id</code> and <code>llm_audit.id</code> are <code>bigint</code> (TypeScript type <code>string</code>).</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>@CreateDateColumn</code></td>
+<td><code>timestamptz</code></td>
+<td>Set on insert.</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>@UpdateDateColumn</code></td>
+<td><code>timestamptz</code></td>
+<td>Set on every save. Missing on append-only tables.</td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>@DeleteDateColumn</code></td>
+<td><code>timestamptz</code>, nullable</td>
+<td>Only on soft-deletable tables.</td>
+</tr>
+</tbody>
+</table>
+<p>All timestamps are <code>timestamptz</code> (time zone aware). The only <code>date</code> columns are <code>user_feature_usage.period_start</code> and <code>period_end</code>.</p>
+<h3 id="public-ids">Public ids<a class="headerlink" href="#public-ids" title="Permanent link">¶</a></h3>
+<p>The numeric <code>id</code> is the internal key. Some tables also have a public id that clients use in URLs:</p>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Format</th>
+<th>Built by</th>
+<th>Tables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Short uid</td>
+<td>8 characters, letters and digits (nanoid)</td>
+<td><code>generateShortUid()</code> in <code>src/common/nano-id.ts</code></td>
+<td><code>organizations</code>, <code>assessment_templates</code>, <code>learning_roadmap_templates</code></td>
+</tr>
+<tr>
+<td>Prefixed id</td>
+<td><code>conv_&lt;32 hex&gt;</code> or <code>msg_&lt;32 hex&gt;</code></td>
+<td><code>generatePrefixedId()</code> in <code>src/common/prefixed-id.ts</code></td>
+<td><code>ai_conversations</code>, <code>ai_conversation_messages</code></td>
+</tr>
+<tr>
+<td>UUID</td>
+<td>Postgres <code>uuid</code>, generated on insert</td>
+<td><code>@Generated('uuid')</code></td>
+<td><code>assessment_attempts.uid</code></td>
+</tr>
+</tbody>
+</table>
+<p>Short uids can collide. They sit behind a unique index, and the service retries the insert when Postgres reports a unique violation.</p>
+<h3 id="soft-delete">Soft delete<a class="headerlink" href="#soft-delete" title="Permanent link">¶</a></h3>
+<p>A <strong>soft delete</strong> sets <code>deleted_at</code> to the current time instead of removing the row. TypeORM's <code>find*</code> methods and QueryBuilder hide these rows automatically. Raw SQL does not, so raw queries must add <code>deleted_at IS NULL</code> themselves.</p>
+<table>
+<thead>
+<tr>
+<th>Soft-deletable (<code>deleted_at</code> present)</th>
+<th>Not soft-deletable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code>, <code>refresh_tokens</code>, <code>roles</code>, <code>permissions</code>, <code>role_permissions</code>, <code>users_roles</code></td>
+<td><code>assessment_sections</code>, <code>assessments_questions</code>, <code>mcq_question_details</code>, <code>coding_question_details</code>, <code>descriptive_question_details</code></td>
+</tr>
+<tr>
+<td><code>organizations</code>, <code>organization_members</code></td>
+<td><code>assessment_attempts</code>, <code>assessment_attempt_responses</code></td>
+</tr>
+<tr>
+<td><code>assessments</code>, <code>assessments_participants</code>, <code>questions</code>, <code>tags</code>, <code>assessment_prompts</code>, <code>assessment_prompt_tags</code>, <code>assessment_templates</code></td>
+<td><code>jobs</code>, <code>llm_audit</code>, <code>ai_conversations</code>, <code>ai_conversation_messages</code></td>
+</tr>
+<tr>
+<td><code>plans</code>, <code>plan_versions</code>, <code>features</code>, <code>plan_features</code>, <code>subscriptions</code>, <code>user_feature_usage</code>, <code>credit_packs</code>, <code>user_feature_credits</code></td>
+<td><code>orders</code>, <code>payments</code>, <code>webhook_events</code></td>
+</tr>
+<tr>
+<td><code>ai_models</code>, <code>learning_roadmap_templates</code>, <code>newsletters</code>, <code>support_tickets</code></td>
+<td><code>learning_roadmaps</code>, <code>learning_roadmap_nodes</code>, <code>learning_node_edges</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>feature_flags</code>, <code>feature_flag_roles</code></td>
+</tr>
+</tbody>
+</table>
+<p>Rules that follow from this:</p>
+<ul>
+<li><strong>Uniqueness only counts live rows.</strong> Most unique indexes on soft-deletable tables are <em>partial</em>: <code>WHERE deleted_at IS NULL</code>. So a deleted user does not block a new sign-up with the same email, and a removed member can be invited again.</li>
+<li><strong>Many "deletes" are really status changes.</strong> A participant who leaves becomes <code>revoked</code>. An attempt set aside by a reviewer becomes <code>rejected</code>. A membership can be <code>suspended</code>. These rows stay visible.</li>
+<li><strong>Hard deletes still happen</strong> on tables without <code>deleted_at</code>, for example the <code>DELETE</code> of a response in <code>AttemptsService.deleteResponse()</code>.</li>
+<li><strong>Foreign keys cascade on hard delete only.</strong> A soft delete of a parent does not touch its children.</li>
+</ul>
+<h3 id="enums-postgres-enum-or-varchar">Enums: Postgres enum or varchar?<a class="headerlink" href="#enums-postgres-enum-or-varchar" title="Permanent link">¶</a></h3>
+<p>Most status columns are real Postgres enum types (named <code>&lt;table&gt;_&lt;column&gt;_enum</code>). Adding a value needs an <code>ALTER TYPE</code> migration. A few columns are stored as <code>varchar</code> on purpose, so new values need no migration:</p>
+<ul>
+<li><code>questions.type</code>, <code>assessment_sections.question_type</code>, <code>assessments_questions.type</code> (<code>QuestionType</code>)</li>
+<li><code>assessment_attempt_responses.evaluation_status</code> and <code>code_verdict</code> (guarded by <code>CHECK</code> constraints instead)</li>
+<li><code>llm_audit.status</code>, <code>jobs.type</code>, <code>jobs.queue</code>, <code>features.key</code>, <code>coding_question_details.checker_type</code></li>
+</ul>
+<h3 id="money-and-marks">Money and marks<a class="headerlink" href="#money-and-marks" title="Permanent link">¶</a></h3>
+<p>Prices, marks and costs use <code>decimal(precision, scale)</code>. The <code>pg</code> driver returns <code>decimal</code> values as <strong>strings</strong>, even where the entity types them as <code>number</code>. Convert with <code>Number()</code> before doing maths. <code>llm_audit</code> types its decimals as <code>string</code> to make this explicit.</p>
+<h2 id="domain-map">Domain map<a class="headerlink" href="#domain-map" title="Permanent link">¶</a></h2>
+<div class="mermaid">flowchart LR
+    ID["Identity and RBAC&lt;br/&gt;users, roles, permissions"]
+    ORG["Organizations&lt;br/&gt;organizations, members"]
+    AS["Assessments&lt;br/&gt;assessments, sections, questions"]
+    LIB["Content library&lt;br/&gt;tags, prompts, templates"]
+    AT["Attempts and evaluation&lt;br/&gt;attempts, responses"]
+    JOB["Jobs&lt;br/&gt;jobs"]
+    AI["AI&lt;br/&gt;models, audit, conversations"]
+    COM["Commerce&lt;br/&gt;plans, subscriptions, orders"]
+    LR["Learning roadmaps&lt;br/&gt;roadmaps, nodes, edges"]
+    PLAT["Platform&lt;br/&gt;feature flags, newsletters, tickets"]
+
+    ID --&gt; ORG
+    ID --&gt; AS
+    ORG --&gt; AS
+    AS --&gt; AT
+    JOB --&gt; AS
+    JOB --&gt; AT
+    JOB --&gt; LR
+    JOB --&gt; AI
+    ID --&gt; COM
+    ORG --&gt; COM
+    ID --&gt; LR
+    ID --&gt; AI
+    ID --&gt; PLAT
+    ID --&gt; LIB
+</div>
+<p><code>users</code> is the hub: almost every domain has a <code>user_id</code> or <code>created_by</code> that points to it.</p>
+<hr/>
+<h2 id="1-identity-and-rbac">1. Identity and RBAC<a class="headerlink" href="#1-identity-and-rbac" title="Permanent link">¶</a></h2>
+<p><strong>RBAC</strong> (role-based access control) means a user gets permissions through roles. Platform roles (for example <code>super_admin</code>) are held through <code>users_roles</code>. Organization roles are held through <code>organization_members</code> (see <a href="#2-organizations">section 2</a>). Both kinds of role draw from the same <code>permissions</code> catalog. Design details: <a href="../hld-design/rbac/">RBAC</a> and <a href="../hld-design/auth/">Auth</a>.</p>
+<div class="mermaid">erDiagram
+    users {
+        int id PK
+        varchar username "unique among live rows"
+        varchar email "unique among live rows"
+        varchar password
+        boolean must_change_password
+        varchar phone_number UK
+        boolean is_active
+        boolean is_verified
+        boolean is_newsletter_subscribe
+        enum oauth_provider
+        varchar oauth_id
+        timestamptz deleted_at
+    }
+    refresh_tokens {
+        int id PK
+        int user_id FK
+        varchar token_hash
+        timestamptz expires_at
+        timestamptz deleted_at
+    }
+    roles {
+        int id PK
+        varchar key
+        enum scope
+        int organization_id FK "null for built-in roles"
+    }
+    permissions {
+        int id PK
+        varchar key UK "resource:action"
+        text description
+    }
+    role_permissions {
+        int id PK
+        int role_id FK
+        int permission_id FK
+        jsonb meta
+    }
+    users_roles {
+        int id PK
+        int user_id FK
+        int role_id FK
+    }
+    users ||--o{ refresh_tokens : "has"
+    users ||--o{ users_roles : "holds"
+    roles ||--o{ users_roles : "assigned through"
+    roles ||--o{ role_permissions : "grants"
+    permissions ||--o{ role_permissions : "granted by"
+</div>
+<h3 id="users"><code>users</code><a class="headerlink" href="#users" title="Permanent link">¶</a></h3>
+<p>A person who can sign in. Entity: <code>src/common/entities/user.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>full_name</code></td>
+<td>varchar(200)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>first_name</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>last_name</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td>Unique among live rows</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td>Unique among live rows</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td>bcrypt hash. Google sign-up stores a generated default password.</td>
+</tr>
+<tr>
+<td><code>must_change_password</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>false</code></td>
+<td>Forces a password change on an admin-created or Google-created account</td>
+</tr>
+<tr>
+<td><code>phone_number</code></td>
+<td>varchar(20)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Unique (plain constraint, not limited to live rows)</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_verified</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>false</code></td>
+<td>Email verified</td>
+</tr>
+<tr>
+<td><code>is_newsletter_subscribe</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td>Newsletter opt-in</td>
+</tr>
+<tr>
+<td><code>total_verification_email</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>How many verification emails were ever sent</td>
+</tr>
+<tr>
+<td><code>last_verification_email_sent_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Used to throttle resends</td>
+</tr>
+<tr>
+<td><code>oauth_provider</code></td>
+<td>enum <code>OAuthProvider</code></td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>google</code>, <code>github</code></td>
+</tr>
+<tr>
+<td><code>oauth_id</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Provider's user id</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>, <code>deleted_at</code>.
+Indexes: <code>UQ_users_username</code> and <code>UQ_users_email</code> (partial, <code>deleted_at IS NULL</code>); unique <code>(oauth_provider, oauth_id) WHERE oauth_id IS NOT NULL</code>; unique <code>phone_number</code>.</p>
+<h3 id="refresh_tokens"><code>refresh_tokens</code><a class="headerlink" href="#refresh_tokens" title="Permanent link">¶</a></h3>
+<p>Stores a hash of the user's refresh token. Entity: <code>refreshToken.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>token_hash</code></td>
+<td>varchar</td>
+<td>no</td>
+<td></td>
+<td>SHA-256 of the raw token. The raw token is never stored.</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>users.id</code>, ON DELETE CASCADE (in the database)</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>deleted_at</code> (no <code>updated_at</code>). Index: <code>IDX_refresh_tokens_user_id</code> (created by migration).</p>
+<p>There is <strong>one row per user</strong>, not one per device. <code>AuthService.storeRefreshToken()</code> finds the user's row (including a soft-deleted one) and overwrites it, or inserts the first one. Logout soft-deletes it.</p>
+<h3 id="roles"><code>roles</code><a class="headerlink" href="#roles" title="Permanent link">¶</a></h3>
+<p>A named set of permissions. Entity: <code>roles.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td>For example <code>super_admin</code>, <code>org_admin</code></td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>enum <code>RbacScope</code></td>
+<td>no</td>
+<td><code>platform</code></td>
+<td><code>platform</code> or <code>organization</code></td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>organizations.id</code>, CASCADE. <code>null</code> for built-in roles; set for an organization's own custom role.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Indexes: <code>UQ_roles_key</code> on <code>key</code> where <code>organization_id IS NULL AND deleted_at IS NULL</code> (built-in keys are unique); <code>UQ_roles_organization_id_key</code> on <code>(organization_id, key)</code> for custom roles; <code>IDX_roles_organization_id</code>.</p>
+<p>Built-in roles: <code>super_admin</code> and <code>beta_tester</code> (platform; <code>beta_tester</code> grants nothing and only unlocks feature flags), and <code>org_owner</code>, <code>org_admin</code>, <code>org_member</code> (organization, shared by every org).</p>
+<h3 id="permissions"><code>permissions</code><a class="headerlink" href="#permissions" title="Permanent link">¶</a></h3>
+<p>One grantable action, keyed <code>resource:action</code> (for example <code>questions:update</code>). Entity: <code>permissions.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><code>UQ_permissions_key</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. The valid resources and actions are the <code>RbacResource</code> and <code>RbacAction</code> enums in <code>src/common/enums/identity.enums.ts</code>. Actions: <code>read</code>, <code>create</code>, <code>update</code>, <code>delete</code>, <code>upload</code>, <code>export</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Old <code>resources</code> table and the <code>*:*</code> wildcard</p>
+<p>Older docs describe a <code>resources</code> table. Migration <code>20260929000003-move-permission-keys-and-drop-resources.ts</code> replaced it with <code>permissions</code>. The <code>*:*</code> wildcard is also gone: <code>src/seeders/super-admin-permissions.seeder.ts</code> replaces it with an explicit grant for every pair, and the permission check (<code>AccessControlService.userHasPermission</code>) matches exact keys only.</p>
+</div>
+<h3 id="role_permissions"><code>role_permissions</code><a class="headerlink" href="#role_permissions" title="Permanent link">¶</a></h3>
+<p>Join table: which permissions a role grants. Entity: <code>role-permissions.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>roles.id</code>, CASCADE. <code>IDX_role_permissions_role_id</code></td>
+</tr>
+<tr>
+<td><code>permission_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>permissions.id</code>, CASCADE. <code>IDX_role_permissions_permission_id</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>RolePermissionMeta</code>: <code>{ implicitPermissions: PermissionKey[] }</code>, permissions implied by this one (for example <code>update</code> implies <code>read</code>). See <code>src/identity/rbac/interfaces/role-permission-meta.interface.ts</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. There is no unique index on <code>(role_id, permission_id)</code>; the services prevent duplicates.</p>
+<h3 id="users_roles"><code>users_roles</code><a class="headerlink" href="#users_roles" title="Permanent link">¶</a></h3>
+<p>Join table: which platform roles a user holds. Entity: <code>users-roles.entity.ts</code> (class <code>UserRole</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>users.id</code>, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>roles.id</code>, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Both join tables are real entities, not TypeORM <code>@ManyToMany</code>.</p>
+<hr/>
+<h2 id="2-organizations">2. Organizations<a class="headerlink" href="#2-organizations" title="Permanent link">¶</a></h2>
+<p>An <strong>organization</strong> is a group of users who share assessments and a subscription. Each member has one organization-scoped role. Design: <a href="../hld-design/organizations/">Organizations</a>.</p>
+<div class="mermaid">erDiagram
+    users {
+        int id PK
+    }
+    organizations {
+        int id PK
+        varchar uid "public 8 char id"
+        varchar slug
+        varchar name
+        int owner_user_id FK
+        enum status
+    }
+    organization_members {
+        int id PK
+        int organization_id FK
+        int user_id FK
+        int role_id FK
+        enum status
+        int invited_by FK
+        timestamptz joined_at
+    }
+    roles {
+        int id PK
+        int organization_id FK
+    }
+    users ||--o{ organizations : "owns"
+    organizations ||--o{ organization_members : "has"
+    users ||--o{ organization_members : "joins"
+    roles ||--o{ organization_members : "role of"
+    organizations ||--o{ roles : "custom roles"
+</div>
+<h3 id="organizations"><code>organizations</code><a class="headerlink" href="#organizations" title="Permanent link">¶</a></h3>
+<p>Entity: <code>organization.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>varchar(8)</td>
+<td>no</td>
+<td></td>
+<td>Public id used in <code>/v1/orgs/:orgUid/...</code>. Unique among live rows.</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td>varchar(180)</td>
+<td>no</td>
+<td></td>
+<td>URL-safe name. Unique among live rows.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>owner_user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>users.id</code>, CASCADE. <code>IDX_organizations_owner_user_id</code>. Kept for billing and ownership transfer.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>OrganizationStatus</code></td>
+<td>no</td>
+<td><code>active</code></td>
+<td><code>active</code>, <code>suspended</code></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. A user may own at most one organization (<code>OrganizationLimit.ORG_LIMIT = 1</code>, enforced in code). The owner also has an <code>org_owner</code> membership row, so every permission check goes through <code>organization_members</code>.</p>
+<h3 id="organization_members"><code>organization_members</code><a class="headerlink" href="#organization_members" title="Permanent link">¶</a></h3>
+<p>A user's membership in one organization. An invitation is a membership row in <code>invited</code> status. Entity: <code>organization-member.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>roles.id</code>, <strong>RESTRICT</strong> (deleting a role must not silently drop members). Indexed.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>OrganizationMemberStatus</code></td>
+<td>no</td>
+<td><code>invited</code></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>invited_by</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>users.id</code>, SET NULL. Null for the owner's own row.</td>
+</tr>
+<tr>
+<td><code>joined_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Set when the invitation is accepted</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Unique: <code>(organization_id, user_id)</code> among live rows.</p>
+<table>
+<thead>
+<tr>
+<th><code>OrganizationMemberStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invited</code></td>
+<td>Invitation sent, not accepted yet</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>Full member</td>
+</tr>
+<tr>
+<td><code>suspended</code></td>
+<td>Membership paused, no access</td>
+</tr>
+</tbody>
+</table>
+<p>Organizations also own rows in <code>assessments</code>, <code>subscriptions</code> and <code>user_feature_usage</code> through a nullable <code>organization_id</code> (see the sections below).</p>
+<hr/>
+<h2 id="3-assessments-questions-and-the-content-library">3. Assessments, questions and the content library<a class="headerlink" href="#3-assessments-questions-and-the-content-library" title="Permanent link">¶</a></h2>
+<p>An <strong>assessment</strong> is a test made of <strong>sections</strong>. Each section holds questions of one type. Questions live in a reusable bank (<code>questions</code>) and are <strong>copied</strong> (snapshotted) into the assessment as <code>assessments_questions</code> rows, so later edits to the bank never change a published test. Design: <a href="../hld-design/assessments/">Assessments</a>, <a href="../hld-design/questions-and-tags/">Questions and tags</a>, <a href="../hld-design/assessment-generation/">Assessment generation</a>.</p>
+<h3 id="3a-assessments-sections-and-participants">3a. Assessments, sections and participants<a class="headerlink" href="#3a-assessments-sections-and-participants" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    assessments {
+        int id PK
+        varchar title
+        timestamptz registration_start_time
+        timestamptz registration_end_time
+        timestamptz attempt_start_time
+        timestamptz attempt_end_time
+        int duration
+        int max_participants
+        int current_participants
+        int max_total_questions
+        int curr_total_questions
+        enum status
+        int created_by FK
+        int organization_id FK
+        bigint job_id FK
+    }
+    assessment_sections {
+        int id PK
+        int assessment_id FK
+        varchar question_type
+        int max_questions
+        decimal correct_marks
+        decimal incorrect_marks
+        int order_index
+        int difficulty
+    }
+    assessments_questions {
+        int id PK
+        int assessment_id FK
+        int question_id FK
+        int section_id FK
+        varchar type
+        text question_text
+        jsonb content
+        jsonb topics
+        decimal correct_marks
+        decimal incorrect_marks
+        int order_index
+    }
+    assessments_participants {
+        int id PK
+        int assessment_id FK
+        int user_id FK
+        enum status
+        int invited_by FK
+    }
+    users ||--o{ assessments : "creates"
+    organizations ||--o{ assessments : "owns"
+    jobs ||--o{ assessments : "generated"
+    assessments ||--o{ assessment_sections : "has"
+    assessment_sections ||--o{ assessments_questions : "groups"
+    assessments ||--o{ assessments_questions : "contains"
+    assessments ||--o{ assessments_participants : "has"
+    users ||--o{ assessments_participants : "takes part"
+</div>
+<h4 id="assessments"><code>assessments</code><a class="headerlink" href="#assessments" title="Permanent link">¶</a></h4>
+<p>Entity: <code>assessment.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td></td>
+<td>Null until the generator suggests one or the creator sets it</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>registration_start_time</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>People may register or be invited from here…</td>
+</tr>
+<tr>
+<td><code>registration_end_time</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>…until here</td>
+</tr>
+<tr>
+<td><code>attempt_start_time</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>Participants may sit the test from here…</td>
+</tr>
+<tr>
+<td><code>attempt_end_time</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>…until here</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Minutes allowed per attempt</td>
+</tr>
+<tr>
+<td><code>max_participants</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Seat limit</td>
+</tr>
+<tr>
+<td><code>current_participants</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Seats taken (invited + active, the creator excluded). Changed with <code>manager.increment()</code>.</td>
+</tr>
+<tr>
+<td><code>max_total_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Sum of the sections' sizes</td>
+</tr>
+<tr>
+<td><code>curr_total_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Questions in place so far</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>AssessmentStatus</code></td>
+<td>no</td>
+<td><code>draft</code></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>users.id</code>, CASCADE. <code>IDX_assessments_created_by</code></td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>organizations.id</code>, CASCADE. <code>null</code> = personal assessment. Indexed.</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td>bigint</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>jobs.id</code>, SET NULL (in the migration only, see <a href="#known-schema-gaps">gaps</a>). The <code>GENERATE_ASSESSMENT</code> parent job.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. The registration window columns were added by the newest migration, <code>20261026000000</code>. Marks moved from this table to <code>assessment_sections</code> in <code>20261014000013-drop-marks-from-assessments.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>AssessmentStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>draft</code></td>
+<td>Being built: generating, generation failed, or not every question is in place</td>
+</tr>
+<tr>
+<td><code>ready</code></td>
+<td>Every section is full. The creator can review and still edit.</td>
+</tr>
+<tr>
+<td><code>published</code></td>
+<td>Open to participants. Questions are frozen.</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>phase</strong> (<code>upcoming</code>, <code>ongoing</code>, <code>completed</code>, enum <code>AssessmentPhase</code>) is <em>not stored</em>. It is worked out from <code>attempt_start_time</code> and <code>attempt_end_time</code>. Generation progress is the job's status, not the assessment's. Source: <code>src/assessments/domain/assessment-state.ts</code>.</p>
+<h4 id="assessment_sections"><code>assessment_sections</code><a class="headerlink" href="#assessment_sections" title="Permanent link">¶</a></h4>
+<p>A group of same-type questions inside an assessment, with its own marking. Entity: <code>assessment-section.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>assessment_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>question_type</code></td>
+<td>varchar(20)</td>
+<td>no</td>
+<td></td>
+<td><code>QuestionType</code>: <code>mcq</code>, <code>coding</code>, <code>descriptive</code></td>
+</tr>
+<tr>
+<td><code>max_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>correct_marks</code></td>
+<td>decimal(5,2)</td>
+<td>no</td>
+<td></td>
+<td>Marks for a right answer</td>
+</tr>
+<tr>
+<td><code>incorrect_marks</code></td>
+<td>decimal(5,2)</td>
+<td>no</td>
+<td></td>
+<td>Marks taken off for a wrong answer</td>
+</tr>
+<tr>
+<td><code>order_index</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Order in the assessment</td>
+</tr>
+<tr>
+<td><code>difficulty</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>1</code></td>
+<td>1 (easiest) to 5. <code>CHECK difficulty BETWEEN 1 AND 5</code> (in the migration only).</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code> (no soft delete).</p>
+<h4 id="assessments_questions"><code>assessments_questions</code><a class="headerlink" href="#assessments_questions" title="Permanent link">¶</a></h4>
+<p>A <strong>snapshot</strong> of one bank question placed in an assessment. Entity: <code>assessment-question.entity.ts</code> (class <code>AssessmentQuestion</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK. Responses point here, not at <code>questions</code>.</td>
+</tr>
+<tr>
+<td><code>assessment_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>question_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>questions.id</code>, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>section_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>assessment_sections.id</code>, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>varchar(20)</td>
+<td>no</td>
+<td><code>mcq</code></td>
+<td><code>QuestionType</code></td>
+</tr>
+<tr>
+<td><code>question_text</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td>Copied from the bank</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td></td>
+<td>Type-specific copy: <code>McqQuestionContent</code>, <code>CodingQuestionContent</code> or <code>DescriptiveQuestionContent</code></td>
+</tr>
+<tr>
+<td><code>topics</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td></td>
+<td>Copy of <code>questions.meta.topics</code>: <code>QuestionTopic[]</code></td>
+</tr>
+<tr>
+<td><code>correct_marks</code></td>
+<td>decimal(5,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>incorrect_marks</code></td>
+<td>decimal(5,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>order_index</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. Unique: <code>UQ_assessments_questions_assessment_question</code> on <code>(assessment_id, question_id)</code>, so a bank question can appear only once per assessment.</p>
+<p><strong>Why snapshot?</strong> A participant must see exactly what was published, and grading must use the answer key that was live at the time. Copying the content into <code>content</code> makes the assessment independent of later bank edits or deletes.</p>
+<h4 id="assessments_participants"><code>assessments_participants</code><a class="headerlink" href="#assessments_participants" title="Permanent link">¶</a></h4>
+<p>A user's place on an assessment. Entity: <code>assessment-participants.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>assessment_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>ParticipantStatus</code></td>
+<td>no</td>
+<td></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>invited_by</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>users.id</code>, SET NULL. Null for self-registration. Indexed.</td>
+</tr>
+<tr>
+<td><code>invited_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>invite_accepted_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>revoked_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Cleared if the user is invited again or re-registers</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Unique: <code>(assessment_id, user_id)</code> among live rows.</p>
+<table>
+<thead>
+<tr>
+<th><code>ParticipantStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>invited</code></td>
+<td>Offered a seat by an organization member. Must accept first.</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>May sit the test (registered, accepted, or the creator)</td>
+</tr>
+<tr>
+<td><code>revoked</code></td>
+<td>Declined, left, or removed. May be invited again or re-register.</td>
+</tr>
+</tbody>
+</table>
+<p>The creator also has an <code>active</code> row but does not use a seat. Progress through the test is the attempt's status, not the participant's. Source: <code>src/assessments/domain/participant-state.ts</code>.</p>
+<h3 id="3b-question-bank">3b. Question bank<a class="headerlink" href="#3b-question-bank" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    questions {
+        int id PK
+        varchar type
+        text question_text
+        jsonb meta
+        int created_by FK
+        timestamptz deleted_at
+    }
+    mcq_question_details {
+        int question_id PK "same id as questions"
+        jsonb options
+        int correct_option_id
+        text explanation
+    }
+    coding_question_details {
+        int question_id PK "same id as questions"
+        text constraints
+        jsonb starter_code
+        jsonb supported_languages
+        int time_limit_ms
+        int memory_limit_mb
+        varchar checker_type
+        jsonb test_cases
+    }
+    descriptive_question_details {
+        int question_id PK "same id as questions"
+        jsonb checkpoints
+        int max_words
+    }
+    users ||--o{ questions : "creates"
+    questions ||--o| mcq_question_details : "mcq data"
+    questions ||--o| coding_question_details : "coding data"
+    questions ||--o| descriptive_question_details : "descriptive data"
+    questions ||--o{ assessments_questions : "copied into"
+</div>
+<p>The bank uses <strong>one shared table plus one detail table per type</strong>. <code>questions.type</code> says which detail table holds the rest. Each detail table uses the question's id as its own primary key (a one-to-one link). This split happened in the <code>20261014*</code> migrations, which moved the MCQ columns out of <code>questions</code> and backfilled the new tables.</p>
+<h4 id="questions"><code>questions</code><a class="headerlink" href="#questions" title="Permanent link">¶</a></h4>
+<p>Entity: <code>question.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>varchar(20)</td>
+<td>no</td>
+<td><code>mcq</code></td>
+<td><code>QuestionType</code>. <code>IDX_questions_type</code></td>
+</tr>
+<tr>
+<td><code>question_text</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td></td>
+<td><code>QuestionMeta</code>: <code>{ topics?: { name, weight }[] }</code>. Weights sum to 1.</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>users.id</code>, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<h4 id="mcq_question_details"><code>mcq_question_details</code><a class="headerlink" href="#mcq_question_details" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>question_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>PK and FK <code>questions.id</code>, CASCADE</td>
+</tr>
+<tr>
+<td><code>options</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td></td>
+<td><code>McqOption[]</code>: <code>{ id, text }</code></td>
+</tr>
+<tr>
+<td><code>correct_option_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Matches one <code>options[].id</code></td>
+</tr>
+<tr>
+<td><code>explanation</code></td>
+<td>text</td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="coding_question_details"><code>coding_question_details</code><a class="headerlink" href="#coding_question_details" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>question_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>PK and FK, CASCADE</td>
+</tr>
+<tr>
+<td><code>constraints</code>, <code>input_format</code>, <code>output_format</code></td>
+<td>text</td>
+<td>yes</td>
+<td></td>
+<td>Shown to the candidate</td>
+</tr>
+<tr>
+<td><code>starter_code</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>{}</code></td>
+<td><code>CodingStarterCode</code>: <code>{ [language]: code }</code></td>
+</tr>
+<tr>
+<td><code>supported_languages</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>[]</code></td>
+<td><code>string[]</code></td>
+</tr>
+<tr>
+<td><code>time_limit_ms</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Per test case</td>
+</tr>
+<tr>
+<td><code>memory_limit_mb</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>checker_type</code></td>
+<td>varchar(30)</td>
+<td>no</td>
+<td><code>exact</code></td>
+<td>How output is compared. varchar so new checkers need no migration.</td>
+</tr>
+<tr>
+<td><code>test_cases</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>[]</code></td>
+<td><code>CodingTestCase[]</code>: <code>{ input, expectedOutput, isHidden }</code>. Hidden cases are never shown.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descriptive_question_details"><code>descriptive_question_details</code><a class="headerlink" href="#descriptive_question_details" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>question_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>PK and FK, CASCADE</td>
+</tr>
+<tr>
+<td><code>checkpoints</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>[]</code></td>
+<td><code>DescriptiveCheckpoint[]</code>: <code>{ id, description, weightage }</code>. Weightages are integers that sum to 100. This is the answer key.</td>
+</tr>
+<tr>
+<td><code>max_words</code></td>
+<td>int</td>
+<td>yes</td>
+<td></td>
+<td>Suggested length. Not enforced in grading.</td>
+</tr>
+</tbody>
+</table>
+<p>All jsonb shapes for questions are in <code>src/assessments/questions/interfaces/question-content.interface.ts</code> and <code>question-meta.interface.ts</code>.</p>
+<h3 id="3c-content-library-tags-prompts-templates">3c. Content library: tags, prompts, templates<a class="headerlink" href="#3c-content-library-tags-prompts-templates" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    tags {
+        int id PK
+        varchar name UK
+        varchar slug UK
+        boolean is_active
+    }
+    assessment_prompts {
+        int id PK
+        varchar title
+        text prompt
+        enum visibility
+        enum status
+        int created_by FK
+    }
+    assessment_prompt_tags {
+        int id PK
+        int assessment_prompt_id FK
+        int tag_id FK
+    }
+    assessment_templates {
+        int id PK
+        varchar uid
+        varchar slug
+        varchar name
+        jsonb sections
+        text prompt
+        enum visibility
+        boolean is_active
+        int created_by FK
+    }
+    users ||--o{ assessment_prompts : "writes"
+    users ||--o{ assessment_templates : "owns"
+    assessment_prompts ||--o{ assessment_prompt_tags : "tagged"
+    tags ||--o{ assessment_prompt_tags : "labels"
+</div>
+<h4 id="tags"><code>tags</code><a class="headerlink" href="#tags" title="Permanent link">¶</a></h4>
+<p>A label for prompts. Entity: <code>tag.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><code>UQ_tags_name</code> (not partial)</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td>varchar(120)</td>
+<td>no</td>
+<td></td>
+<td><code>UQ_tags_slug</code> (not partial)</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>deleted_at</code>. Today tags are only joined through <code>assessment_prompt_tags</code>.</p>
+<h4 id="assessment_prompts"><code>assessment_prompts</code><a class="headerlink" href="#assessment_prompts" title="Permanent link">¶</a></h4>
+<p>A saved, reusable prompt text that users can browse. Entity: <code>assessment-prompt.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>visibility</code></td>
+<td>enum <code>AssessmentPromptVisibility</code></td>
+<td>no</td>
+<td><code>private</code></td>
+<td><code>public</code>, <code>private</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>AssessmentPromptStatus</code></td>
+<td>no</td>
+<td><code>draft</code></td>
+<td><code>draft</code>, <code>active</code>, <code>archived</code></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. This library has <strong>no</strong> foreign key to <code>assessments</code>. Generation takes the prompt text directly in the request.</p>
+<h4 id="assessment_prompt_tags"><code>assessment_prompt_tags</code><a class="headerlink" href="#assessment_prompt_tags" title="Permanent link">¶</a></h4>
+<p>Join table between prompts and tags. Entity: <code>assessment-prompt-tag.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>assessment_prompt_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE</td>
+</tr>
+<tr>
+<td><code>tag_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>deleted_at</code>. Unique <code>(assessment_prompt_id, tag_id)</code> among live rows, so a tag can be removed and added again. Single-column indexes on both FKs exist in the database.</p>
+<h4 id="assessment_templates"><code>assessment_templates</code><a class="headerlink" href="#assessment_templates" title="Permanent link">¶</a></h4>
+<p>A reusable preset of assessment settings. Starting from a template sends its sections as a manual-mode generation. Entity: <code>assessment-template.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>varchar(8)</td>
+<td>no</td>
+<td></td>
+<td>Public id. Unique among live rows.</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td>varchar(180)</td>
+<td>no</td>
+<td></td>
+<td>Unique among live rows</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td>Template name in the picker</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Title given to created assessments</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Minutes</td>
+</tr>
+<tr>
+<td><code>max_participants</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>max_total_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Sum of section counts. Kept in step with <code>sections</code>.</td>
+</tr>
+<tr>
+<td><code>sections</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>[]</code></td>
+<td><code>AssessmentTemplateSection[]</code>: <code>{ title, prompt, questionType, questionCount, difficulty, positiveMark, negativeMark }</code>. Defined in the entity file.</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Default prompt for sections without their own</td>
+</tr>
+<tr>
+<td><code>visibility</code></td>
+<td>enum <code>AssessmentTemplateVisibility</code></td>
+<td>no</td>
+<td><code>private</code></td>
+<td><code>public</code>, <code>private</code></td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Registration and attempt windows are not stored on the template; they come from the caller.</p>
+<hr/>
+<h2 id="4-attempts-and-evaluation">4. Attempts and evaluation<a class="headerlink" href="#4-attempts-and-evaluation" title="Permanent link">¶</a></h2>
+<p>An <strong>attempt</strong> is one user sitting one assessment. A <strong>response</strong> is the answer to one question inside that attempt. Grading is done by background jobs (see <a href="#5-jobs">section 5</a>). Design: <a href="../hld-design/attempts/">Attempts</a>, <a href="../hld-design/evaluation/">Evaluation</a>, <a href="../hld-design/code-execution/">Code execution</a>.</p>
+<div class="mermaid">erDiagram
+    assessment_attempts {
+        int id PK
+        uuid uid "public id"
+        int assessment_id FK
+        int user_id FK
+        timestamptz started_at
+        timestamptz submitted_at
+        decimal score
+        int total_questions
+        int attempted_questions
+        int correct_responses
+        int incorrect_responses
+        enum status
+        int rejected_by FK
+        jsonb next_assessment_suggestion
+    }
+    assessment_attempt_responses {
+        int id PK
+        int attempt_id FK
+        int assessment_question_id FK
+        jsonb answer
+        varchar language
+        text source_code
+        varchar evaluation_status
+        varchar code_verdict
+        boolean is_correct
+        decimal marks_awarded
+        jsonb evaluation_result
+    }
+    assessments ||--o{ assessment_attempts : "attempted in"
+    users ||--o{ assessment_attempts : "sits"
+    assessment_attempts ||--o{ assessment_attempt_responses : "has"
+    assessments_questions ||--o{ assessment_attempt_responses : "answers"
+</div>
+<h3 id="assessment_attempts"><code>assessment_attempts</code><a class="headerlink" href="#assessment_attempts" title="Permanent link">¶</a></h3>
+<p>Entity: <code>assessment-attempt.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK (internal)</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>uuid</td>
+<td>no</td>
+<td>generated</td>
+<td>Public id used in URLs</td>
+</tr>
+<tr>
+<td><code>assessment_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>submitted_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td>decimal(8,2)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Set when evaluated</td>
+</tr>
+<tr>
+<td><code>total_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Copied from <code>assessments.curr_total_questions</code> at start</td>
+</tr>
+<tr>
+<td><code>attempted_questions</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>correct_responses</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>incorrect_responses</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>AttemptStatus</code></td>
+<td>no</td>
+<td><code>in_progress</code></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>rejected_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>rejected_by</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>users.id</code>, SET NULL</td>
+</tr>
+<tr>
+<td><code>rejection_reason</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>next_assessment_suggestion</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>The AI-suggested next assessment, shaped like a template: <code>name</code>, <code>title</code>, <code>description</code>, <code>prompt</code>, <code>duration</code>, <code>maxTotalQuestions</code>, <code>sections[]</code>, <code>generatedAt</code>. Written once by <code>POST /v1/attempts/:uid/next-assessment</code>, only while <code>null</code>. Migration <code>20261030000001</code>. See <a href="../hld-design/attempts/#57-next-assessment-suggestion">Attempts</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code> (no soft delete).
+Unique: <code>UQ_assessment_attempts_user_assessment</code> on <code>(user_id, assessment_id)</code>, so <strong>one attempt per user per assessment</strong>. It was created by migration <code>20260618000004</code> and is not declared on the entity. <code>AttemptsService.startAttempt()</code> returns the existing attempt if there is one.</p>
+<table>
+<thead>
+<tr>
+<th><code>AttemptStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>in_progress</code></td>
+<td>Being sat. Answers can change.</td>
+</tr>
+<tr>
+<td><code>submitted</code></td>
+<td>Handed in. Waiting for the evaluation job.</td>
+</tr>
+<tr>
+<td><code>evaluating</code></td>
+<td>The evaluator is grading the responses</td>
+</tr>
+<tr>
+<td><code>evaluated</code></td>
+<td>Graded and scored. Final.</td>
+</tr>
+<tr>
+<td><code>rejected</code></td>
+<td>Set aside by a reviewer, from any other state. Keeps its score for the record.</td>
+</tr>
+</tbody>
+</table>
+<p>Source: <code>src/assessments/domain/attempt-state.ts</code>.</p>
+<h3 id="assessment_attempt_responses"><code>assessment_attempt_responses</code><a class="headerlink" href="#assessment_attempt_responses" title="Permanent link">¶</a></h3>
+<p>Entity: <code>assessment-attempt-response.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>attempt_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>assessment_question_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>assessments_questions.id</code>, CASCADE. Indexed (<code>IDX_assessment_attempt_responses_question_id</code>).</td>
+</tr>
+<tr>
+<td><code>answer</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td></td>
+<td><code>McqAnswer</code> <code>{ selectedOptionId }</code> or <code>DescriptiveAnswer</code> <code>{ text }</code>. Null for coding.</td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>varchar(30)</td>
+<td>yes</td>
+<td></td>
+<td>Coding only</td>
+</tr>
+<tr>
+<td><code>source_code</code></td>
+<td>text</td>
+<td>yes</td>
+<td></td>
+<td>Coding only</td>
+</tr>
+<tr>
+<td><code>evaluation_status</code></td>
+<td>varchar(20)</td>
+<td>no</td>
+<td><code>pending</code></td>
+<td><code>ResponseEvaluationStatus</code>, guarded by a <code>CHECK</code></td>
+</tr>
+<tr>
+<td><code>code_verdict</code></td>
+<td>varchar(30)</td>
+<td>yes</td>
+<td></td>
+<td><code>CodeVerdict</code>, guarded by a <code>CHECK</code>. Coding only.</td>
+</tr>
+<tr>
+<td><code>is_correct</code></td>
+<td>boolean</td>
+<td>yes</td>
+<td></td>
+<td>Null until graded</td>
+</tr>
+<tr>
+<td><code>marks_awarded</code></td>
+<td>decimal(8,2)</td>
+<td>yes</td>
+<td></td>
+<td>Null until graded</td>
+</tr>
+<tr>
+<td><code>evaluation_result</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td></td>
+<td><code>CodingEvaluationResult</code> (per test case results, counts, time, memory, compiler output) or <code>DescriptiveEvaluationResult</code> (per checkpoint results, <code>scorePercent</code>)</td>
+</tr>
+<tr>
+<td><code>answered_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>evaluated_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>. Composite index: <code>IDX_assessment_attempt_responses_evaluation_status</code> on <code>(attempt_id, evaluation_status)</code>. There is <strong>no</strong> unique index on <code>(attempt_id, assessment_question_id)</code>; "one response per question" is enforced in <code>AttemptsService.upsertResponse()</code> (find, then update or insert).</p>
+<table>
+<thead>
+<tr>
+<th><code>ResponseEvaluationStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pending</code></td>
+<td>Saved, not graded yet. Every answer is saved as <code>pending</code>.</td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td>A grader is working on it</td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td>Graded</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Grading failed. The job can retry.</td>
+</tr>
+<tr>
+<td><code>cancelled</code></td>
+<td>Grading abandoned (for example the attempt was rejected)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>CodeVerdict</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>accepted</code></td>
+<td>All test cases passed</td>
+</tr>
+<tr>
+<td><code>wrong_answer</code></td>
+<td>Output did not match</td>
+</tr>
+<tr>
+<td><code>time_limit_exceeded</code></td>
+<td>Too slow</td>
+</tr>
+<tr>
+<td><code>memory_limit_exceeded</code></td>
+<td>Too much memory</td>
+</tr>
+<tr>
+<td><code>compilation_error</code></td>
+<td>Did not compile</td>
+</tr>
+<tr>
+<td><code>runtime_error</code></td>
+<td>Crashed while running</td>
+</tr>
+</tbody>
+</table>
+<p>Source: <code>src/assessments/domain/response-state.ts</code>. jsonb shapes: <code>src/assessments/questions/interfaces/question-content.interface.ts</code>.</p>
+<hr/>
+<h2 id="5-jobs">5. Jobs<a class="headerlink" href="#5-jobs" title="Permanent link">¶</a></h2>
+<p>A <strong>job</strong> is a row that tracks a piece of background work sent through RabbitMQ (generating an assessment, grading an attempt, building a roadmap, importing invitations). Jobs can have child jobs. Design: <a href="../hld-design/jobs-and-schedulers/">Jobs and schedulers</a>.</p>
+<div class="mermaid">erDiagram
+    jobs {
+        bigint id PK
+        varchar type
+        varchar queue
+        enum status
+        jsonb payload
+        jsonb result
+        jsonb error
+        int attempts
+        int max_attempts
+        bigint parent_job_id FK
+        varchar idempotency_key
+        int created_by FK
+    }
+    users ||--o{ jobs : "requested"
+    jobs ||--o{ jobs : "parent of"
+    jobs ||--o{ assessments : "generated"
+    jobs ||--o{ learning_roadmaps : "latest job"
+    jobs ||--o{ llm_audit : "LLM calls"
+</div>
+<h3 id="jobs"><code>jobs</code><a class="headerlink" href="#jobs" title="Permanent link">¶</a></h3>
+<p>Entity: <code>job.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>bigint</td>
+<td>no</td>
+<td>auto</td>
+<td>PK (TypeScript <code>string</code>)</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><code>JobType</code>. <code>IDX_jobs_type</code></td>
+</tr>
+<tr>
+<td><code>queue</code></td>
+<td>varchar(50)</td>
+<td>no</td>
+<td></td>
+<td>RabbitMQ queue. <code>IDX_jobs_queue</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>JobStatus</code></td>
+<td>no</td>
+<td><code>pending</code></td>
+<td><code>IDX_jobs_status</code></td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Input. Shape depends on <code>type</code> (see below).</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Output on success</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Error details on failure</td>
+</tr>
+<tr>
+<td><code>attempts</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Tries so far</td>
+</tr>
+<tr>
+<td><code>max_attempts</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Retry budget</td>
+</tr>
+<tr>
+<td><code>status_description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Human-readable progress, for example <code>2/3 sections generated</code></td>
+</tr>
+<tr>
+<td><code>parent_job_id</code></td>
+<td>bigint</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>jobs.id</code>, CASCADE. <code>IDX_jobs_parent_job_id</code></td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td>varchar(100)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Client's <code>Idempotency-Key</code> header</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>users.id</code>, <strong>SET NULL</strong> (a job is an audit record and outlives its user). Indexed.</td>
+</tr>
+<tr>
+<td><code>started_at</code>, <code>completed_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. Unique: <code>UQ_jobs_created_by_idempotency_key</code> on <code>(created_by, idempotency_key) WHERE idempotency_key IS NOT NULL</code>, so the same request sent twice opens only one job.</p>
+<table>
+<thead>
+<tr>
+<th><code>JobStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pending</code></td>
+<td>Queued, not picked up</td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td>A worker is running it (a parent stays here while its children run)</td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td>Finished with a result</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Finished with an error</td>
+</tr>
+<tr>
+<td><code>cancelled</code></td>
+<td>Abandoned before finishing</td>
+</tr>
+</tbody>
+</table>
+<p><code>JobType</code> values and their payload interfaces:</p>
+<table>
+<thead>
+<tr>
+<th><code>JobType</code></th>
+<th>Payload interface (file)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GENERATE_ASSESSMENT</code> (parent)</td>
+<td><code>ParentGenerationPayload</code> (<code>src/assessments/generation/interfaces/generation-job.interface.ts</code>)</td>
+</tr>
+<tr>
+<td><code>GENERATE_MCQ_SECTION</code>, <code>GENERATE_CODING_SECTION</code>, <code>GENERATE_DESCRIPTIVE_SECTION</code></td>
+<td><code>SectionGenerationPayload</code> (same file)</td>
+</tr>
+<tr>
+<td><code>EVALUATE_ATTEMPT</code> (parent)</td>
+<td><code>AttemptEvaluationPayload</code> (<code>src/assessments/attempts/interfaces/attempt-evaluation-job.interface.ts</code>)</td>
+</tr>
+<tr>
+<td><code>EVALUATE_MCQ_RESPONSES</code>, <code>EVALUATE_CODING_RESPONSES</code>, <code>EVALUATE_DESCRIPTIVE_RESPONSES</code></td>
+<td><code>ResponseEvaluationPayload</code> (<code>src/assessments/evaluation/interfaces/evaluation-job.interface.ts</code>)</td>
+</tr>
+<tr>
+<td><code>IMPORT_ORG_INVITATIONS</code></td>
+<td><code>InvitationImportPayload</code> (<code>src/organizations/interfaces/invitation-import.interface.ts</code>)</td>
+</tr>
+<tr>
+<td><code>ANALYZE_ROADMAP_INTENT</code>, <code>GENERATE_ROADMAP</code>, <code>MODIFY_ROADMAP_GRAPH</code></td>
+<td>Roadmap payloads (<code>src/learning-roadmaps/</code>)</td>
+</tr>
+<tr>
+<td><code>CREATE_ASSESSMENT</code></td>
+<td>Older single-job generation, still routed by <code>src/assessments/consumers/question-generation.consumer.ts</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every payload carries a <code>userId</code>. <code>JobsService.findOne()</code> checks it against the caller, so users only see their own jobs.</p>
+<hr/>
+<h2 id="6-ai">6. AI<a class="headerlink" href="#6-ai" title="Permanent link">¶</a></h2>
+<p>These tables hold the list of LLMs the platform can call, an audit row for every LLM call, and the chat history of the AI assistant. Design: <a href="../hld-design/ai/">AI layer</a>, <a href="../hld-design/ai-assistant/">AI assistant</a>.</p>
+<div class="mermaid">erDiagram
+    ai_models {
+        int id PK
+        enum provider
+        varchar code "model id sent to the API"
+        varchar display_name
+        varchar api_key_variable
+        decimal input_price_per_1m
+        decimal output_price_per_1m
+        jsonb capabilities
+        boolean is_active
+        boolean is_default
+    }
+    llm_audit {
+        bigint id PK
+        bigint job_id FK
+        int user_id FK
+        int ai_model_id FK
+        varchar model_code
+        varchar status
+        int input_tokens
+        int output_tokens
+        decimal total_cost
+        timestamptz started_at
+    }
+    ai_conversations {
+        int id PK
+        varchar uid UK
+        int user_id FK
+        enum context_type
+        int context_id "polymorphic, no FK"
+    }
+    ai_conversation_messages {
+        int id PK
+        varchar uid UK
+        int conversation_id FK
+        text message
+        enum role
+    }
+    ai_models ||--o{ llm_audit : "priced"
+    jobs ||--o{ llm_audit : "made"
+    users ||--o{ llm_audit : "billed to"
+    users ||--o{ ai_conversations : "owns"
+    ai_conversations ||--o{ ai_conversation_messages : "contains"
+</div>
+<h3 id="ai_models"><code>ai_models</code><a class="headerlink" href="#ai_models" title="Permanent link">¶</a></h3>
+<p>An LLM the platform can route requests to, with its prices. Entity: <code>ai-model.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>enum <code>AiModelProvider</code></td>
+<td>no</td>
+<td></td>
+<td><code>openai</code>, <code>anthropic</code>, <code>google</code></td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td>Provider's model id. Unique among live rows.</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>api_key_variable</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><strong>Name</strong> of the env variable that holds the key. The key itself is never stored.</td>
+</tr>
+<tr>
+<td><code>base_url_variable</code></td>
+<td>varchar(100)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Name of the env variable for the base URL</td>
+</tr>
+<tr>
+<td><code>input_price_per_1m</code></td>
+<td>decimal(12,6)</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>USD per million input tokens</td>
+</tr>
+<tr>
+<td><code>output_price_per_1m</code></td>
+<td>decimal(12,6)</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>USD per million output tokens</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td><code>{}</code></td>
+<td><code>AiModelCapabilities</code>: <code>vision</code>, <code>toolCalling</code>, <code>structuredOutput</code>, <code>streaming</code>, <code>contextWindow</code>, <code>maxOutputTokens</code> (all optional). <code>src/ai/interfaces/ai-model-capabilities.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td>Indexed</td>
+</tr>
+<tr>
+<td><code>is_default</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>false</code></td>
+<td><code>UQ_ai_models_is_default</code>: unique where <code>is_default = true AND deleted_at IS NULL</code>, so at most one default</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<h3 id="llm_audit"><code>llm_audit</code><a class="headerlink" href="#llm_audit" title="Permanent link">¶</a></h3>
+<p>One row per LLM API call. Append-only: rows are never updated or deleted. Entity: <code>llm-audit.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>bigint</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td>bigint</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>jobs.id</code>, SET NULL. Indexed.</td>
+</tr>
+<tr>
+<td><code>job_type</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td>Copied from the job</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK, SET NULL. Indexed.</td>
+</tr>
+<tr>
+<td><code>ai_model_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK, SET NULL. Indexed.</td>
+</tr>
+<tr>
+<td><code>provider</code>, <code>model</code>, <code>model_code</code></td>
+<td>varchar</td>
+<td>no</td>
+<td></td>
+<td>Snapshot at call time</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>varchar(30)</td>
+<td>no</td>
+<td></td>
+<td><code>LlmAuditStatus</code>: <code>SUCCESS</code>, <code>FAILED</code></td>
+</tr>
+<tr>
+<td><code>attempt</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>1</code></td>
+<td>2 for a repair retry, and so on</td>
+</tr>
+<tr>
+<td><code>error_message</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>Indexed</td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>duration_ms</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>input_tokens</code>, <code>output_tokens</code>, <code>cached_input_tokens</code>, <code>total_tokens</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>input_price_per_1m</code>, <code>output_price_per_1m</code></td>
+<td>decimal(20,10)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Price snapshot</td>
+</tr>
+<tr>
+<td><code>input_cost</code>, <code>output_cost</code>, <code>total_cost</code></td>
+<td>decimal(20,10)</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>USD</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. All foreign keys are SET NULL because the audit trail must outlive the job, user and model. Provider, model and prices are copied so a row keeps its meaning after a model is repriced or deleted.</p>
+<h3 id="ai_conversations"><code>ai_conversations</code><a class="headerlink" href="#ai_conversations" title="Permanent link">¶</a></h3>
+<p>One chat thread of the AI assistant, attached to one resource. Entity: <code>ai-conversation.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>varchar(64)</td>
+<td>no</td>
+<td></td>
+<td><code>conv_&lt;32 hex&gt;</code>. <code>UQ_ai_conversations_uid</code></td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed. Copied from the context.</td>
+</tr>
+<tr>
+<td><code>context_type</code></td>
+<td>enum <code>AiConversationContextType</code></td>
+<td>no</td>
+<td></td>
+<td><code>assessment_attempt</code> or <code>roadmap</code></td>
+</tr>
+<tr>
+<td><code>context_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Id in the table that <code>context_type</code> names. <strong>Polymorphic: deliberately no FK.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>. Unique: <code>UQ_ai_conversations_context</code> on <code>(context_type, context_id)</code>, so there is one conversation per attempt or roadmap, even if two requests open it at the same time.</p>
+<h3 id="ai_conversation_messages"><code>ai_conversation_messages</code><a class="headerlink" href="#ai_conversation_messages" title="Permanent link">¶</a></h3>
+<p>Entity: <code>ai-conversation-message.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>varchar(64)</td>
+<td>no</td>
+<td></td>
+<td><code>msg_&lt;32 hex&gt;</code>. Unique.</td>
+</tr>
+<tr>
+<td><code>conversation_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td>enum <code>AiConversationMessageRole</code></td>
+<td>no</td>
+<td></td>
+<td><code>user</code> (the learner) or <code>bot</code> (the assistant)</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. Index <code>IDX_ai_conversation_messages_conversation_created</code> on <code>(conversation_id, created_at)</code> serves transcript reads.</p>
+<hr/>
+<h2 id="7-commerce-plans-subscriptions-usage-orders-payments-credits">7. Commerce: plans, subscriptions, usage, orders, payments, credits<a class="headerlink" href="#7-commerce-plans-subscriptions-usage-orders-payments-credits" title="Permanent link">¶</a></h2>
+<p>A <strong>plan</strong> (for example Free or Pro) has <strong>versions</strong>. Each version has a price and a list of <strong>features</strong> with limits. A <strong>subscription</strong> links a user (or an organization) to one plan version. <strong>Usage</strong> rows count how much of a limited feature has been used in the current period. <strong>Credit packs</strong> are one-time purchases of extra usage, and <strong>credit balances</strong> hold what was bought. <strong>Orders</strong> and <strong>payments</strong> record checkout through Razorpay, for subscriptions and credit packs alike. Design: <a href="../hld-design/commerce/">Commerce</a>.</p>
+<h3 id="7a-plans-features-subscriptions-and-usage">7a. Plans, features, subscriptions and usage<a class="headerlink" href="#7a-plans-features-subscriptions-and-usage" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    plans {
+        int id PK
+        varchar code UK
+        varchar name
+        enum audience
+        boolean is_active
+        int sort_order
+        boolean is_displayed
+    }
+    plan_versions {
+        int id PK
+        int plan_id FK
+        int version
+        decimal price
+        varchar currency
+        enum billing_cycle
+        boolean is_current
+        int expiry_days
+    }
+    features {
+        int id PK
+        varchar key UK
+        varchar display_name
+    }
+    plan_features {
+        int id PK
+        int plan_version_id FK
+        int feature_id FK
+        varchar feature_value
+        enum type
+        int reset_period
+    }
+    subscriptions {
+        int id PK
+        int user_id FK
+        int organization_id FK
+        int plan_version_id FK
+        enum status
+        timestamptz starts_at
+        timestamptz expires_at
+    }
+    user_feature_usage {
+        int id PK
+        int user_id FK
+        int organization_id FK
+        int plan_feature_id FK
+        int used
+        date period_start
+        date period_end
+    }
+    plans ||--o{ plan_versions : "versions"
+    plan_versions ||--o{ plan_features : "includes"
+    features ||--o{ plan_features : "configured in"
+    plan_versions ||--o{ subscriptions : "subscribed"
+    users ||--o{ subscriptions : "buys"
+    organizations ||--o{ subscriptions : "owns"
+    plan_features ||--o{ user_feature_usage : "counted in"
+    users ||--o{ user_feature_usage : "uses"
+</div>
+<h4 id="plans"><code>plans</code><a class="headerlink" href="#plans" title="Permanent link">¶</a></h4>
+<p>Entity: <code>plan.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td>The free plan is found by name (<code>FREE_PLAN_NAME</code>)</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>varchar(50)</td>
+<td>no</td>
+<td></td>
+<td>Unique (plain constraint)</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>audience</code></td>
+<td>enum <code>PlanAudience</code></td>
+<td>no</td>
+<td><code>individual</code></td>
+<td><code>individual</code> (bought for yourself) or <code>organization</code> (bought for an org)</td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Order in the public list. Indexed.</td>
+</tr>
+<tr>
+<td><code>is_displayed</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td>Hidden plans still work for existing subscribers</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<h4 id="plan_versions"><code>plan_versions</code><a class="headerlink" href="#plan_versions" title="Permanent link">¶</a></h4>
+<p>A priced version of a plan. Changing a price creates a new version so old subscribers keep their terms. Entity: <code>plan-version.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>plan_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>price</code></td>
+<td>decimal(10,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>varchar(3)</td>
+<td>no</td>
+<td></td>
+<td>ISO code, for example <code>INR</code></td>
+</tr>
+<tr>
+<td><code>billing_cycle</code></td>
+<td>enum <code>BillingCycle</code></td>
+<td>no</td>
+<td></td>
+<td><code>MONTHLY</code>, <code>YEARLY</code>, <code>ONE_TIME</code></td>
+</tr>
+<tr>
+<td><code>is_current</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>effective_from</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>effective_until</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>After this, the version can no longer be bought</td>
+</tr>
+<tr>
+<td><code>expiry_days</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>How long a <code>ONE_TIME</code> purchase lasts. Null = never expires. Always null for recurring versions.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Unique: <code>(plan_id, version)</code>; and <code>UQ_plan_versions_plan_id_current</code> on <code>plan_id WHERE is_current = true</code>, so <strong>only one current version per plan</strong>.</p>
+<h4 id="features"><code>features</code><a class="headerlink" href="#features" title="Permanent link">¶</a></h4>
+<p>The catalog of features a plan can include. Entity: <code>feature.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><code>FeatureKey</code>. <code>UQ_features_key</code></td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<table>
+<thead>
+<tr>
+<th><code>FeatureKey</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AI_ASSESSMENT</code></td>
+<td>Number of AI assessment generations (a limit)</td>
+</tr>
+<tr>
+<td><code>AI_LEARNING_ROADMAP</code></td>
+<td>Number of AI roadmaps (a limit)</td>
+</tr>
+<tr>
+<td><code>AI_MODEL</code></td>
+<td>Which AI model the plan uses (an enum setting)</td>
+</tr>
+<tr>
+<td><code>ALLOWED_QUESTION_TYPES</code></td>
+<td>Comma-separated question types the plan may generate, for example <code>mcq,coding</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="plan_features"><code>plan_features</code><a class="headerlink" href="#plan_features" title="Permanent link">¶</a></h4>
+<p>One feature inside one plan version, with its value. Entity: <code>plan-version-feature.entity.ts</code> (class <code>PlanVersionFeature</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>plan_version_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>feature_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>features.id</code>, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td>Per-version label</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>feature_value</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td>A number, "unlimited", a model code or a list, depending on <code>type</code></td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>enum <code>PlanFeatureType</code></td>
+<td>no</td>
+<td><code>limit</code></td>
+<td><code>limit</code>: a usage quota (a non-numeric value means unlimited). <code>enum</code>: a setting, never consumed.</td>
+</tr>
+<tr>
+<td><code>reset_period</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Days between usage resets. Null = never resets.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Unique <code>(plan_version_id, feature_id)</code> among live rows.</p>
+<h4 id="subscriptions"><code>subscriptions</code><a class="headerlink" href="#subscriptions" title="Permanent link">¶</a></h4>
+<p>Links a user, or an organization, to a plan version. Entity: <code>subscription.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed. Always the purchaser.</td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK, CASCADE. Indexed. Set for an organization's subscription.</td>
+</tr>
+<tr>
+<td><code>plan_version_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed. The plan is reached through the version.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>SubscriptionStatus</code></td>
+<td>no</td>
+<td></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>starts_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Null for a <code>ONE_TIME</code> purchase with no <code>expiry_days</code></td>
+</tr>
+<tr>
+<td><code>cancelled_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>auto_renew</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td><code>false</code> for <code>ONE_TIME</code></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<table>
+<thead>
+<tr>
+<th><code>SubscriptionStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PENDING</code></td>
+<td>Checkout started, not paid</td>
+</tr>
+<tr>
+<td><code>ACTIVE</code></td>
+<td>In use</td>
+</tr>
+<tr>
+<td><code>SUSPENDED</code></td>
+<td>Replaced: when a new personal plan is paid, other active personal subscriptions are suspended (<code>PaymentsService.markPaymentCaptured()</code>)</td>
+</tr>
+<tr>
+<td><code>PAST_DUE</code>, <code>CANCELLED</code>, <code>EXPIRED</code></td>
+<td>Defined for renewals and cancellation</td>
+</tr>
+</tbody>
+</table>
+<p>A user with no active personal subscription gets a free one created on demand (<code>SubscriptionsService.createFreeSubscription()</code>, called from <code>UsageService.consume()</code> and from email verification).</p>
+<h4 id="user_feature_usage"><code>user_feature_usage</code><a class="headerlink" href="#user_feature_usage" title="Permanent link">¶</a></h4>
+<p>How much of a limited feature has been used in the current period. Entity: <code>user-feature-usage.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed. For pooled org usage, the org's purchaser.</td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK, CASCADE. Indexed. Set for an organization's pooled usage.</td>
+</tr>
+<tr>
+<td><code>plan_feature_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>plan_features.id</code>, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>used</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>period_start</code></td>
+<td>date</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>period_end</code></td>
+<td>date</td>
+<td>no</td>
+<td></td>
+<td>A far-future date when <code>reset_period</code> is null</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. There is no unique index on <code>(user_id, organization_id, plan_feature_id)</code> (see <a href="#known-schema-gaps">gaps</a>).</p>
+<h3 id="7b-orders-payments-and-webhooks">7b. Orders, payments and webhooks<a class="headerlink" href="#7b-orders-payments-and-webhooks" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    orders {
+        int id PK
+        int user_id FK
+        enum resource_type
+        int resource_id "no FK"
+        decimal total_amount
+        enum provider
+        varchar provider_order_id UK
+        enum status
+        jsonb metadata
+        timestamptz expires_at
+    }
+    payments {
+        int id PK
+        int order_id FK
+        decimal amount
+        enum provider
+        varchar provider_order_id UK
+        varchar provider_payment_id UK
+        enum status
+        timestamptz paid_at
+    }
+    webhook_events {
+        int id PK
+        varchar provider
+        varchar event_id UK
+        varchar event_type
+        jsonb payload
+        boolean processed
+    }
+    users ||--o{ orders : "places"
+    orders ||--o{ payments : "paid by"
+</div>
+<h4 id="orders"><code>orders</code><a class="headerlink" href="#orders" title="Permanent link">¶</a></h4>
+<p>What the user is buying. Entity: <code>order.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>resource_type</code></td>
+<td>enum <code>OrderResourceType</code></td>
+<td>no</td>
+<td></td>
+<td><code>SUBSCRIPTION</code> or <code>CREDIT</code> (renamed from <code>AI_CREDITS</code> by <code>20261027000002</code>)</td>
+</tr>
+<tr>
+<td><code>resource_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Id of the thing bought: a <code>subscriptions.id</code>, or a <code>credit_packs.id</code> for <code>CREDIT</code>. <strong>No FK</strong>: it is polymorphic.</td>
+</tr>
+<tr>
+<td><code>total_amount</code></td>
+<td>decimal(10,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>varchar(3)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>enum <code>PaymentProvider</code></td>
+<td>no</td>
+<td></td>
+<td><code>RAZORPAY</code> (in use), <code>STRIPE</code> (enum only, no integration)</td>
+</tr>
+<tr>
+<td><code>provider_order_id</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td>Our checkout reference <code>chk_&lt;uuid&gt;</code>; the Razorpay order id is on the payment. <code>UQ_orders_provider_order_id</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>OrderStatus</code></td>
+<td>no</td>
+<td></td>
+<td><code>PENDING</code>, <code>PAID</code>, <code>FAILED</code>, <code>FULFILLED</code> (see below)</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>null</code> for <code>SUBSCRIPTION</code>. For <code>CREDIT</code>, <code>CreditOrderMetadata</code>: <code>{ creditPackId, featureId, quantity, aiModelCode }</code>, what the pack held at purchase.</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>. Index <code>IDX_orders_resource_type_resource_id</code> on <code>(resource_type, resource_id)</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>status</code></th>
+<th>Set when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PENDING</code></td>
+<td>Checkout created the order</td>
+</tr>
+<tr>
+<td><code>PAID</code></td>
+<td>Its payment was captured. Moves on to <code>FULFILLED</code> in the same transaction; stays <code>PAID</code> only for a <code>CREDIT</code> order with no credit metadata.</td>
+</tr>
+<tr>
+<td><code>FULFILLED</code></td>
+<td>What it bought was granted: the subscription activated, or the credits added</td>
+</tr>
+<tr>
+<td><code>FAILED</code></td>
+<td>Its payment failed while the order was still <code>PENDING</code>. A later capture of the same Razorpay order still moves it to <code>PAID</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><code>20261029000000-backfill-order-statuses.ts</code> brought older rows in line: captured subscription orders to <code>FULFILLED</code>, and pending orders whose latest payment failed to <code>FAILED</code>.</p>
+<h4 id="payments"><code>payments</code><a class="headerlink" href="#payments" title="Permanent link">¶</a></h4>
+<p>One payment try against an order. Entity: <code>payment.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>order_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>decimal(10,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>varchar(3)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>enum <code>PaymentProvider</code></td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>provider_order_id</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Unique where not null</td>
+</tr>
+<tr>
+<td><code>provider_payment_id</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Unique where not null</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>PaymentStatus</code></td>
+<td>no</td>
+<td></td>
+<td><code>PENDING</code>, <code>SUCCESS</code>, <code>FAILED</code>, <code>REFUNDED</code></td>
+</tr>
+<tr>
+<td><code>failure_reason</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>paid_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>.</p>
+<p>On a captured payment, in one transaction: the payment becomes <code>SUCCESS</code> and the order <code>PAID</code>. Then, for a subscription, other active personal subscriptions become <code>SUSPENDED</code>, the ordered one <code>ACTIVE</code>, and the order <code>FULFILLED</code>; for credits, the balance grows and the order becomes <code>FULFILLED</code>. On a failed payment, in one transaction: the payment becomes <code>FAILED</code>, and the order <code>FAILED</code> if it was still <code>PENDING</code>.</p>
+<h4 id="webhook_events"><code>webhook_events</code><a class="headerlink" href="#webhook_events" title="Permanent link">¶</a></h4>
+<p>A log of received payment webhooks, used to ignore repeats. Entity: <code>webhook-event.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td>varchar(50)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>event_id</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td>Unique. Built as <code>&lt;event&gt;:&lt;razorpayPaymentId&gt;</code> (for example <code>payment.captured:pay_ABC</code>), not the raw webhook id.</td>
+</tr>
+<tr>
+<td><code>event_type</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td>jsonb</td>
+<td>no</td>
+<td></td>
+<td>Raw webhook body</td>
+</tr>
+<tr>
+<td><code>processed</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>false</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>processed_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. No FK to payments; the link is through the payload.</p>
+<h3 id="7c-credit-packs-and-purchased-credits">7c. Credit packs and purchased credits<a class="headerlink" href="#7c-credit-packs-and-purchased-credits" title="Permanent link">¶</a></h3>
+<div class="mermaid">erDiagram
+    credit_packs {
+        int id PK
+        varchar name
+        int feature_id FK
+        varchar ai_model_code "no FK"
+        int quantity
+        decimal price
+        boolean is_active
+        int sort_order
+    }
+    user_feature_credits {
+        int id PK
+        int user_id FK
+        int organization_id FK
+        int feature_id FK
+        varchar ai_model_code "no FK"
+        int granted
+        int used
+    }
+    features ||--o{ credit_packs : "sold as"
+    features ||--o{ user_feature_credits : "counted in"
+    users ||--o{ user_feature_credits : "holds"
+    credit_packs ||..o{ orders : "bought through (resource_id)"
+</div>
+<p>Credits are extra usage on top of any plan. They are keyed by <strong>feature</strong>, not plan feature, so a balance survives plan changes, and they never reset or expire. <code>UsageService.consume</code> spends them only once the plan's own quota runs out. Design: <a href="../hld-design/commerce/#7-credit-packs">Commerce, section 7</a>.</p>
+<h4 id="credit_packs"><code>credit_packs</code><a class="headerlink" href="#credit_packs" title="Permanent link">¶</a></h4>
+<p>The catalog of credits on sale, managed by admins. Entity: <code>credit-pack.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK. Checkout takes this id.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>feature_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK <code>features.id</code>, CASCADE. <code>IDX_credit_packs_feature_id</code>. Never <code>AI_MODEL</code> or <code>ALLOWED_QUESTION_TYPES</code> (the API refuses settings).</td>
+</tr>
+<tr>
+<td><code>ai_model_code</code></td>
+<td>varchar(150)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>The model the credits run on, by <code>ai_models.code</code>. <code>null</code> = the free plan's <code>AI_MODEL</code>. A code, not an FK: a removed model falls back to the default.</td>
+</tr>
+<tr>
+<td><code>quantity</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Units of the feature per pack</td>
+</tr>
+<tr>
+<td><code>price</code></td>
+<td>decimal(10,2)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>currency</code></td>
+<td>varchar(3)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td><code>false</code> takes the pack off sale. There is no delete endpoint.</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td><code>IDX_credit_packs_sort_order</code></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<h4 id="user_feature_credits"><code>user_feature_credits</code><a class="headerlink" href="#user_feature_credits" title="Permanent link">¶</a></h4>
+<p>A purchased credit balance: one row per owner, feature and AI model. Entity: <code>user-feature-credit.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>organization_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK, CASCADE. Indexed. Always <code>null</code> today: only personal credits are sold.</td>
+</tr>
+<tr>
+<td><code>feature_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>ai_model_code</code></td>
+<td>varchar(150)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Copied from the pack. <code>null</code> = the free plan's model.</td>
+</tr>
+<tr>
+<td><code>granted</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Bought in total</td>
+</tr>
+<tr>
+<td><code>used</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td>Spent. <code>granted - used</code> is what is left.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Four partial unique indexes keep one row per owner, feature and model, with separate indexes for a <code>null</code> and a named model (a plain unique index would let <code>null</code>-model rows repeat):</p>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>Columns</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UQ_user_feature_credits_user_id_feature_id</code></td>
+<td><code>(user_id, feature_id)</code></td>
+<td><code>organization_id IS NULL AND ai_model_code IS NULL</code></td>
+</tr>
+<tr>
+<td><code>UQ_user_feature_credits_user_id_feature_id_ai_model_code</code></td>
+<td><code>(user_id, feature_id, ai_model_code)</code></td>
+<td><code>organization_id IS NULL AND ai_model_code IS NOT NULL</code></td>
+</tr>
+<tr>
+<td><code>UQ_user_feature_credits_organization_id_feature_id</code></td>
+<td><code>(organization_id, feature_id)</code></td>
+<td><code>organization_id IS NOT NULL AND ai_model_code IS NULL</code></td>
+</tr>
+<tr>
+<td><code>UQ_user_feature_credits_org_id_feature_id_ai_model_code</code></td>
+<td><code>(organization_id, feature_id, ai_model_code)</code></td>
+<td><code>organization_id IS NOT NULL AND ai_model_code IS NOT NULL</code></td>
+</tr>
+</tbody>
+</table>
+<p>Grants are an <code>INSERT ... ON CONFLICT</code> on the matching index, so two first grants for the same user cannot both insert a row.</p>
+<hr/>
+<h2 id="8-learning-roadmaps">8. Learning roadmaps<a class="headerlink" href="#8-learning-roadmaps" title="Permanent link">¶</a></h2>
+<p>A <strong>roadmap</strong> is a personal study plan made by the AI. It is a graph: <strong>nodes</strong> are steps (learn a topic, or practise it) and <strong>edges</strong> connect them. Design: <a href="../hld-design/learning-roadmaps/">Learning roadmaps</a>. The module also has a detailed design note at <code>src/learning-roadmaps/tdd.md</code>.</p>
+<div class="mermaid">erDiagram
+    learning_roadmaps {
+        int id PK
+        int user_id FK
+        varchar title
+        enum status
+        int current_node_id FK
+        bigint job_id FK
+        jsonb meta
+        text notepad
+    }
+    learning_roadmap_nodes {
+        int id PK
+        int learning_roadmap_id FK
+        enum type
+        varchar title
+        int position_index
+        enum status
+        jsonb meta
+    }
+    learning_node_edges {
+        int id PK
+        int roadmap_id FK
+        int from_node_id FK
+        int to_node_id FK
+        jsonb meta
+    }
+    learning_roadmap_templates {
+        int id PK
+        varchar uid
+        varchar slug
+        varchar name
+        text goal
+        enum visibility
+        int created_by FK
+    }
+    users ||--o{ learning_roadmaps : "owns"
+    learning_roadmaps ||--o{ learning_roadmap_nodes : "has"
+    learning_roadmaps ||--o{ learning_node_edges : "has"
+    learning_roadmap_nodes ||--o{ learning_node_edges : "from"
+    learning_roadmap_nodes ||--o{ learning_node_edges : "to"
+    users ||--o{ learning_roadmap_templates : "owns"
+</div>
+<h3 id="learning_roadmaps"><code>learning_roadmaps</code><a class="headerlink" href="#learning_roadmaps" title="Permanent link">¶</a></h3>
+<p>Entity: <code>learning-roadmap.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(255)</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Written by the analysis job</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>RoadmapStatus</code></td>
+<td>no</td>
+<td><code>analyzing</code></td>
+<td>See below</td>
+</tr>
+<tr>
+<td><code>current_node_id</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>learning_roadmap_nodes.id</code>, SET NULL (in the migration only)</td>
+</tr>
+<tr>
+<td><code>job_id</code></td>
+<td>bigint</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>jobs.id</code>, SET NULL (in the migration only). The latest job.</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>RoadmapMeta</code>: <code>rawDescription</code>, <code>requirementQuestions[]</code>, the job ids per phase, LLM run info, modification history</td>
+</tr>
+<tr>
+<td><code>notepad</code></td>
+<td>text</td>
+<td>no</td>
+<td><code>''</code></td>
+<td>The learner's notes. <code>select: false</code>, so it is only loaded when asked for.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code> (no soft delete). Composite index <code>IDX_learning_roadmaps_user_status</code> on <code>(user_id, status)</code>.</p>
+<table>
+<thead>
+<tr>
+<th><code>RoadmapStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analyzing</code></td>
+<td>Intent-analysis job queued or running</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>Analyzed. Waiting for the learner's answers to the requirement questions.</td>
+</tr>
+<tr>
+<td><code>generating</code></td>
+<td>Graph-generation job queued or running</td>
+</tr>
+<tr>
+<td><code>active</code></td>
+<td>Graph exists. Learner is progressing.</td>
+</tr>
+<tr>
+<td><code>modifying</code></td>
+<td>Graph-modification job queued or running</td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td>Finished</td>
+</tr>
+<tr>
+<td><code>archived</code></td>
+<td>Put away by the learner</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Analysis or generation failed. No usable graph.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="learning_roadmap_nodes"><code>learning_roadmap_nodes</code><a class="headerlink" href="#learning_roadmap_nodes" title="Permanent link">¶</a></h3>
+<p>Entity: <code>learning-roadmap-node.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK. Stays the same across modifications.</td>
+</tr>
+<tr>
+<td><code>learning_roadmap_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>enum <code>NodeType</code></td>
+<td>no</td>
+<td></td>
+<td><code>knowledge</code> (learn) or <code>practice</code> (test yourself)</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>varchar(255)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Learning material or practice brief</td>
+</tr>
+<tr>
+<td><code>position_index</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>0-based order</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>NodeStatus</code></td>
+<td>no</td>
+<td><code>not_started</code></td>
+<td><code>not_started</code>, <code>in_progress</code>, <code>completed</code>, <code>skipped</code>. Owned by the learner; generation never changes it.</td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>KnowledgeNodeMeta &amp; PracticeNodeMeta</code>: resources, estimated minutes, concepts; for practice nodes <code>assessmentId</code>, <code>questionCount</code>, <code>coversNodeIds</code></td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. Unique <code>UQ_learning_roadmap_nodes_position</code> on <code>(learning_roadmap_id, position_index)</code>. Index <code>(learning_roadmap_id, status)</code> for progress counts.</p>
+<p>A practice node points to the assessment generated for it through <code>meta.assessmentId</code>. This is an app-level link with no FK.</p>
+<h3 id="learning_node_edges"><code>learning_node_edges</code><a class="headerlink" href="#learning_node_edges" title="Permanent link">¶</a></h3>
+<p>Links between nodes. They make the roadmap a graph (a DAG: a graph without loops) instead of a list. Entity: <code>learning-node-edge.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>roadmap_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Copied from the nodes so a whole graph loads with one indexed query.</td>
+</tr>
+<tr>
+<td><code>from_node_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK nodes, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>to_node_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK nodes, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>meta</code></td>
+<td>jsonb</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td><code>EdgeMeta</code>: <code>label</code>, and an optional <code>condition</code> <code>{ type: 'score', operator: 'gte' or 'lt', value }</code> for branching after a practice node</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code> only. Unique <code>(roadmap_id, from_node_id, to_node_id)</code>. <code>CHECK from_node_id &lt;&gt; to_node_id</code> (in the migration only).</p>
+<p>jsonb shapes for all three tables: <code>src/learning-roadmaps/interfaces/roadmap-meta.interface.ts</code>.</p>
+<h3 id="learning_roadmap_templates"><code>learning_roadmap_templates</code><a class="headerlink" href="#learning_roadmap_templates" title="Permanent link">¶</a></h3>
+<p>A ready-made goal a learner can pick instead of typing one. Entity: <code>learning-roadmap-template.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td>varchar(8)</td>
+<td>no</td>
+<td></td>
+<td>Unique among live rows</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td>varchar(180)</td>
+<td>no</td>
+<td></td>
+<td>Unique among live rows</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>varchar(150)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td>For the picker. Not sent to the model.</td>
+</tr>
+<tr>
+<td><code>goal</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td>Sent to the analysis job as if the learner typed it</td>
+</tr>
+<tr>
+<td><code>visibility</code></td>
+<td>enum <code>RoadmapTemplateVisibility</code></td>
+<td>no</td>
+<td><code>private</code></td>
+<td><code>public</code>, <code>private</code></td>
+</tr>
+<tr>
+<td><code>is_active</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<hr/>
+<h2 id="9-notifications-and-newsletters">9. Notifications and newsletters<a class="headerlink" href="#9-notifications-and-newsletters" title="Permanent link">¶</a></h2>
+<p>Email templates are <strong>not</strong> stored in the database. They are TypeScript files in <code>src/notifications/email/templates/</code> (verification, welcome, password reset, invitations, newsletter). The only table here is <code>newsletters</code>. Design: <a href="../hld-design/notifications/">Notifications</a>.</p>
+<div class="mermaid">erDiagram
+    newsletters {
+        int id PK
+        varchar subject
+        text body_html
+        enum status
+        timestamptz scheduled_at
+        int recipient_count
+        int sent_count
+        int failed_count
+        int created_by FK
+    }
+    users ||--o{ newsletters : "writes"
+</div>
+<h3 id="newsletters"><code>newsletters</code><a class="headerlink" href="#newsletters" title="Permanent link">¶</a></h3>
+<p>An email sent to every subscribed user, now or at a set time. Entity: <code>newsletter.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td>varchar(200)</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>body_html</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>body_text</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Plain-text version</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>NewsletterStatus</code></td>
+<td>no</td>
+<td><code>SCHEDULED</code></td>
+<td>Indexed</td>
+</tr>
+<tr>
+<td><code>scheduled_at</code></td>
+<td>timestamptz</td>
+<td>no</td>
+<td></td>
+<td>"Send now" stores the current time. Indexed.</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>Set when a dispatcher claims the row</td>
+</tr>
+<tr>
+<td><code>sent_at</code></td>
+<td>timestamptz</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>recipient_count</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sent_count</code>, <code>failed_count</code></td>
+<td>int</td>
+<td>no</td>
+<td><code>0</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>text</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>For operators only</td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three.</p>
+<table>
+<thead>
+<tr>
+<th><code>NewsletterStatus</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SCHEDULED</code></td>
+<td>Waiting for <code>scheduled_at</code>. The only status the dispatcher claims from.</td>
+</tr>
+<tr>
+<td><code>SENDING</code></td>
+<td>Claimed and being delivered</td>
+</tr>
+<tr>
+<td><code>SENT</code></td>
+<td>Done. Check <code>failed_count</code>: a partial failure still lands here.</td>
+</tr>
+<tr>
+<td><code>FAILED</code></td>
+<td>Could not be attempted, or every recipient failed</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="10-platform-feature-flags-and-support-tickets">10. Platform: feature flags and support tickets<a class="headerlink" href="#10-platform-feature-flags-and-support-tickets" title="Permanent link">¶</a></h2>
+<p>Design: <a href="../hld-design/platform-services/">Platform services</a>.</p>
+<div class="mermaid">erDiagram
+    feature_flags {
+        int id PK
+        varchar key UK
+        text description
+        boolean enabled
+        int updated_by FK
+    }
+    feature_flag_roles {
+        int feature_flag_id PK
+        int role_id PK
+    }
+    support_tickets {
+        int id PK
+        int user_id FK
+        enum topic
+        text query
+        enum status
+    }
+    feature_flags ||--o{ feature_flag_roles : "limited to"
+    roles ||--o{ feature_flag_roles : "unlocks"
+    users ||--o{ support_tickets : "files"
+</div>
+<h3 id="feature_flags"><code>feature_flags</code><a class="headerlink" href="#feature_flags" title="Permanent link">¶</a></h3>
+<p>The current state of one feature flag. Keys and defaults come from code (<code>FEATURE_FLAG_DEFINITIONS</code>); admins only change <code>enabled</code> and the role list. Entity: <code>feature-flag.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>varchar(100)</td>
+<td>no</td>
+<td></td>
+<td><code>UQ_feature_flags_key</code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td>boolean</td>
+<td>no</td>
+<td><code>true</code></td>
+<td><code>false</code> turns it off for everyone</td>
+</tr>
+<tr>
+<td><code>updated_by</code></td>
+<td>int</td>
+<td>yes</td>
+<td><code>null</code></td>
+<td>FK <code>users.id</code>, SET NULL. Null when only the seeder wrote it.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: <code>created_at</code>, <code>updated_at</code>.</p>
+<p>How a flag is read: <code>enabled = false</code> → off for everyone. <code>enabled = true</code> with no roles → on for everyone. <code>enabled = true</code> with roles → on only for users holding one of those platform roles.</p>
+<h3 id="feature_flag_roles"><code>feature_flag_roles</code><a class="headerlink" href="#feature_flag_roles" title="Permanent link">¶</a></h3>
+<p>Which platform roles a flag is limited to. Entity: <code>feature-flag-role.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_flag_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Composite PK, FK, CASCADE</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>Composite PK, FK <code>roles.id</code>, CASCADE. <code>IDX_feature_flag_roles_role_id</code></td>
+</tr>
+</tbody>
+</table>
+<p>No timestamps. This is the only table with a composite primary key.</p>
+<h3 id="support_tickets"><code>support_tickets</code><a class="headerlink" href="#support_tickets" title="Permanent link">¶</a></h3>
+<p>A help request from a user. Entity: <code>support-ticket.entity.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Null</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>int</td>
+<td>no</td>
+<td>auto</td>
+<td>PK</td>
+</tr>
+<tr>
+<td><code>user_id</code></td>
+<td>int</td>
+<td>no</td>
+<td></td>
+<td>FK, CASCADE. Indexed.</td>
+</tr>
+<tr>
+<td><code>topic</code></td>
+<td>enum <code>SupportTicketTopic</code></td>
+<td>no</td>
+<td></td>
+<td><code>BILLING</code>, <code>TECHNICAL</code>, <code>ACCOUNT</code>, <code>ASSESSMENT</code>, <code>FEEDBACK</code>, <code>OTHER</code></td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>text</td>
+<td>no</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>enum <code>SupportTicketStatus</code></td>
+<td>no</td>
+<td><code>OPEN</code></td>
+<td><code>OPEN</code>, <code>IN_PROGRESS</code>, <code>RESOLVED</code>, <code>CLOSED</code>. Indexed.</td>
+</tr>
+</tbody>
+</table>
+<p>Timestamps: all three. Tickets are not linked to orders or assessments; the topic is only a label.</p>
+<h3 id="modules-with-no-tables">Modules with no tables<a class="headerlink" href="#modules-with-no-tables" title="Permanent link">¶</a></h3>
+<p><code>health</code>, <code>stats</code>, <code>events</code> (WebSocket gateway), <code>rate-limiter</code> (counters live in Redis), <code>code-execution</code> and <code>schedulers</code> have no tables of their own. <code>stats</code> reads other tables with raw SQL.</p>
+<hr/>
+<h2 id="how-tables-connect-across-domains">How tables connect across domains<a class="headerlink" href="#how-tables-connect-across-domains" title="Permanent link">¶</a></h2>
+<h3 id="real-foreign-keys-between-domains">Real foreign keys between domains<a class="headerlink" href="#real-foreign-keys-between-domains" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Via</th>
+<th>On delete</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Almost every table</td>
+<td><code>users</code></td>
+<td><code>user_id</code>, <code>created_by</code>, <code>owner_user_id</code></td>
+<td>CASCADE</td>
+</tr>
+<tr>
+<td><code>jobs</code>, <code>llm_audit</code>, <code>feature_flags</code>, <code>*.invited_by</code>, <code>assessment_attempts.rejected_by</code></td>
+<td><code>users</code></td>
+<td>various</td>
+<td>SET NULL (the row outlives the user)</td>
+</tr>
+<tr>
+<td><code>assessments</code>, <code>subscriptions</code>, <code>user_feature_usage</code>, <code>roles</code></td>
+<td><code>organizations</code></td>
+<td><code>organization_id</code> (nullable)</td>
+<td>CASCADE</td>
+</tr>
+<tr>
+<td><code>organization_members</code></td>
+<td><code>roles</code></td>
+<td><code>role_id</code></td>
+<td>RESTRICT</td>
+</tr>
+<tr>
+<td><code>feature_flag_roles</code></td>
+<td><code>roles</code></td>
+<td><code>role_id</code></td>
+<td>CASCADE</td>
+</tr>
+<tr>
+<td><code>assessments</code>, <code>learning_roadmaps</code></td>
+<td><code>jobs</code></td>
+<td><code>job_id</code></td>
+<td>SET NULL</td>
+</tr>
+<tr>
+<td><code>llm_audit</code></td>
+<td><code>jobs</code>, <code>ai_models</code></td>
+<td><code>job_id</code>, <code>ai_model_id</code></td>
+<td>SET NULL</td>
+</tr>
+<tr>
+<td><code>assessment_attempt_responses</code></td>
+<td><code>assessments_questions</code></td>
+<td><code>assessment_question_id</code></td>
+<td>CASCADE</td>
+</tr>
+</tbody>
+</table>
+<p>A <code>null</code> <code>organization_id</code> always means "personal". A set one means "belongs to that organization".</p>
+<h3 id="app-level-links-no-foreign-key">App-level links (no foreign key)<a class="headerlink" href="#app-level-links-no-foreign-key" title="Permanent link">¶</a></h3>
+<p>These links exist only in code. The database does not check them.</p>
+<table>
+<thead>
+<tr>
+<th>Link</th>
+<th>Where it lives</th>
+<th>Why no FK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conversation → attempt or roadmap</td>
+<td><code>ai_conversations.context_type</code> + <code>context_id</code></td>
+<td>Polymorphic: points to different tables</td>
+</tr>
+<tr>
+<td>Order → subscription or credit pack</td>
+<td><code>orders.resource_type</code> + <code>resource_id</code></td>
+<td>Polymorphic</td>
+</tr>
+<tr>
+<td>Credit pack or balance → AI model</td>
+<td><code>credit_packs.ai_model_code</code>, <code>user_feature_credits.ai_model_code</code></td>
+<td>By code, so a removed model falls back to the default</td>
+</tr>
+<tr>
+<td>Practice node → assessment</td>
+<td><code>learning_roadmap_nodes.meta.assessmentId</code></td>
+<td>Lives inside jsonb</td>
+</tr>
+<tr>
+<td>Job → assessment, attempt, roadmap, org</td>
+<td><code>jobs.payload</code> (<code>assessmentId</code>, <code>attemptId</code>, <code>orgUid</code> and so on)</td>
+<td>Payload shape depends on job type</td>
+</tr>
+<tr>
+<td>Roadmap → its jobs per phase</td>
+<td><code>learning_roadmaps.meta.analysisJobId</code>, <code>generationJobId</code>, <code>modificationJobIds</code></td>
+<td>History kept in jsonb; <code>job_id</code> holds the latest</td>
+</tr>
+<tr>
+<td>Webhook → payment</td>
+<td><code>webhook_events.payload</code></td>
+<td>Raw provider data</td>
+</tr>
+</tbody>
+</table>
+<h3 id="jsonb-columns-at-a-glance">jsonb columns at a glance<a class="headerlink" href="#jsonb-columns-at-a-glance" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Shape</th>
+<th>Interface file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>questions.meta</code></td>
+<td><code>QuestionMeta</code></td>
+<td><code>src/assessments/questions/interfaces/question-meta.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>mcq_question_details.options</code></td>
+<td><code>McqOption[]</code></td>
+<td><code>src/assessments/questions/interfaces/question-content.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>coding_question_details.starter_code</code>, <code>test_cases</code>, <code>supported_languages</code></td>
+<td><code>CodingStarterCode</code>, <code>CodingTestCase[]</code>, <code>string[]</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>descriptive_question_details.checkpoints</code></td>
+<td><code>DescriptiveCheckpoint[]</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>assessments_questions.content</code></td>
+<td><code>AssessmentQuestionContent</code> (union of three)</td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>assessments_questions.topics</code></td>
+<td><code>QuestionTopic[]</code></td>
+<td><code>question-meta.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>assessment_attempt_responses.answer</code></td>
+<td><code>McqAnswer</code> or <code>DescriptiveAnswer</code></td>
+<td><code>question-content.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>assessment_attempt_responses.evaluation_result</code></td>
+<td><code>CodingEvaluationResult</code> or <code>DescriptiveEvaluationResult</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>assessment_templates.sections</code></td>
+<td><code>AssessmentTemplateSection[]</code></td>
+<td><code>src/common/entities/assessment-template.entity.ts</code></td>
+</tr>
+<tr>
+<td><code>role_permissions.meta</code></td>
+<td><code>RolePermissionMeta</code></td>
+<td><code>src/identity/rbac/interfaces/role-permission-meta.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>ai_models.capabilities</code></td>
+<td><code>AiModelCapabilities</code></td>
+<td><code>src/ai/interfaces/ai-model-capabilities.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>learning_roadmaps.meta</code>, <code>learning_roadmap_nodes.meta</code>, <code>learning_node_edges.meta</code></td>
+<td><code>RoadmapMeta</code>, <code>RoadmapNodeMeta</code>, <code>EdgeMeta</code></td>
+<td><code>src/learning-roadmaps/interfaces/roadmap-meta.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>jobs.payload</code>, <code>jobs.result</code></td>
+<td>Depends on <code>jobs.type</code></td>
+<td>See <a href="#5-jobs">Jobs</a></td>
+</tr>
+<tr>
+<td><code>orders.metadata</code></td>
+<td><code>CreditOrderMetadata</code> for <code>CREDIT</code> orders, otherwise <code>null</code></td>
+<td><code>src/commerce/credits/interfaces/credit-order-metadata.interface.ts</code></td>
+</tr>
+<tr>
+<td><code>jobs.error</code>, <code>webhook_events.payload</code></td>
+<td><code>Record&lt;string, unknown&gt;</code></td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="known-schema-gaps">Known schema gaps<a class="headerlink" href="#known-schema-gaps" title="Permanent link">¶</a></h2>
+<p>These were found by comparing the entities with a database migrated to the latest version (<code>typeorm schema:log</code>, which only prints SQL) and by reading the migrations. None of them breaks the app today, but they matter when you change a table or run <code>migration:generate</code>.</p>
+<p><strong>Defined in a migration but not on the entity.</strong> The database has them; the entity does not say so. <code>migration:generate</code> will try to drop them, so remove those lines by hand.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Table</th>
+<th>Created in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unique <code>(user_id, assessment_id)</code></td>
+<td><code>assessment_attempts</code></td>
+<td><code>20260618000004-add-uid-to-assessment-attempts.ts</code></td>
+</tr>
+<tr>
+<td>FK <code>job_id</code> → <code>jobs</code> (SET NULL)</td>
+<td><code>assessments</code></td>
+<td><code>20260902000001-add-job-id-to-assessments.ts</code></td>
+</tr>
+<tr>
+<td>FK <code>job_id</code> → <code>jobs</code> and FK <code>current_node_id</code> → nodes (SET NULL)</td>
+<td><code>learning_roadmaps</code></td>
+<td><code>20260902000002-add-job-id-to-learning-roadmaps.ts</code>, <code>20260827000000-create-learning-roadmaps-tables.ts</code></td>
+</tr>
+<tr>
+<td><code>CHECK difficulty BETWEEN 1 AND 5</code></td>
+<td><code>assessment_sections</code></td>
+<td><code>20261014000014-add-difficulty-to-assessment-sections.ts</code></td>
+</tr>
+<tr>
+<td><code>CHECK from_node_id &lt;&gt; to_node_id</code></td>
+<td><code>learning_node_edges</code></td>
+<td><code>20260827000000-create-learning-roadmaps-tables.ts</code></td>
+</tr>
+<tr>
+<td>Index on <code>user_id</code>, and ON DELETE CASCADE on its FK</td>
+<td><code>refresh_tokens</code></td>
+<td><code>20260611000000-CreateRefreshTokensTable.ts</code></td>
+</tr>
+<tr>
+<td>Indexes on both FK columns</td>
+<td><code>assessment_prompt_tags</code></td>
+<td><code>20260723000001-create-assessment-prompts-tables.ts</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Declared on the entity but missing in the database.</strong></p>
+<ul>
+<li><code>IDX_learning_node_edges_roadmap</code> (<code>learning-node-edge.entity.ts</code>). Lookups by <code>roadmap_id</code> still use the unique index, which starts with that column.</li>
+</ul>
+<p><strong>Foreign keys with no index.</strong> Deleting the parent row, or joining on these columns, scans the table: <code>assessments.job_id</code>, <code>learning_roadmaps.job_id</code>, <code>learning_roadmaps.current_node_id</code>, <code>assessment_attempts.rejected_by</code>, <code>organization_members.invited_by</code>, <code>feature_flags.updated_by</code>.</p>
+<p><strong>No unique index where the code expects one row.</strong></p>
+<ul>
+<li><code>assessment_attempt_responses (attempt_id, assessment_question_id)</code>: two parallel saves of the same answer could create two rows.</li>
+<li><code>user_feature_usage (user_id, organization_id, plan_feature_id)</code>: the row lock in <code>UsageService.consume()</code> does not cover the very first insert.</li>
+</ul>
+<p><strong>Naming drift.</strong> Many FKs were created with readable names (<code>FK_assessments_created_by</code>) while the entities let TypeORM pick hashed names. Some unique constraints differ the same way (<code>plans.code</code>, <code>webhook_events.event_id</code>, <code>users.phone_number</code>, the users OAuth index). Because of this, <code>migration:generate</code> outputs long lists of drop-and-recreate statements that change nothing.</p>
+<p><strong>Stale comment.</strong> <code>permissions.entity.ts</code> still calls <code>*:*</code> "the super-wildcard", but that key is no longer granted or checked.</p>
+<p>Nullable settings and column types match between the entities and the database. No entity column is missing a migration.</p>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

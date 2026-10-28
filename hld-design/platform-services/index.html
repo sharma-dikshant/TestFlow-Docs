@@ -1,0 +1,2199 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="The small cross-cutting modules — feature flags, rate limiter, admin stats, newsletters, support tickets, health, storage and the ping endpoint." name="description"/>
+<link href="../notifications/" rel="prev"/>
+<link href="../../claude-agent-arch/arch/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Platform Services - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#platform-services">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Platform Services
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-flags">
+<span class="md-ellipsis">
+      
+        Feature flags
+      
+    </span>
+</a>
+<nav aria-label="Feature flags" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model">
+<span class="md-ellipsis">
+      
+        Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evaluation-rules">
+<span class="md-ellipsis">
+      
+        Evaluation rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-code-checks-a-flag">
+<span class="md-ellipsis">
+      
+        How code checks a flag
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-api">
+<span class="md-ellipsis">
+      
+        Admin API
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rate-limiter">
+<span class="md-ellipsis">
+      
+        Rate limiter
+      
+    </span>
+</a>
+<nav aria-label="Rate limiter" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_1">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#algorithm">
+<span class="md-ellipsis">
+      
+        Algorithm
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#policies-default-limits">
+<span class="md-ellipsis">
+      
+        Policies (default limits)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#redis-keys">
+<span class="md-ellipsis">
+      
+        Redis keys
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-decorator">
+<span class="md-ellipsis">
+      
+        The decorator
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#request-flow">
+<span class="md-ellipsis">
+      
+        Request flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#response-on-limit">
+<span class="md-ellipsis">
+      
+        Response on limit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_1">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#stats">
+<span class="md-ellipsis">
+      
+        Stats
+      
+    </span>
+</a>
+<nav aria-label="Stats" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_2">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-it-shows">
+<span class="md-ellipsis">
+      
+        What it shows
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-it-is-computed">
+<span class="md-ellipsis">
+      
+        How it is computed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_2">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#newsletters">
+<span class="md-ellipsis">
+      
+        Newsletters
+      
+    </span>
+</a>
+<nav aria-label="Newsletters" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_3">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lifecycle">
+<span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#flow">
+<span class="md-ellipsis">
+      
+        Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#endpoints">
+<span class="md-ellipsis">
+      
+        Endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_3">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support-tickets">
+<span class="md-ellipsis">
+      
+        Support tickets
+      
+    </span>
+</a>
+<nav aria-label="Support tickets" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_4">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model_1">
+<span class="md-ellipsis">
+      
+        Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lifecycle_1">
+<span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#endpoints_1">
+<span class="md-ellipsis">
+      
+        Endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_4">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#health">
+<span class="md-ellipsis">
+      
+        Health
+      
+    </span>
+</a>
+<nav aria-label="Health" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_5">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#checks-performed">
+<span class="md-ellipsis">
+      
+        Checks performed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#responses">
+<span class="md-ellipsis">
+      
+        Responses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_5">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#storage">
+<span class="md-ellipsis">
+      
+        Storage
+      
+    </span>
+</a>
+<nav aria-label="Storage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_6">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-it-works">
+<span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-use">
+<span class="md-ellipsis">
+      
+        Current use
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_6">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#app-controller">
+<span class="md-ellipsis">
+      
+        App controller
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#where-the-code-lives">
+<span class="md-ellipsis">
+      
+        Where the code lives
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#feature-flags">
+<span class="md-ellipsis">
+      
+        Feature flags
+      
+    </span>
+</a>
+<nav aria-label="Feature flags" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model">
+<span class="md-ellipsis">
+      
+        Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#evaluation-rules">
+<span class="md-ellipsis">
+      
+        Evaluation rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-code-checks-a-flag">
+<span class="md-ellipsis">
+      
+        How code checks a flag
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-api">
+<span class="md-ellipsis">
+      
+        Admin API
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#rate-limiter">
+<span class="md-ellipsis">
+      
+        Rate limiter
+      
+    </span>
+</a>
+<nav aria-label="Rate limiter" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_1">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#algorithm">
+<span class="md-ellipsis">
+      
+        Algorithm
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#policies-default-limits">
+<span class="md-ellipsis">
+      
+        Policies (default limits)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#redis-keys">
+<span class="md-ellipsis">
+      
+        Redis keys
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#the-decorator">
+<span class="md-ellipsis">
+      
+        The decorator
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#request-flow">
+<span class="md-ellipsis">
+      
+        Request flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#response-on-limit">
+<span class="md-ellipsis">
+      
+        Response on limit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_1">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#stats">
+<span class="md-ellipsis">
+      
+        Stats
+      
+    </span>
+</a>
+<nav aria-label="Stats" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_2">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-it-shows">
+<span class="md-ellipsis">
+      
+        What it shows
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-it-is-computed">
+<span class="md-ellipsis">
+      
+        How it is computed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_2">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#newsletters">
+<span class="md-ellipsis">
+      
+        Newsletters
+      
+    </span>
+</a>
+<nav aria-label="Newsletters" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_3">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lifecycle">
+<span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#flow">
+<span class="md-ellipsis">
+      
+        Flow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#endpoints">
+<span class="md-ellipsis">
+      
+        Endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_3">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support-tickets">
+<span class="md-ellipsis">
+      
+        Support tickets
+      
+    </span>
+</a>
+<nav aria-label="Support tickets" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_4">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#model_1">
+<span class="md-ellipsis">
+      
+        Model
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#lifecycle_1">
+<span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#endpoints_1">
+<span class="md-ellipsis">
+      
+        Endpoints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_4">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#health">
+<span class="md-ellipsis">
+      
+        Health
+      
+    </span>
+</a>
+<nav aria-label="Health" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_5">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#checks-performed">
+<span class="md-ellipsis">
+      
+        Checks performed
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#responses">
+<span class="md-ellipsis">
+      
+        Responses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_5">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#storage">
+<span class="md-ellipsis">
+      
+        Storage
+      
+    </span>
+</a>
+<nav aria-label="Storage" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_6">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-it-works">
+<span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-use">
+<span class="md-ellipsis">
+      
+        Current use
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gaps_6">
+<span class="md-ellipsis">
+      
+        Gaps
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#app-controller">
+<span class="md-ellipsis">
+      
+        App controller
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#where-the-code-lives">
+<span class="md-ellipsis">
+      
+        Where the code lives
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="platform-services">Platform Services<a class="headerlink" href="#platform-services" title="Permanent link">¶</a></h1>
+<p>This page covers the small modules that support the rest of the platform. Each section follows the same shape: what it is for, how it works, its endpoints, and its known gaps.</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Folder</th>
+<th>One-line summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#feature-flags">Feature flags</a></td>
+<td><code>src/feature-flags/</code></td>
+<td>Admin-controlled on/off switches, optionally limited to platform roles</td>
+</tr>
+<tr>
+<td><a href="#rate-limiter">Rate limiter</a></td>
+<td><code>src/rate-limiter/</code></td>
+<td>Redis token bucket, applied per route with <code>@RateLimit()</code></td>
+</tr>
+<tr>
+<td><a href="#stats">Stats</a></td>
+<td><code>src/stats/</code></td>
+<td>One admin endpoint with platform-wide numbers</td>
+</tr>
+<tr>
+<td><a href="#newsletters">Newsletters</a></td>
+<td><code>src/newsletters/</code></td>
+<td>Admins write and schedule an email to all subscribers</td>
+</tr>
+<tr>
+<td><a href="#support-tickets">Support tickets</a></td>
+<td><code>src/support-tickets/</code></td>
+<td>Users open tickets, admins change their status</td>
+</tr>
+<tr>
+<td><a href="#health">Health</a></td>
+<td><code>src/health/</code></td>
+<td>Checks Postgres, Redis and RabbitMQ</td>
+</tr>
+<tr>
+<td><a href="#storage">Storage</a></td>
+<td><code>src/storage/</code></td>
+<td>Thin S3 wrapper</td>
+</tr>
+<tr>
+<td><a href="#app-controller">App controller</a></td>
+<td><code>src/app.controller.ts</code></td>
+<td><code>GET /ping</code></td>
+</tr>
+</tbody>
+</table>
+<p>All admin routes live under <code>/v1/admin/...</code> and are protected by <code>@Permissions('&lt;resource&gt;:&lt;action&gt;')</code>. The global <code>PermissionGuard</code> checks these. See <a href="../rbac/">RBAC</a>.</p>
+<hr/>
+<h2 id="feature-flags">Feature flags<a class="headerlink" href="#feature-flags" title="Permanent link">¶</a></h2>
+<h3 id="purpose">Purpose<a class="headerlink" href="#purpose" title="Permanent link">¶</a></h3>
+<p>A <strong>feature flag</strong> is a switch that turns a product feature on or off without a deploy. Admins can turn a flag off for everyone (a kill switch) or limit it to some platform roles (for example, only <code>super_admin</code> while testing).</p>
+<h3 id="model">Model<a class="headerlink" href="#model" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Flags are defined in code.</strong> <code>FeatureFlagKey</code> and <code>FEATURE_FLAG_DEFINITIONS</code> in <code>src/feature-flags/feature-flag.constants.ts</code> list every flag with its description, <code>defaultEnabled</code> and <code>defaultRoles</code>.</li>
+<li><strong>State is stored in the database.</strong> <code>feature_flags</code> has one row per flag (<code>key</code>, <code>description</code>, <code>enabled</code>, <code>updated_by</code>). <code>feature_flag_roles</code> links a flag to the platform roles it is limited to. See <a href="../../erd/">ERD</a>.</li>
+<li><strong>No row means the code default applies.</strong> The seeder (<code>src/seeders/feature-flag.seeder.ts</code>) adds missing rows in their default state and never changes rows that already exist.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Controls</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coding_questions</code></td>
+<td>Coding question types in the composer and templates. A kill switch for coding generation.</td>
+<td>On for everyone</td>
+</tr>
+<tr>
+<td><code>learning_roadmaps</code></td>
+<td>The learning roadmaps section: pages and navigation</td>
+<td>On for everyone</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evaluation-rules">Evaluation rules<a class="headerlink" href="#evaluation-rules" title="Permanent link">¶</a></h3>
+<p><code>isFlagOn(state, userRoleKeys)</code>:</p>
+<ol>
+<li>If <code>enabled</code> is false → <strong>off</strong> for everyone.</li>
+<li>If the flag has no roles → <strong>on</strong> for everyone.</li>
+<li>Otherwise → on only if the user holds <strong>any</strong> of the flag's roles.</li>
+</ol>
+<p>Only <strong>platform</strong> roles can be used. Organization roles are rejected with <code>400</code>. A soft-deleted role is ignored.</p>
+<h3 id="how-code-checks-a-flag">How code checks a flag<a class="headerlink" href="#how-code-checks-a-flag" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant A as AuthService.getMe
+    participant F as FeatureFlagsService
+    participant R as AccessControlService
+    participant DB as Postgres
+
+    C-&gt;&gt;A: GET /v1/auth/me
+    A-&gt;&gt;F: enabledFor userId
+    F-&gt;&gt;DB: load all flag rows with roles
+    F-&gt;&gt;R: getUserRoleKeys userId
+    F--&gt;&gt;A: list of flag keys that are on
+    A--&gt;&gt;C: profile with featureFlags array
+    Note over A,F: if the read fails, code defaults are returned instead
+</div>
+<p>The only consumer is <code>GET /me</code>, which returns <code>featureFlags: FeatureFlagKey[]</code>. The <strong>client</strong> hides or shows features from that list. No server endpoint checks a flag today. There is no guard or decorator for flags.</p>
+<h3 id="admin-api">Admin API<a class="headerlink" href="#admin-api" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /v1/admin/feature-flags</code></td>
+<td><code>feature_flags:read</code></td>
+<td>Every flag in code with its current state</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/feature-flags/:key</code></td>
+<td><code>feature_flags:read</code></td>
+<td>One flag (<code>404</code> for unknown keys)</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/admin/feature-flags/:key</code></td>
+<td><code>feature_flags:update</code></td>
+<td>Body <code>{ enabled?, roleKeys? }</code>. Creates the row if missing. <code>roleKeys</code> replaces the whole role list. <code>[]</code> means everyone.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gaps">Gaps<a class="headerlink" href="#gaps" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Flags are not enforced on the server.</strong> Turning off <code>learning_roadmaps</code> or <code>coding_questions</code> hides the UI, but the API endpoints still work for a client that calls them directly.</li>
+<li>No caching. Every <code>GET /me</code> reads the flag tables.</li>
+<li>No per-user or percentage rollout. Targeting is by platform role only.</li>
+</ul>
+<hr/>
+<h2 id="rate-limiter">Rate limiter<a class="headerlink" href="#rate-limiter" title="Permanent link">¶</a></h2>
+<h3 id="purpose_1">Purpose<a class="headerlink" href="#purpose_1" title="Permanent link">¶</a></h3>
+<p>The rate limiter stops abuse and runaway clients. It protects login from password guessing and stops one user from spending too much on AI calls.</p>
+<h3 id="algorithm">Algorithm<a class="headerlink" href="#algorithm" title="Permanent link">¶</a></h3>
+<p>It uses a <strong>token bucket</strong>:</p>
+<ul>
+<li>Each bucket holds up to <code>limit</code> tokens and starts full.</li>
+<li>Tokens refill smoothly at <code>limit / windowSeconds</code> per second.</li>
+<li>Each request takes <code>cost</code> tokens (default 1). If not enough are left, the request is rejected.</li>
+</ul>
+<p>The whole read-refill-decide-write step runs as <strong>one Lua script inside Redis</strong> (<code>TOKEN_BUCKET_LUA</code> in <code>src/rate-limiter/algorithms.ts</code>). Because it is atomic, two parallel requests can never both spend the same token, even across app instances. The script is registered once with <code>defineCommand</code> and called with <code>EVALSHA</code>.</p>
+<p>The caller passes the current time, so app servers need synced clocks (NTP).</p>
+<h3 id="policies-default-limits">Policies (default limits)<a class="headerlink" href="#policies-default-limits" title="Permanent link">¶</a></h3>
+<p>From <code>src/rate-limiter/policies.ts</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Limit</th>
+<th>Keyed by</th>
+<th>Meant for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLASS_A</code></td>
+<td>10 per 5 minutes (1 token every 30s)</td>
+<td>IP</td>
+<td>Auth: login, signup, refresh, password reset</td>
+</tr>
+<tr>
+<td><code>CLASS_B</code></td>
+<td>30 per minute</td>
+<td>User</td>
+<td>Writes: create, update, submit, AI generation</td>
+</tr>
+<tr>
+<td><code>CLASS_C</code></td>
+<td>120 per minute</td>
+<td>User</td>
+<td>Reads, lists, polling</td>
+</tr>
+</tbody>
+</table>
+<h3 id="redis-keys">Redis keys<a class="headerlink" href="#redis-keys" title="Permanent link">¶</a></h3>
+<pre><code>rl:v1:&lt;identifier&gt;:&lt;identity&gt;:&lt;scope&gt;
+</code></pre>
+<ul>
+<li><code>identifier</code> is <code>user</code> or <code>ip</code>.</li>
+<li><code>identity</code> is the user id or IP address.</li>
+<li><code>scope</code> is the policy name by default, so all routes with that policy share one bucket. A route can pass its own scope (for example <code>AI_GENERATION</code>) to get a separate bucket.</li>
+<li>Each key is a hash with <code>tokens</code> and <code>updatedAt</code>. It expires once it would have refilled to full, so idle keys clean themselves up.</li>
+<li>Bump <code>v1</code> in <code>RATE_LIMIT_KEY_PREFIX</code> if the stored shape changes.</li>
+</ul>
+<p>The limiter uses its own Redis client (<code>src/rate-limiter/redis.provider.ts</code>). It fails fast: no offline queue, 1 retry, and a 200 ms command timeout (<code>REDIS_COMMAND_TIMEOUT_MS</code>).</p>
+<h3 id="the-decorator">The decorator<a class="headerlink" href="#the-decorator" title="Permanent link">¶</a></h3>
+<pre><code class="language-ts">@RateLimit(POLICIES.CLASS_B, { scope: 'AI_GENERATION', cost: 5 })
+</code></pre>
+<ul>
+<li>A route with no <code>@RateLimit</code> is <strong>not limited</strong>. The global guard skips it.</li>
+<li>The decorator can go on a controller (all routes) or on a method. The method wins.</li>
+<li>AI endpoints share the <code>AI_GENERATION</code> scope with different costs. For example, creating a roadmap costs 3, while submitting roadmap answers, revising a roadmap or retrying a job costs 5. They all draw from the same 30-token bucket per minute.</li>
+</ul>
+<h3 id="request-flow">Request flow<a class="headerlink" href="#request-flow" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as RateLimitGuard
+    participant P as PolicyResolver
+    participant S as RateLimiterService
+    participant R as Redis
+
+    C-&gt;&gt;G: HTTP request
+    G-&gt;&gt;G: read @RateLimit metadata, skip if none or not HTTP
+    G-&gt;&gt;P: resolve policy, request, scope
+    P--&gt;&gt;G: policy and key
+    G-&gt;&gt;S: check with cost
+    S-&gt;&gt;R: run token bucket script
+    R--&gt;&gt;S: allowed, remaining, retryAfterMs
+    S--&gt;&gt;G: decision
+    G-&gt;&gt;G: set X-RateLimit-Limit and X-RateLimit-Remaining
+    alt not allowed
+        G--&gt;&gt;C: 429 with Retry-After header
+    else allowed
+        G-&gt;&gt;G: continue to RolesGuard
+    end
+</div>
+<p>The guard runs <strong>after</strong> <code>JwtAuthGuard</code>, so it can key by user. If a USER policy runs on a request with no user (a <code>@Public</code> route), it falls back to the IP and logs a warning.</p>
+<h3 id="response-on-limit">Response on limit<a class="headerlink" href="#response-on-limit" title="Permanent link">¶</a></h3>
+<ul>
+<li>Status <code>429 Too Many Requests</code>.</li>
+<li>Body (through the global exception filter): <code>{ success: false, message: 'Rate limit exceeded. Please retry later.' }</code>.</li>
+<li>Headers on every limited response: <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>. On a 429 also: <code>Retry-After</code> (seconds).</li>
+</ul>
+<h3 id="gaps_1">Gaps<a class="headerlink" href="#gaps_1" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Fails open.</strong> If Redis is down, every request is allowed and an error is logged. This is a deliberate choice: a Redis outage should not take down the API.</li>
+<li><strong>IP behind a proxy.</strong> <code>request.ip</code> is only correct if Express <code>trust proxy</code> matches the deployment. Otherwise every user behind the load balancer shares one IP bucket. <code>main.ts</code> does not set <code>trust proxy</code> today.</li>
+<li><strong>Not used for WebSockets.</strong> Socket messages do not go through this guard. Code runs have their own in-memory cooldown (see <a href="../realtime-events/">Realtime Events</a>).</li>
+</ul>
+<hr/>
+<h2 id="stats">Stats<a class="headerlink" href="#stats" title="Permanent link">¶</a></h2>
+<h3 id="purpose_2">Purpose<a class="headerlink" href="#purpose_2" title="Permanent link">¶</a></h3>
+<p>One endpoint that feeds the admin overview page with platform-wide numbers.</p>
+<h3 id="what-it-shows">What it shows<a class="headerlink" href="#what-it-shows" title="Permanent link">¶</a></h3>
+<p><code>GET /v1/admin/stats?days=30</code> (<code>days</code> from 7 to 90, default 30). Needs <code>stats:read</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Figures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>range</code></td>
+<td><code>days</code>, <code>from</code>, <code>to</code> (UTC dates, today included)</td>
+</tr>
+<tr>
+<td><code>users</code></td>
+<td>total, verified, new in period</td>
+</tr>
+<tr>
+<td><code>organizations</code></td>
+<td>total, active, suspended, new in period</td>
+</tr>
+<tr>
+<td><code>assessments</code></td>
+<td>total, personal, organization, new in period, count by status</td>
+</tr>
+<tr>
+<td><code>attempts</code></td>
+<td>total, submitted in period, average score percent (evaluated attempts in period), count by status</td>
+</tr>
+<tr>
+<td><code>subscriptions</code></td>
+<td>active, personal, organization, paid (plan price &gt; 0)</td>
+</tr>
+<tr>
+<td><code>revenue</code></td>
+<td>successful payment totals <strong>per currency</strong> for the period, failed payment count</td>
+</tr>
+<tr>
+<td><code>ai</code></td>
+<td>LLM calls, failed calls, total cost in USD (from <code>llm_audit</code>)</td>
+</tr>
+<tr>
+<td><code>supportTickets</code></td>
+<td>open, in progress</td>
+</tr>
+<tr>
+<td><code>daily</code></td>
+<td>One row per day with signups, assessments created, attempts submitted, and revenue per currency. Days with no activity are filled with zeros.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-it-is-computed">How it is computed<a class="headerlink" href="#how-it-is-computed" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>StatsAdminService.getStats</code> (<code>src/stats/admin.service.ts</code>) runs about 13 raw SQL queries <strong>in parallel</strong> with <code>Promise.all</code>.</li>
+<li>Counts use <code>COUNT(*) FILTER (WHERE ...)</code>, so one scan gives several numbers.</li>
+<li>The window is <code>[today − (days − 1), tomorrow)</code> in UTC.</li>
+<li>The daily series uses <code>generate_series</code> so no day is skipped.</li>
+<li>Revenue is never summed across currencies.</li>
+<li>Soft-deleted users, organizations, assessments, subscriptions and tickets are excluded.</li>
+<li>The average score is <code>score / (total_questions × correct_marks)</code>, where <code>correct_marks</code> comes from the assessment's <strong>first</strong> section.</li>
+</ul>
+<h3 id="gaps_2">Gaps<a class="headerlink" href="#gaps_2" title="Permanent link">¶</a></h3>
+<ul>
+<li>No caching. Every page load runs all queries live, and the daily series uses one sub-query per day for each metric.</li>
+<li>The average score assumes every section uses the same marks as the first one.</li>
+</ul>
+<hr/>
+<h2 id="newsletters">Newsletters<a class="headerlink" href="#newsletters" title="Permanent link">¶</a></h2>
+<h3 id="purpose_3">Purpose<a class="headerlink" href="#purpose_3" title="Permanent link">¶</a></h3>
+<p>Admins write an HTML email and send it now or at a set time to every subscribed user.</p>
+<h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; SCHEDULED: admin creates, with or without scheduledAt
+    SCHEDULED --&gt; SENDING: dispatcher claims it once scheduledAt has passed
+    SCHEDULED --&gt; Cancelled: admin deletes, soft delete
+    SENDING --&gt; SENT: all pages tried, at least one delivered or no subscribers
+    SENDING --&gt; FAILED: recipient lookup failed or every recipient failed
+    SENT --&gt; [*]
+    FAILED --&gt; [*]
+</div>
+<p><code>Cancelled</code> is not a status value. It is a soft delete (<code>deleted_at</code>). A newsletter in <code>SENDING</code> cannot be deleted (<code>422</code>).</p>
+<h3 id="flow">Flow<a class="headerlink" href="#flow" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant Ad as Admin
+    participant S as NewslettersAdminService
+    participant Cr as NewsletterScheduler
+    participant D as NewslettersDispatchService
+    participant DB as Postgres
+    participant E as EmailService
+
+    Ad-&gt;&gt;S: POST /v1/admin/newsletters
+    S-&gt;&gt;DB: insert SCHEDULED, scheduledAt = now if not given
+    opt no scheduledAt
+        S-&gt;&gt;D: dispatchDue, not awaited
+    end
+    S--&gt;&gt;Ad: 201
+    Cr-&gt;&gt;D: dispatchDue every minute
+    D-&gt;&gt;DB: UPDATE to SENDING ... FOR UPDATE SKIP LOCKED, up to 5
+    loop each claimed newsletter
+        loop pages of 100 subscribers
+            D-&gt;&gt;E: sendNewsletterEmail with bcc list
+        end
+        D-&gt;&gt;DB: SENT or FAILED with counts
+    end
+</div>
+<p>Rules:</p>
+<ul>
+<li><strong>Who gets it:</strong> users with <code>is_newsletter_subscribe = true</code>, <code>is_active = true</code> and not soft-deleted. They are read in pages ordered by id.</li>
+<li><strong>One email per page</strong>, with all addresses in <code>bcc</code>. A failed page counts all its recipients as failed.</li>
+<li><strong>Claiming is safe across instances</strong> thanks to <code>FOR UPDATE SKIP LOCKED</code>. A per-instance <code>dispatchInFlight</code> flag stops overlapping passes.</li>
+<li><strong>Config:</strong> <code>NEWSLETTER_DISPATCH_BATCH_SIZE</code> (newsletters per pass, default 5), <code>NEWSLETTER_RECIPIENT_BATCH_SIZE</code> (default 100), <code>NEWSLETTER_SCHEDULER_ENABLED</code>.</li>
+</ul>
+<p>See <a href="../jobs-and-schedulers/#8-schedulers">Jobs and Schedulers</a> for the cron, and <a href="../notifications/">Notifications</a> for the template.</p>
+<h3 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/admin/newsletters</code></td>
+<td><code>newsletters:create</code></td>
+<td>Create. <code>subject</code> 3–200 characters, <code>bodyHtml</code> at least 10, optional <code>bodyText</code>, optional <code>scheduledAt</code> (ISO date). CLASS_B rate limit.</td>
+</tr>
+<tr>
+<td><code>POST /v1/admin/newsletters/preview</code></td>
+<td><code>newsletters:create</code></td>
+<td>Render a draft without saving</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/newsletters</code></td>
+<td><code>newsletters:read</code></td>
+<td>List (page and limit, optional <code>status</code>), newest <code>scheduledAt</code> first</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/newsletters/:id</code></td>
+<td><code>newsletters:read</code></td>
+<td>One newsletter with delivery counts</td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/newsletters/:id/preview</code></td>
+<td><code>newsletters:read</code></td>
+<td>Render a saved newsletter</td>
+</tr>
+<tr>
+<td><code>DELETE /v1/admin/newsletters/:id</code></td>
+<td><code>newsletters:delete</code></td>
+<td>Cancel (soft delete). <code>422</code> while sending.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gaps_3">Gaps<a class="headerlink" href="#gaps_3" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>A crash mid-send leaves the row in <code>SENDING</code> forever.</strong> Nothing resets it, and it cannot be deleted.</li>
+<li><strong>No unsubscribe.</strong> No API changes <code>is_newsletter_subscribe</code> (it defaults to <code>true</code>), and the email has no unsubscribe link.</li>
+<li>No per-recipient record. A page that fails is not retried.</li>
+<li><code>scheduledAt</code> in the past is accepted and sent on the next tick.</li>
+</ul>
+<hr/>
+<h2 id="support-tickets">Support tickets<a class="headerlink" href="#support-tickets" title="Permanent link">¶</a></h2>
+<h3 id="purpose_4">Purpose<a class="headerlink" href="#purpose_4" title="Permanent link">¶</a></h3>
+<p>A simple help desk. Users send a question. Admins see all tickets and update their status.</p>
+<h3 id="model_1">Model<a class="headerlink" href="#model_1" title="Permanent link">¶</a></h3>
+<p><code>support_tickets</code>: <code>user_id</code>, <code>topic</code>, <code>query</code> (10–2,000 characters), <code>status</code>, timestamps and soft delete. See <a href="../../erd/">ERD</a>.</p>
+<ul>
+<li>Topics: <code>BILLING</code>, <code>TECHNICAL</code>, <code>ACCOUNT</code>, <code>ASSESSMENT</code>, <code>FEEDBACK</code>, <code>OTHER</code>.</li>
+<li>Statuses: <code>OPEN</code>, <code>IN_PROGRESS</code>, <code>RESOLVED</code>, <code>CLOSED</code>.</li>
+</ul>
+<h3 id="lifecycle_1">Lifecycle<a class="headerlink" href="#lifecycle_1" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; OPEN: user creates ticket
+    OPEN --&gt; IN_PROGRESS: admin
+    IN_PROGRESS --&gt; RESOLVED: admin
+    RESOLVED --&gt; CLOSED: admin
+    OPEN --&gt; CLOSED: admin
+</div>
+<p>This is the <strong>intended</strong> path. The code does not enforce it. An admin can set any status from any status.</p>
+<h3 id="endpoints_1">Endpoints<a class="headerlink" href="#endpoints_1" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Who</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /v1/support</code></td>
+<td>Any logged-in user (CLASS_B)</td>
+<td>Create a ticket with <code>topic</code> and <code>query</code></td>
+</tr>
+<tr>
+<td><code>GET /v1/admin/support-tickets</code></td>
+<td><code>support_tickets:read</code></td>
+<td>List all tickets, newest first, page and limit (max 100)</td>
+</tr>
+<tr>
+<td><code>PATCH /v1/admin/support-tickets/:id</code></td>
+<td><code>support_tickets:update</code></td>
+<td>Set <code>status</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gaps_4">Gaps<a class="headerlink" href="#gaps_4" title="Permanent link">¶</a></h3>
+<ul>
+<li>Users cannot list or read their own tickets. There is only a create endpoint.</li>
+<li>No replies, comments or assignee. Admins answer outside the system.</li>
+<li>No email to the user or to support when a ticket is created or changes status.</li>
+<li>The admin list has no filter by status or topic.</li>
+<li>No transition rules (see lifecycle above).</li>
+</ul>
+<hr/>
+<h2 id="health">Health<a class="headerlink" href="#health" title="Permanent link">¶</a></h2>
+<h3 id="purpose_5">Purpose<a class="headerlink" href="#purpose_5" title="Permanent link">¶</a></h3>
+<p>A probe for load balancers, CI and deploy pipelines.</p>
+<h3 id="checks-performed">Checks performed<a class="headerlink" href="#checks-performed" title="Permanent link">¶</a></h3>
+<p><code>GET /health</code> (public, not versioned, no rate limit). <code>HealthService.check</code> runs three probes <strong>in parallel</strong>, each with a 2-second timeout:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>database</code></td>
+<td><code>SELECT 1</code> through TypeORM</td>
+</tr>
+<tr>
+<td><code>redis</code></td>
+<td><code>PING</code> on the <strong>rate limiter's</strong> Redis client, so it matches what the limiter sees</td>
+</tr>
+<tr>
+<td><code>rabbitmq</code></td>
+<td><code>amqpConnection.connected</code> (false until the link is up, because the module starts with <code>wait: false</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="responses">Responses<a class="headerlink" href="#responses" title="Permanent link">¶</a></h3>
+<ul>
+<li>All up → <code>200</code> with the usual envelope. <code>data</code> is <code>{ status: 'ok', uptime, checks: { database: 'up', redis: 'up', rabbitmq: 'up' } }</code> and <code>message</code> is <code>'Service is healthy.'</code>.</li>
+<li>Any down → <code>503</code> with <code>{ success: false, message: 'One or more dependencies are unavailable.', checks, uptime }</code>. The <code>checks</code> object names the dependency at fault.</li>
+</ul>
+<p>A probe never throws. One dead dependency still produces a full report.</p>
+<h3 id="gaps_5">Gaps<a class="headerlink" href="#gaps_5" title="Permanent link">¶</a></h3>
+<ul>
+<li>The cache Redis client (<code>src/config/redis/</code>) is a separate connection and is not checked.</li>
+<li>External services (SMTP, S3, LLM providers, code runners) are not checked.</li>
+</ul>
+<hr/>
+<h2 id="storage">Storage<a class="headerlink" href="#storage" title="Permanent link">¶</a></h2>
+<h3 id="purpose_6">Purpose<a class="headerlink" href="#purpose_6" title="Permanent link">¶</a></h3>
+<p>A thin wrapper around Amazon S3 (or any S3-compatible store) for files the backend needs to keep for a short time.</p>
+<h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h3>
+<p><code>StorageService</code> (<code>src/storage/storage.service.ts</code>) uses <code>@aws-sdk/client-s3</code> and has two methods:</p>
+<ul>
+<li><code>putObject(key, buffer, contentType)</code></li>
+<li><code>getObject(key)</code> → <code>Buffer</code></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AWS_REGION</code>, <code>AWS_ACCESS_KEY_ID</code>, <code>AWS_SECRET_ACCESS_KEY</code></td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>AWS_S3_BUCKET</code></td>
+<td>Required. The one bucket used.</td>
+</tr>
+<tr>
+<td><code>AWS_S3_ENDPOINT</code></td>
+<td>Optional. Points to MinIO or LocalStack for local development. Turns on path-style URLs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="current-use">Current use<a class="headerlink" href="#current-use" title="Permanent link">¶</a></h3>
+<p>Only the organization CSV invitation import uses it. The uploaded CSV is stored at <code>org-invitations/&lt;orgId&gt;/&lt;uuid&gt;.csv</code>. The background job then reads it back. See <a href="../organizations/">Organizations</a>.</p>
+<h3 id="gaps_6">Gaps<a class="headerlink" href="#gaps_6" title="Permanent link">¶</a></h3>
+<ul>
+<li>Uploaded CSVs are never deleted. Add a bucket lifecycle rule or a delete call after import.</li>
+<li>No delete, list or signed-URL methods.</li>
+</ul>
+<hr/>
+<h2 id="app-controller">App controller<a class="headerlink" href="#app-controller" title="Permanent link">¶</a></h2>
+<p><code>src/app.controller.ts</code> has one route:</p>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Auth</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /ping</code></td>
+<td>Public</td>
+<td><code>{ success: true, message: 'Success.', data: 'OK' }</code></td>
+</tr>
+</tbody>
+</table>
+<p>It only shows that the process is up and serving HTTP. It does not check any dependency. Use <code>/health</code> for that.</p>
+<hr/>
+<h2 id="where-the-code-lives">Where the code lives<a class="headerlink" href="#where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/feature-flags/feature-flag.constants.ts</code></td>
+<td>Flag keys, defaults, <code>isFlagOn</code>, <code>flagState</code></td>
+</tr>
+<tr>
+<td><code>src/feature-flags/feature-flags.service.ts</code></td>
+<td><code>enabledFor</code>, <code>list</code>, <code>get</code>, <code>update</code></td>
+</tr>
+<tr>
+<td><code>src/feature-flags/admin.controller.ts</code></td>
+<td>Feature flag admin API</td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/policies.ts</code></td>
+<td>The three policies</td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/algorithms.ts</code></td>
+<td>Lua token bucket</td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/rate-limit.guard.ts</code></td>
+<td>Global guard</td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/rate-limit.decorator.ts</code></td>
+<td><code>@RateLimit()</code></td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/policy-resolver.ts</code></td>
+<td>Policy and key selection</td>
+</tr>
+<tr>
+<td><code>src/rate-limiter/stores.ts</code></td>
+<td>Redis store (fails open)</td>
+</tr>
+<tr>
+<td><code>src/stats/admin.service.ts</code></td>
+<td>All stats SQL</td>
+</tr>
+<tr>
+<td><code>src/newsletters/admin.service.ts</code> and <code>newsletters-dispatch.service.ts</code></td>
+<td>Newsletter CRUD and delivery</td>
+</tr>
+<tr>
+<td><code>src/schedulers/newsletter.scheduler.ts</code></td>
+<td>The minute cron</td>
+</tr>
+<tr>
+<td><code>src/support-tickets/</code></td>
+<td>User and admin ticket endpoints</td>
+</tr>
+<tr>
+<td><code>src/health/</code></td>
+<td>Health check</td>
+</tr>
+<tr>
+<td><code>src/storage/storage.service.ts</code></td>
+<td>S3 wrapper</td>
+</tr>
+<tr>
+<td><code>src/app.controller.ts</code></td>
+<td><code>/ping</code></td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

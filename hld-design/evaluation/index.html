@@ -1,0 +1,1367 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How a submitted attempt is graded asynchronously, question type by question type, and scored" name="description"/>
+<link href="../attempts/" rel="prev"/>
+<link href="../code-execution/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Evaluation - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#evaluation">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Evaluation
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-used">
+<span class="md-ellipsis">
+      
+        3. Data used
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-main-flow-submit-to-result">
+<span class="md-ellipsis">
+      
+        4. Main flow: submit to result
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycles">
+<span class="md-ellipsis">
+      
+        5. Lifecycles
+      
+    </span>
+</a>
+<nav aria-label="5. Lifecycles" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-response-evaluation-status">
+<span class="md-ellipsis">
+      
+        5.1 Response evaluation status
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-parent-job">
+<span class="md-ellipsis">
+      
+        5.2 Parent job
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-evaluators-and-marking-rules">
+<span class="md-ellipsis">
+      
+        6. Evaluators and marking rules
+      
+    </span>
+</a>
+<nav aria-label="6. Evaluators and marking rules" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-mcq">
+<span class="md-ellipsis">
+      
+        6.1 MCQ
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-coding">
+<span class="md-ellipsis">
+      
+        6.2 Coding
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-descriptive-llm-graded">
+<span class="md-ellipsis">
+      
+        6.3 Descriptive (LLM-graded)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-attempt-totals">
+<span class="md-ellipsis">
+      
+        6.4 Attempt totals
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-failures-retries-and-re-evaluation">
+<span class="md-ellipsis">
+      
+        7. Failures, retries and re-evaluation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events-queues-and-notifications">
+<span class="md-ellipsis">
+      
+        8. Async events, queues and notifications
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        9. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        10. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-used">
+<span class="md-ellipsis">
+      
+        3. Data used
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-main-flow-submit-to-result">
+<span class="md-ellipsis">
+      
+        4. Main flow: submit to result
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-lifecycles">
+<span class="md-ellipsis">
+      
+        5. Lifecycles
+      
+    </span>
+</a>
+<nav aria-label="5. Lifecycles" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-response-evaluation-status">
+<span class="md-ellipsis">
+      
+        5.1 Response evaluation status
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-parent-job">
+<span class="md-ellipsis">
+      
+        5.2 Parent job
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-evaluators-and-marking-rules">
+<span class="md-ellipsis">
+      
+        6. Evaluators and marking rules
+      
+    </span>
+</a>
+<nav aria-label="6. Evaluators and marking rules" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#61-mcq">
+<span class="md-ellipsis">
+      
+        6.1 MCQ
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#62-coding">
+<span class="md-ellipsis">
+      
+        6.2 Coding
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#63-descriptive-llm-graded">
+<span class="md-ellipsis">
+      
+        6.3 Descriptive (LLM-graded)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#64-attempt-totals">
+<span class="md-ellipsis">
+      
+        6.4 Attempt totals
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-failures-retries-and-re-evaluation">
+<span class="md-ellipsis">
+      
+        7. Failures, retries and re-evaluation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events-queues-and-notifications">
+<span class="md-ellipsis">
+      
+        8. Async events, queues and notifications
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        9. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        10. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="evaluation">Evaluation<a class="headerlink" href="#evaluation" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>Evaluation turns a <strong>submitted</strong> attempt into an <strong>evaluated</strong> one. It grades every saved response, adds up the marks, and writes the score and counters onto the attempt.</p>
+<p>Evaluation is <strong>always asynchronous</strong>. Nothing is graded during the test or inside the submit request. The submit call only queues a job, and RabbitMQ consumers do the work. This is because:</p>
+<ul>
+<li>coding answers must run against many test cases on an external code runner, which is slow</li>
+<li>descriptive answers are graded by an LLM, which is slow and can fail</li>
+<li>a failure should be retryable without making the user submit again</li>
+</ul>
+<p>The code lives in <code>src/assessments/evaluation/</code>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parent job</td>
+<td>One <code>EVALUATE_ATTEMPT</code> row in <code>jobs</code> per submitted attempt. It tracks the whole evaluation.</td>
+</tr>
+<tr>
+<td>Child job</td>
+<td>One job per question type that has answers: <code>EVALUATE_MCQ_RESPONSES</code>, <code>EVALUATE_CODING_RESPONSES</code>, <code>EVALUATE_DESCRIPTIVE_RESPONSES</code>. Each has <code>parentJobId</code> set and a list of <code>responseIds</code>.</td>
+</tr>
+<tr>
+<td>Orchestrator</td>
+<td><code>EvaluationOrchestratorService</code>. It runs the parent: claims the attempt, makes the children and publishes them.</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td><code>ResponseEvaluationWorker</code>. It runs one child: grades its responses one by one.</td>
+</tr>
+<tr>
+<td>Evaluator</td>
+<td>A class that implements <code>QuestionEvaluator</code> for one question type: <code>McqEvaluator</code>, <code>CodingEvaluator</code>, <code>DescriptiveEvaluator</code>.</td>
+</tr>
+<tr>
+<td>Registry</td>
+<td><code>EvaluatorRegistry</code>. It maps a question type to its evaluator. Adding a type means adding an evaluator to the <code>EVALUATORS</code> provider list.</td>
+</tr>
+<tr>
+<td>Aggregator</td>
+<td><code>EvaluationAggregatorService</code>. It is called whenever a child settles. When all children are done, it scores the attempt and settles the parent.</td>
+</tr>
+<tr>
+<td>Snapshot</td>
+<td>The <code>assessment_questions</code> row the response answers. It holds the answer key, test cases, checkpoints and marks for that assessment.</td>
+</tr>
+<tr>
+<td>Settled job</td>
+<td>A job in <code>COMPLETED</code>, <code>FAILED</code> or <code>CANCELLED</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-used">3. Data used<a class="headerlink" href="#3-data-used" title="Permanent link">¶</a></h2>
+<p>See <a href="../../erd/">ERD: Assessment Engine</a> and <a href="../../erd/">ERD: Async Jobs</a>.</p>
+<ul>
+<li><code>assessment_attempts</code>: <code>status</code> moves <code>submitted -&gt; evaluating -&gt; evaluated</code>. <code>score</code>, <code>attempted_questions</code>, <code>correct_responses</code> and <code>incorrect_responses</code> are written at the end.</li>
+<li><code>assessment_attempt_responses</code>: <code>evaluation_status</code>, <code>is_correct</code>, <code>marks_awarded</code>, <code>code_verdict</code>, <code>evaluation_result</code> (jsonb grading detail), <code>evaluated_at</code>.</li>
+<li><code>assessment_questions</code> (+ type-specific content): <code>correctMarks</code>, <code>incorrectMarks</code>, MCQ <code>correctOptionId</code>, coding <code>testCases</code> / <code>timeLimitMs</code> / <code>memoryLimitMb</code>, descriptive <code>checkpoints</code>.</li>
+<li><code>jobs</code>: the parent and child rows (<code>status</code>, <code>attempts</code>, <code>maxAttempts</code>, <code>statusDescription</code>, <code>result</code>, <code>error</code>, <code>parentJobId</code>).</li>
+</ul>
+<h2 id="4-main-flow-submit-to-result">4. Main flow: submit to result<a class="headerlink" href="#4-main-flow-submit-to-result" title="Permanent link">¶</a></h2>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant API as AttemptsService
+    participant MQ as RabbitMQ
+    participant O as Orchestrator
+    participant W as ResponseEvaluationWorker
+    participant E as Evaluator
+    participant A as Aggregator
+    participant DB as Postgres
+    API-&gt;&gt;DB: attempt submitted and parent job PENDING
+    API-&gt;&gt;MQ: attempt.evaluate
+    MQ-&gt;&gt;O: AttemptEvaluationConsumer
+    O-&gt;&gt;DB: TX - lock parent job and attempt rows
+    O-&gt;&gt;DB: attempt to evaluating, parent to PROCESSING
+    O-&gt;&gt;DB: group responses by question type and create child jobs
+    O-&gt;&gt;MQ: publish attempt.evaluate.mcq / coding / descriptive
+    MQ-&gt;&gt;W: type consumer
+    W-&gt;&gt;DB: claim child job, check parent PROCESSING and attempt evaluating
+    loop each response not yet completed
+        W-&gt;&gt;DB: response pending to processing
+        W-&gt;&gt;E: evaluate
+        E--&gt;&gt;W: isCorrect, marksAwarded, codeVerdict, details
+        W-&gt;&gt;DB: response to completed with grade
+    end
+    W-&gt;&gt;DB: child job COMPLETED with tally
+    W-&gt;&gt;A: onChildSettled
+    A-&gt;&gt;DB: TX - lock parent, read children
+    alt some child still running
+        A-&gt;&gt;DB: parent statusDescription n of m evaluators done
+    else all children completed
+        A-&gt;&gt;DB: sum marks, write score and counters, attempt to evaluated
+        A-&gt;&gt;DB: parent COMPLETED with result
+    else some child failed
+        A-&gt;&gt;DB: parent FAILED, attempt stays evaluating
+    end
+</div>
+<p>Step by step:</p>
+<ol>
+<li><strong>Submit</strong> (see <a href="../attempts/">attempts</a>) writes the attempt as <code>submitted</code>, creates the parent job (<code>maxAttempts = 3</code>), and publishes <code>{ jobId, attemptId, attemptUid, assessmentId, userId }</code> to exchange <code>attempt</code>, key <code>attempt.evaluate</code>.</li>
+<li><strong><code>AttemptEvaluationConsumer</code></strong> calls <code>EvaluationOrchestratorService.start</code>. In one transaction, with <code>SELECT ... FOR UPDATE</code> on the parent job and the attempt:<ul>
+<li>It drops the message if the job does not exist, has the wrong type, or is already settled (a redelivery).</li>
+<li>If the attempt is gone, <code>rejected</code> or already <code>evaluated</code>, it cancels the parent and stops.</li>
+<li>It moves the attempt <code>submitted -&gt; evaluating</code> (<code>claimEvaluation</code>). An attempt already <code>evaluating</code> stays so, which is how a retry resumes.</li>
+<li>It moves the parent to <code>PROCESSING</code> and increments <code>attempts</code>.</li>
+<li>It groups the attempt's responses by question type. <strong>No responses at all</strong> means the attempt is scored right away (score 0) and the parent completes.</li>
+<li>It creates one child job per type, or reuses an existing one: a <code>FAILED</code> child is reopened, a <code>PENDING</code> child is republished, and a <code>COMPLETED</code> or <code>PROCESSING</code> child is left alone.</li>
+</ul>
+</li>
+<li>After commit, each child is published to its own queue. A child that cannot be published is marked <code>FAILED</code> on the spot, and the aggregator is told so the parent does not wait forever.</li>
+<li><strong>Per-type consumers</strong> (<code>McqEvaluationConsumer</code>, <code>CodingEvaluationConsumer</code>, <code>DescriptiveEvaluationConsumer</code>) all call <code>ResponseEvaluationWorker.run</code>. The worker:<ul>
+<li>drops the message if the job does not exist, has the wrong type, is already settled, or its parent is no longer <code>PROCESSING</code></li>
+<li><strong>cancels</strong> the child if the attempt is no longer <code>evaluating</code> (for example it was rejected), then tells the aggregator</li>
+<li>grades each response that is not already <code>completed</code> or <code>cancelled</code>. Each grade is saved as soon as it is made, so a retry continues where it stopped</li>
+<li>writes the child's <code>result</code> <code>{ graded, correct, incorrect, marksAwarded }</code> and completes it</li>
+</ul>
+</li>
+<li><strong><code>EvaluationAggregatorService.onChildSettled</code></strong> locks the parent row, so only one caller finishes the evaluation:<ul>
+<li>any child still running: it only updates the progress text (<code>"1/3 evaluators done"</code>)</li>
+<li>all children <code>COMPLETED</code>: <code>EvaluationService.evaluate</code> sums the grades, writes them onto the attempt, and moves it to <code>evaluated</code> (only if it is still <code>evaluating</code>)</li>
+<li>any child not completed: the parent becomes <code>FAILED</code> with <code>error.failedChildren</code>, and the attempt stays <code>evaluating</code></li>
+<li>attempt rejected meanwhile: the parent is cancelled</li>
+</ul>
+</li>
+</ol>
+<p>Separate queues per type mean slow coding or LLM grading never holds up MCQ grading for other attempts.</p>
+<h2 id="5-lifecycles">5. Lifecycles<a class="headerlink" href="#5-lifecycles" title="Permanent link">¶</a></h2>
+<h3 id="51-response-evaluation-status">5.1 Response evaluation status<a class="headerlink" href="#51-response-evaluation-status" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; pending: answer saved
+    pending --&gt; processing: worker claims it
+    pending --&gt; cancelled
+    processing --&gt; completed: graded
+    processing --&gt; failed: evaluator threw
+    processing --&gt; cancelled
+    failed --&gt; pending: parent retried
+    completed --&gt; pending: answer changed
+    cancelled --&gt; pending: answer changed
+</div>
+<p>A response carries a grade (<code>isCorrect</code> and <code>marksAwarded</code>) <strong>only</strong> when it is <code>completed</code>. <code>assertGradeMatchesStatus</code> enforces this. A worker that finds a response already <code>processing</code> grades it again. This handles a redelivered message after a worker crashed mid-grade.</p>
+<h3 id="52-parent-job">5.2 Parent job<a class="headerlink" href="#52-parent-job" title="Permanent link">¶</a></h3>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; PENDING: created on submit
+    PENDING --&gt; PROCESSING: orchestrator claims
+    PENDING --&gt; FAILED: could not be published
+    PROCESSING --&gt; COMPLETED: all children completed
+    PROCESSING --&gt; FAILED: a child failed
+    PROCESSING --&gt; CANCELLED: attempt rejected
+    FAILED --&gt; PENDING: retried via the jobs retry endpoint
+</div>
+<h2 id="6-evaluators-and-marking-rules">6. Evaluators and marking rules<a class="headerlink" href="#6-evaluators-and-marking-rules" title="Permanent link">¶</a></h2>
+<p>All marks are stored as <code>decimal(8,2)</code> and rounded to 2 decimal places. The marks come from the <strong>question snapshot</strong> (<code>question.correctMarks</code>, <code>question.incorrectMarks</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Evaluator</th>
+<th>How it decides</th>
+<th>Marks</th>
+<th>Negative marks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCQ</td>
+<td><code>McqEvaluator</code></td>
+<td>selected option equals <code>correctOptionId</code></td>
+<td>right: <code>correctMarks</code>. Wrong: <code>-abs(incorrectMarks)</code>. No option: 0</td>
+<td>Yes, only for a wrong pick</td>
+</tr>
+<tr>
+<td>Coding</td>
+<td><code>CodingEvaluator</code></td>
+<td>runs code on <strong>every</strong> test case (hidden included), one after another</td>
+<td><code>correctMarks * passed / total</code> (partial credit)</td>
+<td>Never</td>
+</tr>
+<tr>
+<td>Descriptive</td>
+<td><code>DescriptiveEvaluator</code></td>
+<td>an LLM says which <strong>checkpoints</strong> the answer covers</td>
+<td>sum of the weightage of completed checkpoints, as a percent of <code>correctMarks</code> (partial credit)</td>
+<td>Never</td>
+</tr>
+</tbody>
+</table>
+<p>A question the user never answered (no response row) is not graded. It earns 0 and is not counted as attempted.</p>
+<h3 id="61-mcq">6.1 MCQ<a class="headerlink" href="#61-mcq" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>gradeMcq</code> in <code>src/assessments/domain/response-invariants.ts</code>.</li>
+<li><code>isCorrect</code> is true only for the right option.</li>
+<li>No details are stored (<code>evaluation_result</code> is null).</li>
+</ul>
+<h3 id="62-coding">6.2 Coding<a class="headerlink" href="#62-coding" title="Permanent link">¶</a></h3>
+<ul>
+<li>Uses the shared <code>CODE_RUNNER</code> (see <a href="../code-execution/">code execution</a>) with the question's <code>timeLimitMs</code> and <code>memoryLimitMb</code>.</li>
+<li>Empty or missing code: <code>wrong_answer</code>, 0 marks, no runs.</li>
+<li>Each case is judged by <code>judgeTestCase</code>: <code>passed</code>, <code>wrong_answer</code>, <code>time_limit_exceeded</code>, <code>memory_limit_exceeded</code>, or <code>runtime_error</code> (compile errors count as runtime errors). Output comparison is exact after normalising line endings, trailing spaces and trailing blank lines.</li>
+<li><code>isCorrect</code> is true only when <strong>all</strong> cases pass. <code>codeVerdict</code> is <code>accepted</code>, or the verdict of the <strong>first</strong> failing case.</li>
+<li><code>evaluation_result</code> stores, for each case: pass/fail, verdict, time, memory and, for failed cases, an error message, the input, the expected output and the program's output (clipped to 2,000 characters). The run time and memory stored on the response are the maximum across cases.</li>
+<li>What the <strong>candidate</strong> sees (<code>codingEvaluationOf</code>): pass/fail, verdict, time, memory and error per case. For a hidden case the error message never includes their output or stderr, because a program could echo the hidden input. <strong>Reviewers</strong> see everything.</li>
+<li>A <code>CodeRunnerError</code> (runner down, busy, not configured, unsupported language) is <strong>not</strong> a wrong answer. It fails the response and the child job so a retry can grade it later.</li>
+</ul>
+<h3 id="63-descriptive-llm-graded">6.3 Descriptive (LLM-graded)<a class="headerlink" href="#63-descriptive-llm-graded" title="Permanent link">¶</a></h3>
+<ul>
+<li>Each descriptive question has <strong>checkpoints</strong> with integer weightages that sum to 100 (<code>assertCheckpointWeights</code>).</li>
+<li>A blank answer completes nothing and makes no LLM call.</li>
+<li>Otherwise <code>AiService.findCompletedCheckpoints</code> sends the question, the checkpoints and the answer (inside <code>&lt;answer&gt;</code> tags) to the model with structured output, temperature 0, and up to 2 tries. Any checkpoint id the model invents is rejected. See <a href="../ai/">AI</a>.</li>
+<li>The model is the <strong>assessment creator's</strong> plan model (<code>AiModelSelector.forUser(createdBy)</code>), and the call is audited against the creator, with the child job id.</li>
+<li><code>scoreCheckpoints</code>: <code>scorePercent</code> is the sum of completed weightages. <code>marksAwarded = correctMarks * scorePercent / 100</code>. <code>isCorrect</code> is true when <code>scorePercent &gt;= 60</code> (<code>DESCRIPTIVE_CORRECT_THRESHOLD_PERCENT</code>).</li>
+<li><code>evaluation_result</code> stores each checkpoint (description, weightage, completed, marks) and <code>scorePercent</code>. The candidate sees this after evaluation.</li>
+</ul>
+<h3 id="64-attempt-totals">6.4 Attempt totals<a class="headerlink" href="#64-attempt-totals" title="Permanent link">¶</a></h3>
+<p><code>EvaluationService.evaluate</code>, run inside the aggregator's transaction:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>score</code></td>
+<td>sum of <code>marksAwarded</code> over <code>completed</code> responses (can be negative because of MCQ penalties)</td>
+</tr>
+<tr>
+<td><code>attempted_questions</code></td>
+<td>number of response rows (a blank descriptive answer still counts)</td>
+</tr>
+<tr>
+<td><code>correct_responses</code></td>
+<td>completed responses with <code>isCorrect = true</code></td>
+</tr>
+<tr>
+<td><code>incorrect_responses</code></td>
+<td>completed responses with <code>isCorrect = false</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>evaluated</code>, only if the attempt is still <code>evaluating</code> (a conditional update)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-failures-retries-and-re-evaluation">7. Failures, retries and re-evaluation<a class="headerlink" href="#7-failures-retries-and-re-evaluation" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Messages are always acked.</strong> The consumers catch errors instead of rethrowing them, so a message is not requeued forever on a failure that may repeat (for example the runner being down). Retry is explicit.</li>
+<li><strong>A child fails</strong> when an evaluator throws. The response being graded becomes <code>failed</code>, and grades already saved in that child stay.</li>
+<li><strong>The parent fails</strong> once every child has settled and at least one did not complete. The attempt stays <code>evaluating</code>.</li>
+<li><strong>The parent cannot start</strong> (an error in the claim transaction): the parent is marked <code>FAILED</code>. Nothing else was written.</li>
+<li><strong>The publish on submit fails:</strong> the parent is <code>FAILED</code>, and the attempt stays <code>submitted</code>.</li>
+<li><strong>Retry</strong> is <code>POST /v1/jobs/:id/retry</code> on the <strong>parent</strong> job, by its owner. Retrying a child directly gives 409 "retry its parent job instead". The parent may run at most 3 times, and each child job also has <code>maxAttempts = 3</code>. On retry, the orchestrator keeps completed children, reopens failed ones (their <code>failed</code> responses go back to <code>pending</code>), and grades only what is left.</li>
+<li><strong>Redelivery is safe.</strong> Settled jobs are dropped, an <code>evaluating</code> attempt and <code>processing</code> responses are picked up again, and every status write is conditional on the status last read.</li>
+<li><strong>Rejection during evaluation:</strong> children cancel themselves, the parent is cancelled, and the attempt keeps <code>rejected</code>. If the rejection lands between the last grade and the final update, the conditional update leaves the attempt <code>rejected</code> and the parent completes with "Attempt was no longer evaluating".</li>
+<li><strong>There is no re-evaluation of an <code>evaluated</code> attempt.</strong> There is no endpoint or job type that re-grades a finished attempt (for example after a question fix). Only failed evaluations can be retried.</li>
+</ol>
+<h2 id="8-async-events-queues-and-notifications">8. Async events, queues and notifications<a class="headerlink" href="#8-async-events-queues-and-notifications" title="Permanent link">¶</a></h2>
+<p>All on exchange <code>attempt</code> (<code>src/config/rabbitmq/rabbitmq.constants.ts</code>). Routes for retries come from <code>src/jobs/job-routes.ts</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Routing key</th>
+<th>Queue</th>
+<th>Consumer</th>
+<th>Job type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attempt.evaluate</code></td>
+<td><code>attempt-evaluation-queue</code></td>
+<td><code>AttemptEvaluationConsumer</code></td>
+<td><code>EVALUATE_ATTEMPT</code> (parent)</td>
+</tr>
+<tr>
+<td><code>attempt.evaluate.mcq</code></td>
+<td><code>attempt-evaluation-mcq-queue</code></td>
+<td><code>McqEvaluationConsumer</code></td>
+<td><code>EVALUATE_MCQ_RESPONSES</code></td>
+</tr>
+<tr>
+<td><code>attempt.evaluate.coding</code></td>
+<td><code>attempt-evaluation-coding-queue</code></td>
+<td><code>CodingEvaluationConsumer</code></td>
+<td><code>EVALUATE_CODING_RESPONSES</code></td>
+</tr>
+<tr>
+<td><code>attempt.evaluate.descriptive</code></td>
+<td><code>attempt-evaluation-descriptive-queue</code></td>
+<td><code>DescriptiveEvaluationConsumer</code></td>
+<td><code>EVALUATE_DESCRIPTIVE_RESPONSES</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every message is <code>{ jobId, ...job.payload }</code>, so a retry can rebuild it from the job row. All consumers are marked <code>@Public()</code> so the global JWT guard skips them.</p>
+<p><strong>Announcing results:</strong> no WebSocket event and no email are sent when evaluation finishes or fails. Progress is visible only by polling:</p>
+<ul>
+<li><code>GET /v1/attempts/:uid/result</code>: 400 until <code>evaluated</code>.</li>
+<li><code>GET /v1/jobs/:id</code>: the parent job with its children (<code>statusDescription</code> such as <code>"2/3 evaluators done"</code>). The job id is not returned by submit, though.</li>
+</ul>
+<p>See <a href="../realtime-events/">realtime events</a> and <a href="../notifications/">notifications</a>.</p>
+<h2 id="9-where-the-code-lives">9. Where the code lives<a class="headerlink" href="#9-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/assessments/evaluation/evaluation.module.ts</code></td>
+<td>Wires evaluators, registry, services and consumers</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/evaluation-orchestrator.service.ts</code></td>
+<td>Parent job: claim, fan-out, publish</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/response-evaluation.worker.ts</code></td>
+<td>Child job: claim, grade, complete</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/evaluation-aggregator.service.ts</code></td>
+<td>Settles the parent once all children settle</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/evaluation.service.ts</code></td>
+<td>Sums grades onto the attempt</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/evaluators/*.evaluator.ts</code></td>
+<td>MCQ, coding, descriptive grading</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/evaluator.registry.ts</code>, <code>evaluation.constants.ts</code></td>
+<td>Type-to-evaluator and type-to-job mapping, max attempts</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/consumers/</code></td>
+<td>RabbitMQ subscribers</td>
+</tr>
+<tr>
+<td><code>src/assessments/evaluation/interfaces/</code></td>
+<td><code>QuestionEvaluator</code>, job payload and result shapes</td>
+</tr>
+<tr>
+<td><code>src/assessments/domain/response-*.ts</code>, <code>attempt-transitions.ts</code>, <code>descriptive-invariants.ts</code></td>
+<td>Status rules and scoring helpers</td>
+</tr>
+<tr>
+<td><code>src/jobs/</code></td>
+<td>Job rows, retry endpoint, <code>child-outcome.ts</code>, <code>job-routes.ts</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-known-gaps-and-todos-found-in-code">10. Known gaps and TODOs found in code<a class="headerlink" href="#10-known-gaps-and-todos-found-in-code" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>No completion notification.</strong> Nothing pushes or emails the result. Clients must poll.</li>
+<li><strong>The job id is hard to find.</strong> <code>submitAttempt</code> returns <code>true</code>, not the job id, and there is no "list my jobs" endpoint. So a candidate cannot easily retry a failed evaluation through <code>POST /v1/jobs/:id/retry</code>.</li>
+<li><strong>No automatic recovery.</strong> No scheduler sweeps attempts stuck in <code>submitted</code> or <code>evaluating</code> after a failure. They stay there until someone retries the parent job by hand.</li>
+<li><strong>Retry is billed like AI work.</strong> <code>POST /v1/jobs/:id/retry</code> is rate-limited under the <code>AI_GENERATION</code> scope with cost 5 (<code>src/jobs/jobs.controller.ts:76</code>), even for an MCQ-only evaluation.</li>
+<li><strong>No re-grading</strong> of evaluated attempts (for example after an answer key fix).</li>
+<li><strong><code>checkerType</code> is ignored.</strong> Coding questions store a <code>checkerType</code> (default <code>exact</code>), but grading always uses the exact comparison (<code>src/code-execution/judge-test-case.ts:19</code>).</li>
+<li><strong>Descriptive grading is tied to the creator.</strong> It runs on the assessment creator's plan model (<code>AI_MODEL</code> feature) and the LLM call is audited against the creator, not the candidate (<code>descriptive.evaluator.ts:43-57</code>). Keep this in mind when reading AI usage and audit data.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

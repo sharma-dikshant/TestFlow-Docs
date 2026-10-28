@@ -1,0 +1,1658 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How people sign up, sign in, stay signed in and sign out, and how platform admins manage user accounts." name="description"/>
+<link href="../../api-design/v1/" rel="prev"/>
+<link href="../rbac/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Authentication and Users - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#authentication-and-users">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Authentication and Users
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-configuration">
+<span class="md-ellipsis">
+      
+        4. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flows">
+<span class="md-ellipsis">
+      
+        5. Main flows
+      
+    </span>
+</a>
+<nav aria-label="5. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-sign-up-and-email-verification">
+<span class="md-ellipsis">
+      
+        5.1 Sign-up and email verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-login-with-password">
+<span class="md-ellipsis">
+      
+        5.2 Login with password
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-google-sign-in">
+<span class="md-ellipsis">
+      
+        5.3 Google sign-in
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-token-refresh-rotation">
+<span class="md-ellipsis">
+      
+        5.4 Token refresh (rotation)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-logout">
+<span class="md-ellipsis">
+      
+        5.5 Logout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#56-forgot-and-reset-password">
+<span class="md-ellipsis">
+      
+        5.6 Forgot and reset password
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#57-how-a-request-is-authenticated">
+<span class="md-ellipsis">
+      
+        5.7 How a request is authenticated
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        6. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+<nav aria-label="7. Endpoints summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#auth-v1auth-srcidentityauthauthcontrollerts">
+<span class="md-ellipsis">
+      
+        Auth (/v1/auth, src/identity/auth/auth.controller.ts)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-users-v1admin-srcidentityusersadmincontrollerts">
+<span class="md-ellipsis">
+      
+        Admin users (/v1/admin, src/identity/users/admin.controller.ts)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-work-emails-and-events">
+<span class="md-ellipsis">
+      
+        8. Async work, emails and events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-bootstrapping-the-first-admin">
+<span class="md-ellipsis">
+      
+        9. Bootstrapping the first admin
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        10. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        11. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../attempts/">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-terms">
+<span class="md-ellipsis">
+      
+        2. Key terms
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-it-uses">
+<span class="md-ellipsis">
+      
+        3. Data it uses
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-configuration">
+<span class="md-ellipsis">
+      
+        4. Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flows">
+<span class="md-ellipsis">
+      
+        5. Main flows
+      
+    </span>
+</a>
+<nav aria-label="5. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-sign-up-and-email-verification">
+<span class="md-ellipsis">
+      
+        5.1 Sign-up and email verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-login-with-password">
+<span class="md-ellipsis">
+      
+        5.2 Login with password
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-google-sign-in">
+<span class="md-ellipsis">
+      
+        5.3 Google sign-in
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-token-refresh-rotation">
+<span class="md-ellipsis">
+      
+        5.4 Token refresh (rotation)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-logout">
+<span class="md-ellipsis">
+      
+        5.5 Logout
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#56-forgot-and-reset-password">
+<span class="md-ellipsis">
+      
+        5.6 Forgot and reset password
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#57-how-a-request-is-authenticated">
+<span class="md-ellipsis">
+      
+        5.7 How a request is authenticated
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        6. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+<nav aria-label="7. Endpoints summary" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#auth-v1auth-srcidentityauthauthcontrollerts">
+<span class="md-ellipsis">
+      
+        Auth (/v1/auth, src/identity/auth/auth.controller.ts)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#admin-users-v1admin-srcidentityusersadmincontrollerts">
+<span class="md-ellipsis">
+      
+        Admin users (/v1/admin, src/identity/users/admin.controller.ts)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-work-emails-and-events">
+<span class="md-ellipsis">
+      
+        8. Async work, emails and events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-bootstrapping-the-first-admin">
+<span class="md-ellipsis">
+      
+        9. Bootstrapping the first admin
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        10. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-known-gaps-and-todos">
+<span class="md-ellipsis">
+      
+        11. Known gaps and TODOs
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="authentication-and-users">Authentication and Users<a class="headerlink" href="#authentication-and-users" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>This module answers one question for every request: <strong>"Who is calling, and can their account still be used?"</strong></p>
+<p>It covers:</p>
+<ul>
+<li><strong>Sign-up and sign-in</strong>: email or username plus password, and Google sign-in.</li>
+<li><strong>Email verification</strong>: a link sent by email. An account must be verified before it can call any protected route.</li>
+<li><strong>Password reset</strong>: a "forgot password" email with a one-time link.</li>
+<li><strong>Tokens</strong>: a short-lived <em>access token</em> for API calls and a longer-lived <em>refresh token</em> to get new access tokens.</li>
+<li><strong>The global auth guard</strong>: it runs on every HTTP request and puts the caller on <code>request.user</code>.</li>
+<li><strong>The current user's profile</strong> (<code>GET /v1/auth/me</code>).</li>
+<li><strong>Admin user management</strong>: listing users and adding or removing platform roles.</li>
+</ul>
+<p>This module does not decide what a signed-in user is <em>allowed</em> to do. Roles and permissions do that. See <a href="../rbac/">RBAC</a> and <a href="../organizations/">Organizations</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">The old docs were wrong</p>
+<p>Earlier versions of this page said there was no Google sign-in, no email verification and no password reset. All three exist now. Auth does <strong>not</strong> use Redis. Refresh tokens are stored in Postgres. Redis is used by the rate limiter (see <a href="../platform-services/">Platform services</a>).</p>
+</div>
+<h2 id="2-key-terms">2. Key terms<a class="headerlink" href="#2-key-terms" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JWT</strong></td>
+<td>JSON Web Token. A signed string that carries a small JSON payload. The server can check the signature without calling the database.</td>
+</tr>
+<tr>
+<td><strong>Access token</strong></td>
+<td>A JWT sent as <code>Authorization: Bearer &lt;token&gt;</code> on every API call. Signed with <code>JWT_ACCESS_SECRET</code>.</td>
+</tr>
+<tr>
+<td><strong>Refresh token</strong></td>
+<td>A JWT used only on <code>POST /v1/auth/refresh</code> to get a new token pair. Signed with <code>JWT_REFRESH_SECRET</code>. Its SHA-256 hash is stored in <code>refresh_tokens</code>.</td>
+</tr>
+<tr>
+<td><strong>Token payload</strong></td>
+<td><code>{ sub, email, username }</code>. <code>sub</code> is the user id. The type is <code>JwtPayload</code> in <code>src/identity/auth/guards/jwt-auth.guard.ts</code>.</td>
+</tr>
+<tr>
+<td><strong>Verified account</strong></td>
+<td><code>users.is_verified = true</code>. The user clicked the email link, or signed in with Google.</td>
+</tr>
+<tr>
+<td><strong>Active account</strong></td>
+<td><code>users.is_active = true</code>. A token for an inactive (deactivated) account is rejected.</td>
+</tr>
+<tr>
+<td><strong>Placeholder account</strong></td>
+<td>An unverified account the system creates for someone invited to an organization who has no account yet. Its username starts with <code>invited_</code>. See <a href="../organizations/#5-invitations">Organizations</a>.</td>
+</tr>
+<tr>
+<td><strong><code>mustChangePassword</code></strong></td>
+<td>A flag on the user. It is set when the system generated the password (Google sign-in). Login returns it so the client can ask the user to pick a new password.</td>
+</tr>
+<tr>
+<td><strong><code>@Public()</code></strong></td>
+<td>A decorator that tells the global auth guard to skip a route. In <code>src/common/decorators/public.decorator.ts</code>.</td>
+</tr>
+<tr>
+<td><strong><code>@CurrentUser()</code></strong></td>
+<td>A parameter decorator that returns <code>request.user</code> (the <code>JwtPayload</code>). In <code>src/identity/auth/decorators/current-user.decorator.ts</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-it-uses">3. Data it uses<a class="headerlink" href="#3-data-it-uses" title="Permanent link">¶</a></h2>
+<p>See the <a href="../../erd/">ERD</a> for the full table definitions. This module reads and writes:</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>users</code></td>
+<td>Account details, bcrypt password hash (cost 10), <code>is_active</code>, <code>is_verified</code>, <code>must_change_password</code>, <code>oauth_provider</code> / <code>oauth_id</code>, and the verification email counters (<code>total_verification_email</code>, <code>last_verification_email_sent_at</code>).</td>
+</tr>
+<tr>
+<td><code>refresh_tokens</code></td>
+<td><code>token_hash</code>, <code>user_id</code>, <code>expires_at</code>, <code>deleted_at</code>. <strong>One row per user</strong> (see rule 6).</td>
+</tr>
+<tr>
+<td><code>users_roles</code>, <code>roles</code></td>
+<td>Platform roles. The admin user endpoints read and write them.</td>
+</tr>
+<tr>
+<td><code>subscriptions</code></td>
+<td>A free subscription is created when an account becomes verified (see <a href="../commerce/">Commerce</a>).</td>
+</tr>
+</tbody>
+</table>
+<p>Uniqueness rules on <code>users</code>:</p>
+<ul>
+<li><code>email</code> and <code>username</code> are unique among rows that are not soft-deleted.</li>
+<li><code>(oauth_provider, oauth_id)</code> is unique when <code>oauth_id</code> is set.</li>
+<li><code>phone_number</code> is unique.</li>
+</ul>
+<h2 id="4-configuration">4. Configuration<a class="headerlink" href="#4-configuration" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Env var</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JWT_ACCESS_SECRET</code>, <code>JWT_ACCESS_EXPIRY</code></td>
+<td>Access token secret and lifetime <strong>in seconds</strong>.</td>
+</tr>
+<tr>
+<td><code>JWT_REFRESH_SECRET</code>, <code>JWT_REFRESH_EXPIRY</code></td>
+<td>Refresh token secret and lifetime <strong>in seconds</strong>.</td>
+</tr>
+<tr>
+<td><code>JWT_EMAIL_VERIFICATION_SECRET</code>, <code>JWT_EMAIL_VERIFICATION_EXPIRY</code></td>
+<td>Verification link token. Example: <code>86400</code> (1 day).</td>
+</tr>
+<tr>
+<td><code>JWT_PASSWORD_RESET_SECRET</code>, <code>JWT_PASSWORD_RESET_EXPIRY</code></td>
+<td>Reset link token. Example: <code>900</code> (15 minutes).</td>
+</tr>
+<tr>
+<td><code>GOOGLE_OAUTH2_CLIENT_ID</code></td>
+<td>Google client id. Google ID tokens must have this as their <code>audience</code>.</td>
+</tr>
+<tr>
+<td><code>FRONTEND_URL</code></td>
+<td>Base URL for email links (<code>/verify-email?token=...</code>, <code>/reset-password?token=...</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>The code reads every expiry with <code>+value</code>. So each one <strong>must be a plain number of seconds</strong>. See Known gaps for the problem with <code>.env.example</code>.</p>
+<h2 id="5-main-flows">5. Main flows<a class="headerlink" href="#5-main-flows" title="Permanent link">¶</a></h2>
+<h3 id="51-sign-up-and-email-verification">5.1 Sign-up and email verification<a class="headerlink" href="#51-sign-up-and-email-verification" title="Permanent link">¶</a></h3>
+<ol>
+<li>The client calls <code>POST /v1/auth/signup</code> with first name, last name, username, email, password and an optional phone number.</li>
+<li><code>UsersService.create</code> checks the email:<ul>
+<li><strong>No account</strong> has that email: it checks that the username and phone are free, then creates a new user.</li>
+<li><strong>An unverified account</strong> has that email (an unfinished sign-up, or a placeholder made by an org invite): it <strong>takes over that row</strong>. It replaces the name, username, phone and password. The row keeps its id, so any org invitation waiting on it stays attached.</li>
+<li><strong>A verified account</strong> has that email: <code>409 Conflict</code>.</li>
+</ul>
+</li>
+<li>The server signs a token pair and stores the refresh token. It returns the tokens, but they <strong>cannot be used yet</strong>, because the guard rejects unverified accounts.</li>
+<li>The server sends a verification email. It does not wait for the send to finish (fire-and-forget). The link holds a JWT with <code>{ email }</code>. The send time and a counter are saved on the user.</li>
+<li>The user clicks the link. The frontend calls <code>GET /v1/auth/verify-email?token=...</code>.</li>
+<li>In one transaction, the user is marked verified and a <strong>free subscription</strong> is created. Then a welcome email is sent.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant A as AuthController
+    participant S as AuthService
+    participant U as UsersService
+    participant DB as Postgres
+    participant M as EmailService
+    C-&gt;&gt;A: POST /v1/auth/signup
+    A-&gt;&gt;S: signup(dto)
+    S-&gt;&gt;U: create(dto)
+    U-&gt;&gt;DB: find user by email
+    alt no user or unverified user
+        U-&gt;&gt;DB: insert new user or take over unverified row
+    else verified user exists
+        U--&gt;&gt;C: 409 Conflict
+    end
+    S-&gt;&gt;S: sign access and refresh tokens
+    S-&gt;&gt;DB: upsert refresh_tokens row with hash
+    S--&gt;&gt;M: send verification email, not awaited
+    S-&gt;&gt;DB: bump verification counter and timestamp
+    S--&gt;&gt;C: 200 with tokens
+    Note over C: Tokens fail on protected routes until verified
+    C-&gt;&gt;A: GET /v1/auth/verify-email?token=...
+    A-&gt;&gt;S: verifyEmail(token)
+    S-&gt;&gt;S: verify JWT with email verification secret
+    S-&gt;&gt;DB: BEGIN, set is_verified, create free subscription, COMMIT
+    S--&gt;&gt;M: send welcome email, not awaited
+    S--&gt;&gt;C: 200 Email verified successfully
+</div>
+<h3 id="52-login-with-password">5.2 Login with password<a class="headerlink" href="#52-login-with-password" title="Permanent link">¶</a></h3>
+<ol>
+<li>The client calls <code>POST /v1/auth/login</code> with <strong>either</strong> <code>email</code> <strong>or</strong> <code>username</code>, plus <code>password</code>.</li>
+<li>The server looks up the user. A missing user and a wrong password return the same error: <code>401 Invalid credentials</code>.</li>
+<li>If the account is <strong>not verified</strong>, the server may send a fresh verification email. Then it returns <code>401 Please verify your email before logging in</code>. It only sends a new email when the last one has expired (it is older than <code>JWT_EMAIL_VERIFICATION_EXPIRY</code>). This stops people from using login to spam someone's inbox.</li>
+<li>Otherwise, the server signs a token pair and saves the refresh token hash.</li>
+<li>If <code>mustChangePassword</code> is true, the response also contains <code>mustChangePassword: true</code>.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    participant M as EmailService
+    C-&gt;&gt;S: POST /v1/auth/login with email or username and password
+    S-&gt;&gt;DB: find user
+    alt user missing or bcrypt compare fails
+        S--&gt;&gt;C: 401 Invalid credentials
+    else not verified
+        opt last verification email has expired
+            S--&gt;&gt;M: send new verification email
+        end
+        S--&gt;&gt;C: 401 Please verify your email
+    else ok
+        S-&gt;&gt;S: sign access and refresh tokens
+        S-&gt;&gt;DB: upsert the user's single refresh_tokens row
+        S--&gt;&gt;C: 200 accessToken, refreshToken, maybe mustChangePassword
+    end
+</div>
+<p>Login does not check <code>is_active</code>. A deactivated user can still get tokens, but the guard rejects them on the first protected call.</p>
+<h3 id="53-google-sign-in">5.3 Google sign-in<a class="headerlink" href="#53-google-sign-in" title="Permanent link">¶</a></h3>
+<p>The frontend uses Google's sign-in button to get a <strong>Google ID token</strong> and sends it to the backend. The backend has no redirect flow and no Passport strategy.</p>
+<ol>
+<li>The client calls <code>POST /v1/auth/google</code> with <code>{ idToken }</code>.</li>
+<li><code>GoogleOAuthService.verifyIdToken</code> checks the token with <code>google-auth-library</code>. The audience must equal <code>GOOGLE_OAUTH2_CLIENT_ID</code>, and Google must say the email is verified. Otherwise the server returns <code>401</code>.</li>
+<li>Inside one transaction, the server finds the user by email and takes one of three paths:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>No account</strong></td>
+<td>Create a user. The name comes from Google. The username is made from the email prefix and is unique. The password is a random 8-character one, with <code>mustChangePassword = true</code> and <code>isVerified = true</code>. The Google ids are saved. A free subscription is created.</td>
+</tr>
+<tr>
+<td><strong>Unverified account</strong> (unfinished sign-up or org placeholder)</td>
+<td>"Claim" it. Replace the name and any placeholder username. Set a <strong>new random password</strong>. Mark it verified and link Google. <strong>Revoke all its refresh tokens.</strong> Create a free subscription. This blocks <em>account pre-hijacking</em>: someone who signed up with your email but never verified it cannot keep a password on your account.</td>
+</tr>
+<tr>
+<td><strong>Verified account</strong></td>
+<td>Link Google to it (save <code>oauth_provider</code> and <code>oauth_id</code>) if it is not linked yet. The password stays the same.</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>The server signs a token pair.</li>
+<li>In the first two cases only, the server sends a welcome email <strong>with the username and generated password</strong>, so the user can also log in with a password later. The password is never logged and never returned in the API response.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant G as Google
+    participant S as AuthService
+    participant O as GoogleOAuthService
+    participant DB as Postgres
+    participant M as EmailService
+    C-&gt;&gt;G: Sign in with Google button
+    G--&gt;&gt;C: Google ID token
+    C-&gt;&gt;S: POST /v1/auth/google with idToken
+    S-&gt;&gt;O: verifyIdToken
+    O-&gt;&gt;G: check signature and audience
+    O--&gt;&gt;S: googleId, email, first and last name
+    S-&gt;&gt;DB: BEGIN, find user by email
+    alt new user
+        S-&gt;&gt;DB: insert verified user with random password
+        S-&gt;&gt;DB: create free subscription
+    else unverified user
+        S-&gt;&gt;DB: claim row, new password, revoke refresh tokens
+        S-&gt;&gt;DB: create free subscription
+    else verified user
+        S-&gt;&gt;DB: link Google ids if needed
+    end
+    S-&gt;&gt;DB: COMMIT
+    S-&gt;&gt;DB: upsert refresh token row
+    opt account created or claimed
+        S--&gt;&gt;M: welcome email with username and password
+    end
+    S--&gt;&gt;C: 200 accessToken and refreshToken
+</div>
+<h3 id="54-token-refresh-rotation">5.4 Token refresh (rotation)<a class="headerlink" href="#54-token-refresh-rotation" title="Permanent link">¶</a></h3>
+<p>Each refresh token works <strong>once</strong>. Using it returns a new pair and kills the old token. This is called <em>rotation</em>.</p>
+<ol>
+<li>The client calls <code>POST /v1/auth/refresh</code> with <code>{ refreshToken }</code>. The route is <code>@Public()</code>.</li>
+<li>The server verifies the JWT with <code>JWT_REFRESH_SECRET</code>.</li>
+<li>It hashes the token with SHA-256 and looks for a live row with that <code>user_id</code> and <code>token_hash</code>. If there is no row, or <code>expires_at</code> has passed, it returns <code>401</code>.</li>
+<li>It soft-deletes the row, signs a new pair, and stores the new hash. Storing the hash brings the same row back with the new hash and expiry.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    C-&gt;&gt;S: POST /v1/auth/refresh with refreshToken
+    S-&gt;&gt;S: verify JWT with refresh secret
+    S-&gt;&gt;S: sha256 of the token
+    S-&gt;&gt;DB: find live row by user id and hash
+    alt not found or expired
+        S--&gt;&gt;C: 401 Invalid or expired refresh token
+    else found
+        S-&gt;&gt;DB: soft delete row
+        S-&gt;&gt;S: sign new access and refresh tokens
+        S-&gt;&gt;DB: restore row with new hash and new expiry
+        S--&gt;&gt;C: 200 new token pair
+    end
+</div>
+<h3 id="55-logout">5.5 Logout<a class="headerlink" href="#55-logout" title="Permanent link">¶</a></h3>
+<ol>
+<li>The client calls <code>POST /v1/auth/logout</code> with <code>{ refreshToken }</code>. The route is <code>@Public()</code>, so it works even when the access token has expired.</li>
+<li>The server hashes the token and soft-deletes any row with that hash.</li>
+<li>It always returns <code>200</code>, even if it did not know the token.</li>
+</ol>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    participant C as Client
+    participant S as AuthService
+    participant DB as Postgres
+    C-&gt;&gt;S: POST /v1/auth/logout with refreshToken
+    S-&gt;&gt;S: sha256 of the token
+    S-&gt;&gt;DB: soft delete refresh_tokens where token_hash matches
+    S--&gt;&gt;C: 200 Logged out successfully
+    Note over C,S: The access token still works until it expires
+</div>
+<h3 id="56-forgot-and-reset-password">5.6 Forgot and reset password<a class="headerlink" href="#56-forgot-and-reset-password" title="Permanent link">¶</a></h3>
+<ol>
+<li>The client calls <code>POST /v1/auth/forgot-password</code> with <code>{ email }</code>. The response is <strong>always the same message</strong>, so nobody can use this route to find out which emails have accounts.</li>
+<li>If the account exists and is active, the server emails a reset link. The link holds a JWT with <code>{ sub: userId }</code>.</li>
+<li>The JWT is signed with <code>JWT_PASSWORD_RESET_SECRET</code> <strong>plus the user's current password hash</strong>. When the password changes, the key changes, so every older reset link stops working. This makes the link single-use without storing it anywhere.</li>
+<li>The client calls <code>POST /v1/auth/reset-password</code> with <code>{ token, password }</code>. The server reads <code>sub</code> from the token, loads that user, and then verifies the token with that user's key. Every failure returns the same error: <code>401 Invalid or expired password reset token</code>.</li>
+<li>In one transaction, the server saves the new password, clears <code>mustChangePassword</code>, and <strong>revokes all the user's refresh tokens</strong>.</li>
+</ol>
+<h3 id="57-how-a-request-is-authenticated">5.7 How a request is authenticated<a class="headerlink" href="#57-how-a-request-is-authenticated" title="Permanent link">¶</a></h3>
+<p><code>JwtAuthGuard</code> (<code>src/identity/auth/guards/jwt-auth.guard.ts</code>) is the <strong>first</strong> global guard in <code>src/app.module.ts</code>. The full order is:</p>
+<p><code>JwtAuthGuard</code> → <code>RateLimitGuard</code> → <code>RolesGuard</code> → <code>OrgContextGuard</code> → <code>PermissionGuard</code></p>
+<p>Steps inside <code>JwtAuthGuard</code>:</p>
+<ol>
+<li>If the route or its controller has <code>@Public()</code>, let the request through.</li>
+<li>Read the <code>Authorization: Bearer &lt;token&gt;</code> header. If it is missing: <code>401 Missing access token</code>.</li>
+<li>Verify the JWT with <code>JWT_ACCESS_SECRET</code>. If it is bad or expired: <code>401</code>.</li>
+<li>Load the account status from the database with <code>UsersService.findAccountStatusById</code>. It selects only <code>id</code>, <code>is_active</code> and <code>is_verified</code>. This runs <strong>on every authenticated request</strong>. Then:<ul>
+<li>user deleted: <code>401 Account no longer exists</code></li>
+<li>not active: <code>401 Account has been deactivated</code></li>
+<li>not verified: <code>401 Please verify your email before continuing</code></li>
+</ul>
+</li>
+<li>Set <code>request.user = payload</code> (<code>{ sub, email, username }</code>).</li>
+</ol>
+<p>Controllers read the caller with <code>@CurrentUser() user: JwtPayload</code>. They usually use <code>user.sub</code> as the user id.</p>
+<div class="mermaid">flowchart TD
+    R["Incoming HTTP request"] --&gt; P{"Route marked Public?"}
+    P -- yes --&gt; OK["Continue to next guard"]
+    P -- no --&gt; H{"Bearer token present?"}
+    H -- no --&gt; E1["401 Missing access token"]
+    H -- yes --&gt; V{"JWT valid?"}
+    V -- no --&gt; E2["401 Invalid or expired"]
+    V -- yes --&gt; D["Load is_active and is_verified from DB"]
+    D --&gt; S{"Account usable?"}
+    S -- no --&gt; E3["401 deleted, deactivated or unverified"]
+    S -- yes --&gt; U["Set request.user to the payload"] --&gt; OK
+</div>
+<p>RabbitMQ consumers are also marked <code>@Public()</code>. The global guard runs for them too, and they have no HTTP request to read a token from.</p>
+<h2 id="6-business-rules-and-edge-cases">6. Business rules and edge cases<a class="headerlink" href="#6-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Password policy</strong> (<code>IsStrongPassword</code> in <code>src/identity/auth/decorators/is-strong-password.decorator.ts</code>): 8 to 255 characters, with at least one lowercase letter, one uppercase letter, one digit and one special character. Sign-up and reset use it. Login only checks that the password has at least 8 characters.</li>
+<li><strong>Username</strong>: 3 to 100 characters, using only letters, digits and <code>_</code>. First and last names may use only letters, spaces, <code>-</code> and <code>'</code>.</li>
+<li><strong>Login identifier</strong>: send <code>email</code> or <code>username</code>. If both are sent, email is used.</li>
+<li><strong>Unverified accounts cannot call protected routes</strong>, even with a valid token.</li>
+<li><strong>Verification email throttle</strong>: login sends a new link only after the previous link has expired.</li>
+<li><strong>One refresh token per user.</strong> <code>storeRefreshToken</code> keeps exactly one <code>refresh_tokens</code> row per user and overwrites it on every login, sign-up, Google sign-in and refresh. So logging in on a second device makes the first device's refresh token stop working. This comes from how the code is written. No setting changes it.</li>
+<li><strong>Logout only revokes the refresh token.</strong> There is no access token denylist. The access token keeps working until it expires. The exception is a deactivated or deleted account, because the guard checks those on every call.</li>
+<li><strong>Resetting the password logs the user out everywhere</strong> (all refresh tokens are revoked). Claiming an unverified account through Google does the same.</li>
+<li><strong>Google requires <code>email_verified</code>.</strong> If a verified TestFlow account has the same email, Google is linked to it automatically.</li>
+<li><strong>Generated passwords</strong> (<code>generateDefaultPassword</code> in <code>src/identity/helpers/default-password.helper.ts</code>) use <code>crypto.randomInt</code>. They have at least one character from each class and leave out characters that look alike.</li>
+<li><strong>The free subscription</strong> is created only when an account becomes verified (email link or Google), never at sign-up.</li>
+<li><strong>Emails are fire-and-forget.</strong> A failed send is logged and does not fail the request.</li>
+<li><strong>Email matching is case-sensitive</strong> in login, sign-up and Google sign-in (<code>findByEmail</code> compares with <code>=</code>). Only the org invite lookup lowercases emails.</li>
+</ol>
+<h2 id="7-endpoints-summary">7. Endpoints summary<a class="headerlink" href="#7-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>The <a href="../../api-design/v1/">API reference</a> has the full details.</p>
+<h3 id="auth-v1auth-srcidentityauthauthcontrollerts">Auth (<code>/v1/auth</code>, <code>src/identity/auth/auth.controller.ts</code>)<a class="headerlink" href="#auth-v1auth-srcidentityauthauthcontrollerts" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Auth</th>
+<th>Rate limit</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST /login</code></td>
+<td>Public</td>
+<td>CLASS_A</td>
+<td>Password login</td>
+</tr>
+<tr>
+<td><code>POST /signup</code></td>
+<td>Public</td>
+<td>CLASS_A</td>
+<td>Create an account and send the verification email</td>
+</tr>
+<tr>
+<td><code>GET /verify-email?token=</code></td>
+<td>Public</td>
+<td>CLASS_A, own bucket</td>
+<td>Verify the email and create the free plan</td>
+</tr>
+<tr>
+<td><code>POST /forgot-password</code></td>
+<td>Public</td>
+<td>CLASS_A, own bucket</td>
+<td>Send the reset email</td>
+</tr>
+<tr>
+<td><code>POST /reset-password</code></td>
+<td>Public</td>
+<td>CLASS_A, own bucket</td>
+<td>Set a new password with a reset token</td>
+</tr>
+<tr>
+<td><code>GET /check-username?username=</code></td>
+<td>Public</td>
+<td>CLASS_A, own bucket</td>
+<td>Returns <code>{ exists }</code></td>
+</tr>
+<tr>
+<td><code>POST /google</code></td>
+<td>Public</td>
+<td>CLASS_A</td>
+<td>Google sign-in with an ID token</td>
+</tr>
+<tr>
+<td><code>POST /refresh</code></td>
+<td>Public</td>
+<td>CLASS_A</td>
+<td>Rotate the token pair</td>
+</tr>
+<tr>
+<td><code>POST /logout</code></td>
+<td>Public</td>
+<td>CLASS_A</td>
+<td>Revoke the refresh token</td>
+</tr>
+<tr>
+<td><code>GET /me</code></td>
+<td>Bearer</td>
+<td>CLASS_C</td>
+<td>Profile, current plan, allowed question types and enabled feature flags</td>
+</tr>
+</tbody>
+</table>
+<p><code>GET /me</code> makes four reads at the same time: the profile (<code>UsersService.getMe</code>), the current plan and the allowed question types (<code>SubscriptionsService</code>), and the enabled feature flags (<code>FeatureFlagsService</code>). If the feature flag read fails, it uses the defaults from code instead of failing.</p>
+<h3 id="admin-users-v1admin-srcidentityusersadmincontrollerts">Admin users (<code>/v1/admin</code>, <code>src/identity/users/admin.controller.ts</code>)<a class="headerlink" href="#admin-users-v1admin-srcidentityusersadmincontrollerts" title="Permanent link">¶</a></h3>
+<p>All of these use the CLASS_C rate limit and need a platform permission (see <a href="../rbac/">RBAC</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Method and path</th>
+<th>Permission</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /users</code></td>
+<td><code>users:read</code></td>
+<td>Cursor-paged list, newest first. Filters: <code>search</code> (name, username, email), <code>role</code>, <code>isActive</code>, <code>isVerified</code>. Each user includes their platform role keys. <code>meta</code> has <code>nextCursor</code> and <code>total</code>.</td>
+</tr>
+<tr>
+<td><code>GET /users/:username/roles</code></td>
+<td><code>users:read</code></td>
+<td>A user's platform roles</td>
+</tr>
+<tr>
+<td><code>POST /users/:username/roles</code></td>
+<td><code>users:create</code></td>
+<td>Add a platform role. Body: <code>{ roleKey }</code>.</td>
+</tr>
+<tr>
+<td><code>DELETE /users/:username/roles/:roleKey</code></td>
+<td><code>users:delete</code></td>
+<td>Remove a platform role (soft delete)</td>
+</tr>
+</tbody>
+</table>
+<p>Admin rules (<code>src/identity/users/admin.service.ts</code>):</p>
+<ul>
+<li>You cannot change <strong>your own</strong> roles (<code>403</code>).</li>
+<li>You can only add roles with scope <code>platform</code> here. Org roles come from org membership (<code>400</code>).</li>
+<li>Adding a role the user already has returns <code>409</code>.</li>
+</ul>
+<h2 id="8-async-work-emails-and-events">8. Async work, emails and events<a class="headerlink" href="#8-async-work-emails-and-events" title="Permanent link">¶</a></h2>
+<p>This module uses no queues and no websocket events. It sends these emails through <code>EmailService</code> (see <a href="../notifications/">Notifications</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Email</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verification</td>
+<td>On sign-up, and on login when the last link has expired</td>
+</tr>
+<tr>
+<td>Welcome</td>
+<td>After email verification. After a Google sign-up or claim, it also includes the username and generated password.</td>
+</tr>
+<tr>
+<td>Password reset</td>
+<td>On <code>POST /forgot-password</code> for an active account</td>
+</tr>
+</tbody>
+</table>
+<h2 id="9-bootstrapping-the-first-admin">9. Bootstrapping the first admin<a class="headerlink" href="#9-bootstrapping-the-first-admin" title="Permanent link">¶</a></h2>
+<p><code>npm run bootstrap-admin -- --email &lt;email&gt; --password &lt;password&gt;</code> runs <code>src/scripts/bootstrap-admin.ts</code>:</p>
+<ol>
+<li>The <code>super_admin</code> role must already exist, so run <code>npm run seed</code> first.</li>
+<li>If any user already has <code>super_admin</code>, the script stops. It prints "already bootstrapped" if that user has the same email, and fails otherwise. <strong>This script can only create one super admin.</strong> You can add more later with <code>POST /v1/admin/users/:username/roles</code>.</li>
+<li>In one transaction, it creates a verified, active user with username <code>system</code> and the given email and password, and gives that user <code>super_admin</code>.</li>
+</ol>
+<p>The script does not check the password policy and does not create a subscription.</p>
+<h2 id="10-where-the-code-lives">10. Where the code lives<a class="headerlink" href="#10-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/identity/auth/auth.controller.ts</code></td>
+<td>Auth routes</td>
+</tr>
+<tr>
+<td><code>src/identity/auth/auth.service.ts</code></td>
+<td>All auth flows, plus token signing and storage</td>
+</tr>
+<tr>
+<td><code>src/identity/auth/google/google-oauth.service.ts</code></td>
+<td>Google ID token check</td>
+</tr>
+<tr>
+<td><code>src/identity/auth/guards/jwt-auth.guard.ts</code></td>
+<td>Global auth guard and <code>JwtPayload</code></td>
+</tr>
+<tr>
+<td><code>src/identity/auth/decorators/</code></td>
+<td><code>@CurrentUser()</code>, <code>@IsStrongPassword()</code></td>
+</tr>
+<tr>
+<td><code>src/common/decorators/public.decorator.ts</code></td>
+<td><code>@Public()</code></td>
+</tr>
+<tr>
+<td><code>src/identity/helpers/</code></td>
+<td>Generated passwords and the placeholder username prefix</td>
+</tr>
+<tr>
+<td><code>src/identity/users/users.service.ts</code></td>
+<td>User reads and writes used by auth and organizations</td>
+</tr>
+<tr>
+<td><code>src/identity/users/admin.controller.ts</code>, <code>admin.service.ts</code></td>
+<td>Admin user and role routes</td>
+</tr>
+<tr>
+<td><code>src/scripts/bootstrap-admin.ts</code></td>
+<td>Creates the first super admin</td>
+</tr>
+<tr>
+<td><code>tests/unit/identity/</code></td>
+<td>Unit tests (<code>auth/</code>, <code>users/</code>, <code>helpers/</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="11-known-gaps-and-todos">11. Known gaps and TODOs<a class="headerlink" href="#11-known-gaps-and-todos" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>The expiry values in <code>.env.example</code> do not work.</strong> It has <code>JWT_ACCESS_EXPIRY=15m</code> and <code>JWT_REFRESH_EXPIRY=7d</code>, but the code does <code>+value</code>, which turns <code>15m</code> into <code>NaN</code>. Use seconds instead, for example <code>900</code> and <code>604800</code>.</li>
+<li><strong>There is no endpoint for users to update their profile or change their password.</strong> <code>UsersService.update</code> and <code>remove</code> exist, but no controller calls them. A user with <code>mustChangePassword</code> can only change the password through the reset flow.</li>
+<li><strong>The API cannot deactivate or delete a user.</strong> <code>is_active</code> is checked everywhere, but nothing sets it to false.</li>
+<li><strong>Only one refresh token per user</strong> (rule 6), so a user cannot stay signed in on several devices.</li>
+<li><strong><code>POST /refresh</code> does not check <code>is_active</code> or <code>is_verified</code>.</strong> The guard still rejects the new access token, so the risk is low.</li>
+<li><strong>The guard reads the database on every request.</strong> Nothing is cached.</li>
+<li><strong><code>request.user.email</code> and <code>request.user.username</code> come from the token.</strong> They can be out of date until the token expires.</li>
+<li><strong>Sign-up can take over an unverified row</strong> with the same email and replace its password. The real owner still has to click the verification link. If they do click it, the password the other person chose stays on the account.</li>
+<li><strong><code>OAuthProvider.GITHUB</code></strong> is in the enum, but there is no GitHub sign-in.</li>
+<li><strong>Emails are case-sensitive</strong> (rule 13), so <code>A@x.com</code> and <code>a@x.com</code> can be two accounts. The unique index is on the raw value.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

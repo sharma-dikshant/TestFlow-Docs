@@ -1,0 +1,1683 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="How a participant starts, answers, runs code in, and submits an assessment attempt, plus review, rejection and the leaderboard" name="description"/>
+<link href="../assessment-generation/" rel="prev"/>
+<link href="../evaluation/" rel="next"/>
+<link href="../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Attempts - TestFlow | Docs</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#attempts">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="TestFlow | Docs" class="md-header__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            TestFlow | Docs
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Attempts
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="" data-md-color-primary="indigo" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="TestFlow | Docs" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="TestFlow | Docs">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"></path></svg>
+</a>
+    TestFlow | Docs
+  </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Data
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Data
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../erd/">
+<span class="md-ellipsis">
+    
+  
+    ERD (Data Model)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../data-access-pattern/">
+<span class="md-ellipsis">
+    
+  
+    Data Access Patterns
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--section md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api-design/v1/">
+<span class="md-ellipsis">
+    
+  
+    v1
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Feature Design
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Design
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_1" id="__nav_7_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_1_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../auth/">
+<span class="md-ellipsis">
+    
+  
+    Authentication &amp; Users
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../rbac/">
+<span class="md-ellipsis">
+    
+  
+    RBAC
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../organizations/">
+<span class="md-ellipsis">
+    
+  
+    Organizations
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Assessment Engine
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Assessment Engine
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessments/">
+<span class="md-ellipsis">
+    
+  
+    Assessments
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../questions-and-tags/">
+<span class="md-ellipsis">
+    
+  
+    Questions &amp; Tags
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../assessment-generation/">
+<span class="md-ellipsis">
+    
+  
+    AI Assessment Generation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Attempts
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-used">
+<span class="md-ellipsis">
+      
+        3. Data used
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-attempt-lifecycle">
+<span class="md-ellipsis">
+      
+        4. Attempt lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flows">
+<span class="md-ellipsis">
+      
+        5. Main flows
+      
+    </span>
+</a>
+<nav aria-label="5. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-start-answer-submit">
+<span class="md-ellipsis">
+      
+        5.1 Start, answer, submit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-what-the-user-sees-during-the-test">
+<span class="md-ellipsis">
+      
+        5.2 What the user sees during the test
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-running-code-during-an-attempt">
+<span class="md-ellipsis">
+      
+        5.3 Running code during an attempt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-after-submission-result-analytics-ai-conversation">
+<span class="md-ellipsis">
+      
+        5.4 After submission: result, analytics, AI conversation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-reviewing-and-rejecting-attempts">
+<span class="md-ellipsis">
+      
+        5.5 Reviewing and rejecting attempts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#56-leaderboard">
+<span class="md-ellipsis">
+      
+        5.6 Leaderboard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#57-next-assessment-suggestion">
+<span class="md-ellipsis">
+      
+        5.7 Next-assessment suggestion
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        6. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events-queues-and-websocket-events">
+<span class="md-ellipsis">
+      
+        8. Async events, queues and WebSocket events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        9. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        10. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evaluation/">
+<span class="md-ellipsis">
+    
+  
+    Evaluation
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../code-execution/">
+<span class="md-ellipsis">
+    
+  
+    Code Execution
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    AI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    AI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai/">
+<span class="md-ellipsis">
+    
+  
+    AI Layer (LLMs &amp; Graphs)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ai-assistant/">
+<span class="md-ellipsis">
+    
+  
+    AI Assistant &amp; Tools
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../commerce/">
+<span class="md-ellipsis">
+    
+  
+    Commerce, Payments &amp; Webhooks
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../learning-roadmaps/">
+<span class="md-ellipsis">
+    
+  
+    Learning Roadmaps
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_6" id="__nav_7_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Platform
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_6_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Platform
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../realtime-events/">
+<span class="md-ellipsis">
+    
+  
+    Realtime Events (WebSocket)
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../jobs-and-schedulers/">
+<span class="md-ellipsis">
+    
+  
+    Jobs &amp; Schedulers
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../notifications/">
+<span class="md-ellipsis">
+    
+  
+    Notifications &amp; Email
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../platform-services/">
+<span class="md-ellipsis">
+    
+  
+    Platform Services
+  
+
+    
+  </span>
+<span class="md-status md-status--stable"></span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../claude-agent-arch/arch/">
+<span class="md-ellipsis">
+    
+  
+    Claude Code Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-purpose">
+<span class="md-ellipsis">
+      
+        1. Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-key-concepts">
+<span class="md-ellipsis">
+      
+        2. Key concepts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-data-used">
+<span class="md-ellipsis">
+      
+        3. Data used
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-attempt-lifecycle">
+<span class="md-ellipsis">
+      
+        4. Attempt lifecycle
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-main-flows">
+<span class="md-ellipsis">
+      
+        5. Main flows
+      
+    </span>
+</a>
+<nav aria-label="5. Main flows" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#51-start-answer-submit">
+<span class="md-ellipsis">
+      
+        5.1 Start, answer, submit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#52-what-the-user-sees-during-the-test">
+<span class="md-ellipsis">
+      
+        5.2 What the user sees during the test
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#53-running-code-during-an-attempt">
+<span class="md-ellipsis">
+      
+        5.3 Running code during an attempt
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#54-after-submission-result-analytics-ai-conversation">
+<span class="md-ellipsis">
+      
+        5.4 After submission: result, analytics, AI conversation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#55-reviewing-and-rejecting-attempts">
+<span class="md-ellipsis">
+      
+        5.5 Reviewing and rejecting attempts
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#56-leaderboard">
+<span class="md-ellipsis">
+      
+        5.6 Leaderboard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#57-next-assessment-suggestion">
+<span class="md-ellipsis">
+      
+        5.7 Next-assessment suggestion
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-business-rules-and-edge-cases">
+<span class="md-ellipsis">
+      
+        6. Business rules and edge cases
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-endpoints-summary">
+<span class="md-ellipsis">
+      
+        7. Endpoints summary
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-async-events-queues-and-websocket-events">
+<span class="md-ellipsis">
+      
+        8. Async events, queues and WebSocket events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-where-the-code-lives">
+<span class="md-ellipsis">
+      
+        9. Where the code lives
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-known-gaps-and-todos-found-in-code">
+<span class="md-ellipsis">
+      
+        10. Known gaps and TODOs found in code
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="attempts">Attempts<a class="headerlink" href="#attempts" title="Permanent link">¶</a></h1>
+<h2 id="1-purpose">1. Purpose<a class="headerlink" href="#1-purpose" title="Permanent link">¶</a></h2>
+<p>An <strong>attempt</strong> is one participant sitting one assessment. The attempts feature covers everything from "Start test" to "see my result":</p>
+<ul>
+<li>start (or resume) an attempt, after checking the user may sit the assessment</li>
+<li>show the questions without leaking the answers</li>
+<li>save, change and clear answers while the test is open</li>
+<li>run code for coding questions (streamed over WebSocket)</li>
+<li>submit the attempt and hand it to <a href="../evaluation/">evaluation</a></li>
+<li>show the result, analytics, and an AI conversation once the attempt is graded</li>
+<li>let reviewers list attempts, read answers, and <strong>reject</strong> an attempt</li>
+<li>rank evaluated attempts on a <strong>leaderboard</strong></li>
+</ul>
+<p>The code lives in <code>src/assessments/attempts/</code>. The rules (what may happen in which state) live in small pure functions in <code>src/assessments/domain/</code>.</p>
+<h2 id="2-key-concepts">2. Key concepts<a class="headerlink" href="#2-key-concepts" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attempt</td>
+<td>A row in <code>assessment_attempts</code>. Each user has <strong>at most one attempt per assessment</strong>. It has a public <code>uid</code> (UUID) used in all URLs. The numeric <code>id</code> is internal.</td>
+</tr>
+<tr>
+<td>Response</td>
+<td>A row in <code>assessment_attempt_responses</code>. It holds the user's answer to one question in one attempt.</td>
+</tr>
+<tr>
+<td>Participant</td>
+<td>A row in <code>assessment_participants</code>. A user must be an <strong>active</strong> participant to start. See <a href="../assessments/">assessments</a>.</td>
+</tr>
+<tr>
+<td>Attempt window</td>
+<td><code>attemptStartTime</code> to <code>attemptEndTime</code> on the assessment. You can only start an attempt and write answers inside this window.</td>
+</tr>
+<tr>
+<td>Registration window</td>
+<td><code>registrationStartTime</code> to <code>registrationEndTime</code>. Users can register (become active) only inside it. This is separate from the attempt window.</td>
+</tr>
+<tr>
+<td>Settled attempt</td>
+<td>An attempt in <code>evaluated</code> or <code>rejected</code>. Nothing changes it any more (except evaluated to rejected), so reads about it are cached.</td>
+</tr>
+<tr>
+<td>Code run</td>
+<td>Running the user's code against the visible test cases, or once on custom input, during the test. Nothing is saved.</td>
+</tr>
+<tr>
+<td>Rejection</td>
+<td>A reviewer sets an attempt aside with a reason. The score is kept for the record, but the user sees the reason instead of a result, and the attempt leaves the leaderboard.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-data-used">3. Data used<a class="headerlink" href="#3-data-used" title="Permanent link">¶</a></h2>
+<p>See <a href="../../erd/">ERD: Assessment Engine</a> for full table definitions. This feature reads and writes:</p>
+<ul>
+<li><code>assessment_attempts</code>: status, <code>started_at</code>, <code>submitted_at</code>, <code>score</code>, counters (<code>total_questions</code>, <code>attempted_questions</code>, <code>correct_responses</code>, <code>incorrect_responses</code>), rejection fields (<code>rejected_at</code>, <code>rejected_by</code>, <code>rejection_reason</code>), and <code>next_assessment_suggestion</code> (jsonb, section 5.7). A unique constraint <code>UQ_assessment_attempts_user_assessment</code> on <code>(user_id, assessment_id)</code> enforces one attempt per user.</li>
+<li><code>assessment_attempt_responses</code>: <code>answer</code> (jsonb: the MCQ option or descriptive text), <code>language</code> and <code>source_code</code> (coding), <code>evaluation_status</code>, <code>code_verdict</code>, <code>is_correct</code>, <code>marks_awarded</code>, <code>evaluation_result</code> (jsonb), <code>answered_at</code>, <code>evaluated_at</code>.</li>
+<li><code>jobs</code>: the submit step creates an <code>EVALUATE_ATTEMPT</code> job row. See <a href="../jobs-and-schedulers/">jobs and schedulers</a>.</li>
+<li>Reads <code>assessments</code>, <code>assessment_sections</code>, <code>assessment_questions</code> and <code>assessment_participants</code>.</li>
+</ul>
+<h2 id="4-attempt-lifecycle">4. Attempt lifecycle<a class="headerlink" href="#4-attempt-lifecycle" title="Permanent link">¶</a></h2>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; in_progress: start
+    in_progress --&gt; submitted: user submits
+    submitted --&gt; evaluating: evaluation job claims it
+    evaluating --&gt; evaluated: all responses graded and scored
+    in_progress --&gt; rejected: reviewer rejects
+    submitted --&gt; rejected: reviewer rejects
+    evaluating --&gt; rejected: reviewer rejects
+    evaluated --&gt; rejected: reviewer rejects
+    rejected --&gt; [*]
+    evaluated --&gt; [*]
+</div>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>What it means</th>
+<th>What the user can do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>in_progress</code></td>
+<td>Being sat. Answers can change.</td>
+<td>Read questions, save/clear answers, run code, submit</td>
+</tr>
+<tr>
+<td><code>submitted</code></td>
+<td>Handed in. Waiting for the evaluation job.</td>
+<td>Wait. Result returns 400 "not evaluated yet".</td>
+</tr>
+<tr>
+<td><code>evaluating</code></td>
+<td>The evaluator is grading responses.</td>
+<td>Wait.</td>
+</tr>
+<tr>
+<td><code>evaluated</code></td>
+<td>Graded and scored.</td>
+<td>See result, analytics, open AI conversation, appear on leaderboard</td>
+</tr>
+<tr>
+<td><code>rejected</code></td>
+<td>Set aside by a reviewer.</td>
+<td>Result returns 409 with the reviewer's reason</td>
+</tr>
+</tbody>
+</table>
+<p>The transition table is <code>ATTEMPT_TRANSITIONS</code> in <code>src/assessments/domain/attempt-transitions.ts</code>.</p>
+<p>Each response also has its own small lifecycle (<code>pending</code>, <code>processing</code>, <code>completed</code>, <code>failed</code>, <code>cancelled</code>). Every saved answer starts as <code>pending</code>. Grading happens only after submit. See <a href="../evaluation/">evaluation</a>.</p>
+<h2 id="5-main-flows">5. Main flows<a class="headerlink" href="#5-main-flows" title="Permanent link">¶</a></h2>
+<h3 id="51-start-answer-submit">5.1 Start, answer, submit<a class="headerlink" href="#51-start-answer-submit" title="Permanent link">¶</a></h3>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor U as Participant
+    participant C as AttemptsController
+    participant S as AttemptsService
+    participant DB as Postgres
+    participant MQ as RabbitMQ
+    U-&gt;&gt;C: POST /v1/attempts/:assessmentId/start
+    C-&gt;&gt;S: startAttempt
+    S-&gt;&gt;DB: load assessment and participant
+    S-&gt;&gt;S: check participant active, assessment published, window open
+    S-&gt;&gt;DB: find attempt for user and assessment
+    alt attempt exists
+        S--&gt;&gt;U: existing uid - resume
+    else no attempt yet
+        S-&gt;&gt;DB: insert attempt in_progress
+        S--&gt;&gt;U: new uid
+    end
+    U-&gt;&gt;C: GET /v1/attempts/:uid/questions
+    C--&gt;&gt;U: question list with saved answers
+    U-&gt;&gt;C: GET /v1/attempts/:uid/questions/:qid
+    C--&gt;&gt;U: question detail without answer key
+    U-&gt;&gt;C: PUT /v1/attempts/:uid/responses/:qid
+    C-&gt;&gt;S: upsertResponse
+    S-&gt;&gt;S: attempt in_progress and window open
+    S-&gt;&gt;DB: upsert response as pending, clear old grade
+    C--&gt;&gt;U: true
+    U-&gt;&gt;C: POST /v1/attempts/:uid/submit
+    C-&gt;&gt;S: submitAttempt
+    S-&gt;&gt;DB: TX - update status to submitted where status is in_progress
+    S-&gt;&gt;DB: TX - insert EVALUATE_ATTEMPT job
+    S-&gt;&gt;MQ: publish attempt.evaluate
+    C--&gt;&gt;U: true
+</div>
+<p><strong>Starting</strong> (<code>AttemptsService.startAttempt</code>) checks, in order:</p>
+<ol>
+<li>The assessment exists (404 otherwise).</li>
+<li>The user is an <strong>active</strong> participant (<code>assertActive</code> in <code>domain/participant-invariants.ts</code>). An <code>invited</code> user gets 403 "Accept the invitation before starting". No row, or a <code>revoked</code> row, gets 403 "You are not registered". The creator has an active participant row too, so they can sit their own assessment.</li>
+<li>The assessment is <code>PUBLISHED</code> (<code>assertOpenToParticipants</code>). Drafts cannot be attempted by anyone, the creator included, because their questions can still change.</li>
+<li>Now is inside the attempt window (<code>assertOngoing</code>). Before it: "has not started yet". After it: "has ended".</li>
+<li>Inside a transaction: if an attempt for this user and assessment already exists, its <code>uid</code> is returned. Otherwise a new <code>in_progress</code> attempt is inserted with <code>startedAt = now</code> and <code>totalQuestions = assessment.currTotalQuestions</code>.</li>
+</ol>
+<p>There is no separate organization-membership check at start. For organization assessments, access comes from the participant row created when the invitation is accepted. See <a href="../organizations/">organizations</a>.</p>
+<p><strong>Saving an answer</strong> (<code>upsertResponse</code>) requires the attempt to be <code>in_progress</code>, the window to be open, and the question to belong to the attempt's assessment. The body depends on the question type:</p>
+<table>
+<thead>
+<tr>
+<th>Question type</th>
+<th>Body</th>
+<th>Extra checks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCQ</td>
+<td><code>{ optionId }</code></td>
+<td><code>optionId</code> must be one of the question's options</td>
+</tr>
+<tr>
+<td>Coding</td>
+<td><code>{ language, code }</code></td>
+<td><code>language</code> must be in the question's <code>supportedLanguages</code></td>
+</tr>
+<tr>
+<td>Descriptive</td>
+<td><code>{ text }</code></td>
+<td>none. A blank text is kept and later grades to zero.</td>
+</tr>
+</tbody>
+</table>
+<p>Sending fields of another type (for example <code>code</code> on an MCQ) is a 400. Every save resets <code>evaluationStatus</code> to <code>pending</code> and clears <code>isCorrect</code>, <code>marksAwarded</code>, <code>codeVerdict</code> and <code>evaluationResult</code>. A client can autosave coding answers safely because each save replaces the last one.</p>
+<p><strong>Clearing an answer</strong> (<code>DELETE /v1/attempts/:uid/responses/:qid</code>) has the same checks and deletes the response row. A question with no response is simply not graded (zero marks, no penalty).</p>
+<p><strong>Submitting</strong> (<code>submitAttempt</code>) runs one transaction:</p>
+<ol>
+<li><code>UPDATE assessment_attempts SET status='submitted', submitted_at=now WHERE id=? AND status='in_progress'</code>. If no row changed, it throws 409 "already submitted".</li>
+<li>Insert a <code>jobs</code> row: type <code>EVALUATE_ATTEMPT</code>, queue <code>attempt-evaluation</code>, <code>maxAttempts = 3</code>, payload <code>{ attemptId, attemptUid, assessmentId, userId }</code>.</li>
+</ol>
+<p>After the commit, it publishes <code>{ jobId, ...payload }</code> to exchange <code>attempt</code> with routing key <code>attempt.evaluate</code>. If the publish fails, the job is marked <code>FAILED</code> (it can be retried later) but the <strong>submission still stands</strong> and the user gets <code>true</code>. Grading then continues asynchronously. See <a href="../evaluation/">evaluation</a>.</p>
+<h3 id="52-what-the-user-sees-during-the-test">5.2 What the user sees during the test<a class="headerlink" href="#52-what-the-user-sees-during-the-test" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>GET /questions</code> returns, for each question: id, order, section, and the user's saved answer (<code>selectedOptionId</code>, <code>code</code>, or <code>text</code>).</li>
+<li><code>GET /questions/:qid</code> returns the question text, type, options (without <code>correctOptionId</code>), the coding view (input/output format, constraints, starter code, languages, limits, and <strong>visible test cases only</strong>), and the descriptive view (<code>maxWords</code> only, because checkpoints are the answer key).</li>
+<li>The answer key and explanation are only returned by <code>GET /result</code>, which needs an <code>evaluated</code> attempt.</li>
+</ul>
+<p>Caching (Redis, via <code>RedisHelper.safeGet/safeSet</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Read</th>
+<th>Cached when</th>
+<th>Key prefix</th>
+<th>TTL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Question list with answers</td>
+<td>attempt is settled</td>
+<td><code>attempts:questions:v4:</code></td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td>Single question detail</td>
+<td>always (it carries no answer)</td>
+<td><code>attempts:question:v3:</code></td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td>Result</td>
+<td>always (only reachable when evaluated)</td>
+<td><code>attempts:result:v8:</code></td>
+<td>1 hour</td>
+</tr>
+<tr>
+<td>Analytics</td>
+<td>attempt is settled</td>
+<td><code>attempts:analytics:v2:</code></td>
+<td>1 hour</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-running-code-during-an-attempt">5.3 Running code during an attempt<a class="headerlink" href="#53-running-code-during-an-attempt" title="Permanent link">¶</a></h3>
+<p>Code runs go over the Socket.IO connection, not REST, so results can stream back case by case. The engine behind it is described in <a href="../code-execution/">code execution</a>.</p>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor U as Participant socket
+    participant G as EventsGateway
+    participant R as CodeRunService
+    participant CR as CodeRunner
+    U-&gt;&gt;G: emit code.run with requestId, attemptUid, questionId, language, code, mode
+    G-&gt;&gt;R: start
+    R-&gt;&gt;R: attempt in_progress, coding question of this assessment, language allowed
+    R-&gt;&gt;R: one run in flight per user, 5 second cooldown
+    R--&gt;&gt;U: code.run.started with total
+    loop each visible test case or the one custom input
+        R-&gt;&gt;CR: run
+        CR--&gt;&gt;R: result
+        R--&gt;&gt;U: code.run.case with passed, stdout, stderr, time, memory
+    end
+    R--&gt;&gt;U: code.run.completed with passed and total
+    Note over R,U: on a runner error R emits code.run.failed instead
+</div>
+<p>Rules (<code>src/assessments/attempts/code-run/code-run.service.ts</code>):</p>
+<ol>
+<li><code>mode: "samples"</code> runs the question's <strong>visible</strong> test cases. Hidden test cases are never run here. They belong to grading.</li>
+<li><code>mode: "custom"</code> runs once on the given <code>stdin</code> and returns the output in <code>code.run.completed</code>.</li>
+<li>The question must be a coding question of the attempt's assessment, and the language must be one the question offers <strong>and</strong> one the configured runner supports.</li>
+<li>One run in flight per user, and at most one new run every 5 seconds (<code>CODE_RUN_COOLDOWN_MS</code>). A refused run comes back as a socket <code>exception</code> event (409 or 429 with <code>retryAfterMs</code>).</li>
+<li>Code and stdin are each capped at 50,000 characters (<code>RunCodeDto</code>).</li>
+<li>Nothing is saved. The user must still <code>PUT</code> the response to keep the code.</li>
+<li>Events go only to the socket that started the run, not to the user's other tabs.</li>
+</ol>
+<h3 id="54-after-submission-result-analytics-ai-conversation">5.4 After submission: result, analytics, AI conversation<a class="headerlink" href="#54-after-submission-result-analytics-ai-conversation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Available when</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /v1/attempts/:uid/result</code></td>
+<td><code>evaluated</code></td>
+<td>Full per-question breakdown: chosen and correct option, explanation, submitted code, test-case results (hidden cases show only pass/fail and a generic message), descriptive checkpoint results, marks, and per-section breakdown. Also <code>nextAssessmentSuggestion</code>: the stored suggestion, or <code>null</code> (see 5.7). <code>rejected</code> gives 409 with the reason. Any other status gives 400.</td>
+</tr>
+<tr>
+<td><code>POST /v1/attempts/:uid/next-assessment</code></td>
+<td><code>evaluated</code></td>
+<td>Suggests the next assessment to take and stores it on the attempt. See 5.7.</td>
+</tr>
+<tr>
+<td><code>GET /v1/attempts/:uid/analytics</code></td>
+<td>any status</td>
+<td>Score, accuracy, negative marks, a timeline in buckets of <code>intervalMinutes</code> (1 to 60, default 5), topic and section stats. A live attempt is recomputed on every call.</td>
+</tr>
+<tr>
+<td><code>POST /v1/attempts/:uid/conversations</code></td>
+<td><code>evaluated</code></td>
+<td>Opens (or returns) an AI conversation about this attempt. Blocked earlier so the bot cannot leak answers mid-test. See <a href="../ai-assistant/">AI assistant</a>.</td>
+</tr>
+<tr>
+<td><code>GET /v1/attempts</code></td>
+<td>any</td>
+<td>The caller's attempts, newest first, filterable by <code>status</code> and <code>assessmentId</code>, paginated.</td>
+</tr>
+</tbody>
+</table>
+<p>Hidden test cases stay hidden even after evaluation, because other participants may still be sitting the same assessment.</p>
+<h3 id="55-reviewing-and-rejecting-attempts">5.5 Reviewing and rejecting attempts<a class="headerlink" href="#55-reviewing-and-rejecting-attempts" title="Permanent link">¶</a></h3>
+<p>Two sets of routes share one service (<code>AttemptReviewService</code>):</p>
+<ul>
+<li><strong>Organization reviewers</strong> use <code>/v1/assessments/:id/attempts...</code>. These need the <code>x-organization-id</code> header (400 without it). Permissions are checked against the member's org role, and only that organization's assessments resolve.</li>
+<li><strong>Platform admins</strong> use <code>/v1/admin/assessments/:id/attempts...</code>. These are checked against platform roles and reach any assessment. See <a href="../rbac/">RBAC</a>.</li>
+</ul>
+<div class="mermaid">sequenceDiagram
+    autonumber
+    actor R as Reviewer
+    participant C as Review or Admin controller
+    participant S as AttemptReviewService
+    participant DB as Postgres
+    R-&gt;&gt;C: POST .../attempts/:attemptUid/reject with reason
+    C-&gt;&gt;S: reject
+    S-&gt;&gt;DB: resolve assessment in scope
+    S-&gt;&gt;DB: TX - load attempt
+    S-&gt;&gt;S: rejectAttempt - fails if already rejected
+    S-&gt;&gt;DB: TX - update status rejected where status is unchanged
+    alt no row updated
+        S--&gt;&gt;R: 409 attempt changed, try again
+    else updated
+        S--&gt;&gt;R: attempt with rejection details and maxScore
+    end
+</div>
+<p>Effects of a rejection:</p>
+<ul>
+<li>An <code>in_progress</code> attempt is closed. Because start returns the existing row, the user cannot restart.</li>
+<li>A <code>submitted</code> or <code>evaluating</code> attempt stops being graded. Child evaluation jobs see the new status and cancel themselves. See <a href="../evaluation/">evaluation</a>.</li>
+<li>An <code>evaluated</code> attempt keeps its score, but <code>GET /result</code> returns 409 with the reason, and it drops off the leaderboard.</li>
+</ul>
+<p><code>GET .../attempts</code> lists attempts newest first, with filters for <code>status</code> and <code>search</code> (username, email or full name, <code>ILIKE</code>). Each row includes <code>maxScore</code>, which is the sum of every question's <code>correctMarks</code>. <code>GET .../attempts/:attemptUid/responses</code> returns every question with the participant's answer and the <strong>full</strong> grading detail, including hidden test-case inputs and outputs.</p>
+<h3 id="56-leaderboard">5.6 Leaderboard<a class="headerlink" href="#56-leaderboard" title="Permanent link">¶</a></h3>
+<p><code>GET /v1/assessments/:id/leaderboard</code> (<code>LeaderboardService</code>):</p>
+<ol>
+<li>Only <code>evaluated</code> attempts are ranked. Users with deleted accounts are left out.</li>
+<li>Order: higher <code>score</code> first, then shorter <code>time_taken_ms</code> (<code>submitted_at - started_at</code>, whole milliseconds).</li>
+<li>Rank uses SQL <code>RANK()</code>, so ties share a rank and the next rank skips (1, 1, 3).</li>
+<li>Paging is keyset-based. <code>cursor</code> is the attempt id of the last row on the previous page (<code>meta.nextCursor</code>). The page size is <code>limit</code> (default 20).</li>
+<li><code>meta.me</code> is the caller's own entry wherever it falls, or <code>null</code> if they have no evaluated attempt.</li>
+<li>Access: for a personal assessment, the creator and <strong>active</strong> participants only (invited or revoked users get 403). Inside an organization, members whose role grants <code>org_assessments:read</code>, and the assessment must belong to that organization.</li>
+</ol>
+<h3 id="57-next-assessment-suggestion">5.7 Next-assessment suggestion<a class="headerlink" href="#57-next-assessment-suggestion" title="Permanent link">¶</a></h3>
+<p>After an attempt is evaluated, the user can ask for the <strong>next assessment</strong> to take. The AI reads how they did and designs a follow-up test that targets their weak sections and topics, at a difficulty set by their accuracy. The suggestion is shaped like an <a href="../assessments/">assessment template</a>, so the client starts it the same way as a template: as a manual-mode generate request.</p>
+<p>The suggestion is <strong>not</strong> saved as a template. It is a JSON object stored on the attempt, in <code>assessment_attempts.next_assessment_suggestion</code>. Each attempt has at most one.</p>
+<div class="mermaid">sequenceDiagram
+    participant C as Client
+    participant API as AttemptsController
+    participant S as AttemptSuggestionService
+    participant U as UsageService
+    participant AI as AssessmentSuggestionAiService
+    participant DB as Postgres
+
+    C-&gt;&gt;API: POST /v1/attempts/:uid/next-assessment
+    API-&gt;&gt;S: suggestNext(attemptUid, userId)
+    S-&gt;&gt;DB: load attempt (must be the caller's, status evaluated)
+    S-&gt;&gt;U: getFeatureValue(AI_ASSESSMENT_SUGGESTION)
+    alt plan does not include it
+        S--&gt;&gt;C: 403
+    end
+    alt attempt already has a suggestion
+        S--&gt;&gt;C: 200 stored suggestion (no LLM call)
+    end
+    S-&gt;&gt;DB: attempt analytics, assessment, sections
+    S-&gt;&gt;U: getFeatureValue(ALLOWED_QUESTION_TYPES)
+    S-&gt;&gt;AI: suggestNextAssessment(performance, default model)
+    AI--&gt;&gt;S: name, title, description, prompt, duration, sections
+    S-&gt;&gt;DB: UPDATE assessment_attempts SET next_assessment_suggestion WHERE id AND next_assessment_suggestion IS NULL
+    S--&gt;&gt;C: 200 suggestion
+</div>
+<p><strong>What the model gets:</strong> the assessment taken (title, description, duration), the overall result, one row per section (question type, difficulty, accuracy, correct, incorrect and unanswered counts, score) and one row per topic. These come from the same analytics as <code>GET /analytics</code>. It also gets the question types the user's plan allows.</p>
+<p><strong>What it returns</strong> (and what is stored):</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code>, <code>title</code>, <code>description</code></td>
+<td><code>title</code> is what the new assessment is created with. <code>description</code> tells the user why this test, from their result.</td>
+</tr>
+<tr>
+<td><code>prompt</code></td>
+<td>What the whole assessment covers.</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>Minutes, 5 to 180.</td>
+</tr>
+<tr>
+<td><code>maxTotalQuestions</code></td>
+<td>The sections' question counts summed (computed, not from the model).</td>
+</tr>
+<tr>
+<td><code>sections[]</code></td>
+<td>1 to 3, in order. Each has <code>title</code>, <code>prompt</code>, <code>questionType</code>, <code>questionCount</code>, <code>difficulty</code> (1–5), <code>positiveMark</code>, <code>negativeMark</code>.</td>
+</tr>
+<tr>
+<td><code>generatedAt</code></td>
+<td>ISO time it was made.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rules:</strong></p>
+<ol>
+<li><strong>Plan feature.</strong> Generating needs <code>AI_ASSESSMENT_SUGGESTION</code> on the user's <strong>personal</strong> plan, with any non-blank value. Without it, 403. It is a setting, not a quota: nothing is consumed. See <a href="../commerce/">Commerce</a>.</li>
+<li><strong>Evaluated only.</strong> The same check as <code>GET /result</code>: <code>rejected</code> gives 409, any other status gives 400.</li>
+<li><strong>One per attempt, generated once.</strong> A <code>POST</code> on an attempt that already has a suggestion returns it with no LLM call. The plan is still checked first.</li>
+<li><strong>Two requests at once.</strong> Both may call the model, but the write only lands while the column is <code>null</code>. The second request reads back and returns the first one's suggestion.</li>
+<li><strong>Default model.</strong> The call always uses the registry's default model, not the plan's <code>AI_MODEL</code>.</li>
+<li><strong>Generation limits are enforced on the output.</strong> Section count, per-section and per-assessment question limits, and the plan's allowed question types are checked in the <code>parse</code> step. A violation is sent back to the model as a repair turn (up to 3 calls in all).</li>
+<li><strong>Difficulty rule</strong> (in the prompt, not enforced in code): accuracy below 40% → one level easier; 40–75% → same level; above 75% → one level harder.</li>
+<li><strong>Marks are not the model's choice.</strong> Each section reuses the marks of the first section of the same question type in the attempted assessment. A type that assessment did not have gets +1 / −0.</li>
+<li><strong>Starting it costs a normal generation.</strong> The suggestion only describes the assessment. Starting it is a manual-mode <code>POST /v1/assessments/generate</code>, which spends <code>AI_ASSESSMENT</code> like any other generation. <code>maxParticipants</code> is not stored; a personal assessment uses its fixed default.</li>
+</ol>
+<p><strong>Reading it back.</strong> <code>GET /v1/attempts/:uid/result</code> returns <code>nextAssessmentSuggestion</code> (the stored object, or <code>null</code>). The client shows the suggestion when it is there, and a "Suggest my next test" button when it is <code>null</code>. The result is cached in Redis once evaluated (section 5.4), but the suggestion is <strong>not</strong> part of the cached entry. It is read from the attempt on every call, so a suggestion made after the first read still appears.</p>
+<h2 id="6-business-rules-and-edge-cases">6. Business rules and edge cases<a class="headerlink" href="#6-business-rules-and-edge-cases" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>One attempt per user per assessment.</strong> This is enforced by the unique constraint and by <code>startAttempt</code> returning the existing attempt. There is no "max attempts" setting and no retake.</li>
+<li><strong>Resuming</strong> is the same call as starting. <code>POST /start</code> returns the existing <code>uid</code> whatever its status. The client then reads <code>/questions</code> to restore saved answers.</li>
+<li><strong>No server-side timer.</strong> The assessment has a <code>duration</code> field, but the backend does not enforce it per attempt. There is no auto-submit, no scheduler, and no delayed queue. The only time limit is the assessment's <strong>attempt window</strong>: after <code>attemptEndTime</code>, starting and saving or clearing answers fail with "This assessment has ended". The client is expected to show the countdown and call submit.</li>
+<li><strong>Submitting after the deadline is allowed.</strong> <code>submitAttempt</code> does not check the window, so an attempt can be handed in (and graded) after <code>attemptEndTime</code>. Only the answers saved before the end are graded, because writes were blocked after it.</li>
+<li><strong>Never-submitted attempts stay <code>in_progress</code> forever.</strong> They are never graded and never appear on the leaderboard.</li>
+<li><strong>Double submit</strong> is safe. The status update is conditional on <code>status = 'in_progress'</code>, so only one of two racing requests wins. The other gets 409 "already submitted". Only one evaluation job is created.</li>
+<li><strong>Double start (race).</strong> Two concurrent first starts can both see no attempt. The second insert then breaks the unique constraint. This is not caught, so it surfaces as a 500 (see section 10).</li>
+<li><strong>Answers must match the question type.</strong> Sending fields of another type gives a 400. An MCQ option must be one of the question's options. A coding language must be offered by the question.</li>
+<li><strong>Questions are frozen once published.</strong> Questions can only be edited while the assessment is a draft, so question detail is safe to cache during a live attempt.</li>
+<li><strong>Rejection is final.</strong> <code>rejected</code> has no outgoing transitions, and rejecting twice gives 409.</li>
+<li><strong>The result is only for <code>evaluated</code>.</strong> A <code>submitted</code> or <code>evaluating</code> attempt gives 400 "not evaluated yet". The client polls until it is ready (no push event, see section 8).</li>
+</ol>
+<h2 id="7-endpoints-summary">7. Endpoints summary<a class="headerlink" href="#7-endpoints-summary" title="Permanent link">¶</a></h2>
+<p>Full request and response shapes are in <a href="../../api-design/v1/">API v1</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Who</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts</code></td>
+<td>owner</td>
+<td>List my attempts</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:assessmentId/start</code></td>
+<td>active participant</td>
+<td>Start or resume, returns <code>{ uid }</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/questions</code></td>
+<td>owner</td>
+<td>Question list with saved answers</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/questions/:assessmentQuestionId</code></td>
+<td>owner</td>
+<td>One question, no answer key</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/v1/attempts/:attemptUid/responses/:assessmentQuestionId</code></td>
+<td>owner</td>
+<td>Save or replace an answer</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/v1/attempts/:attemptUid/responses/:assessmentQuestionId</code></td>
+<td>owner</td>
+<td>Clear an answer (204)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/submit</code></td>
+<td>owner</td>
+<td>Submit for evaluation</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/result</code></td>
+<td>owner</td>
+<td>Graded result</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/attempts/:attemptUid/analytics</code></td>
+<td>owner</td>
+<td>Analytics</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/conversations</code></td>
+<td>owner</td>
+<td>Open the AI conversation</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/attempts/:attemptUid/next-assessment</code></td>
+<td>owner, plan <code>AI_ASSESSMENT_SUGGESTION</code></td>
+<td>Suggest the next assessment (stored on the attempt)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/leaderboard</code></td>
+<td>creator, participants, org members</td>
+<td>Ranked board</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/attempts</code></td>
+<td>org: <code>assessment_attempts:read</code></td>
+<td>List attempts (org)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/assessments/:id/attempts/:attemptUid/responses</code></td>
+<td>org: <code>assessment_attempt_responses:read</code></td>
+<td>Read answers (org)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/assessments/:id/attempts/:attemptUid/reject</code></td>
+<td>org: <code>assessment_attempts:update</code></td>
+<td>Reject (org)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments/:id/attempts</code></td>
+<td>platform: <code>assessment_attempts:read</code></td>
+<td>List attempts (admin)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v1/admin/assessments/:id/attempts/:attemptUid/responses</code></td>
+<td>platform: <code>assessment_attempt_responses:read</code></td>
+<td>Read answers (admin)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/v1/admin/assessments/:id/attempts/:attemptUid/reject</code></td>
+<td>platform: <code>assessment_attempts:update</code></td>
+<td>Reject (admin)</td>
+</tr>
+</tbody>
+</table>
+<p>Rate limits: most routes use policy <code>CLASS_C</code>. <code>start</code>, <code>submit</code>, <code>conversations</code> and <code>next-assessment</code> use the stricter <code>CLASS_B</code>. See <a href="../platform-services/">platform services</a>.</p>
+<h2 id="8-async-events-queues-and-websocket-events">8. Async events, queues and WebSocket events<a class="headerlink" href="#8-async-events-queues-and-websocket-events" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Name</th>
+<th>Direction</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RabbitMQ</td>
+<td>exchange <code>attempt</code>, key <code>attempt.evaluate</code>, queue <code>attempt-evaluation-queue</code></td>
+<td>published on submit</td>
+<td>Message is <code>{ jobId, attemptId, attemptUid, assessmentId, userId }</code></td>
+</tr>
+<tr>
+<td>Job row</td>
+<td><code>EVALUATE_ATTEMPT</code> in <code>jobs</code></td>
+<td>created on submit</td>
+<td>Can be polled with <code>GET /v1/jobs/:id</code> if the id is known</td>
+</tr>
+<tr>
+<td>Socket in</td>
+<td><code>code.run</code></td>
+<td>client to server</td>
+<td>Body is <code>RunCodeDto</code></td>
+</tr>
+<tr>
+<td>Socket out</td>
+<td><code>code.run.started</code>, <code>code.run.case</code>, <code>code.run.completed</code>, <code>code.run.failed</code></td>
+<td>server to the same socket</td>
+<td>Every event carries the client's <code>requestId</code></td>
+</tr>
+<tr>
+<td>Socket out</td>
+<td><code>exception</code></td>
+<td>server to client</td>
+<td>A refused run (validation, wrong attempt, rate limit)</td>
+</tr>
+</tbody>
+</table>
+<p>No WebSocket event or email is sent when an attempt is submitted, evaluated or rejected.</p>
+<h2 id="9-where-the-code-lives">9. Where the code lives<a class="headerlink" href="#9-where-the-code-lives" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/assessments/attempts/attempts.controller.ts</code> / <code>attempts.service.ts</code></td>
+<td>Participant routes: start, questions, responses, submit, result, conversation</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/analytics.service.ts</code></td>
+<td>Attempt analytics SQL</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/attempt-suggestion.service.ts</code></td>
+<td>Next-assessment suggestion: plan check, analytics to prompt input, store on the attempt</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/leaderboard.controller.ts</code> / <code>leaderboard.service.ts</code></td>
+<td>Leaderboard (raw SQL with <code>RANK()</code>)</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/attempt-review.controller.ts</code> / <code>attempt-review.service.ts</code></td>
+<td>Org reviewer routes and shared review logic</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/admin.controller.ts</code> / <code>admin.service.ts</code></td>
+<td>Platform-admin wrappers over the review service</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/code-run/</code></td>
+<td>Live code runs (service, DTO, socket event shapes)</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/section-breakdown.helper.ts</code></td>
+<td>Per-section stats for the result</td>
+</tr>
+<tr>
+<td><code>src/assessments/attempts/serializers/attempts.serializer.ts</code></td>
+<td>Response shaping, including <code>serializeNextAssessmentSuggestion</code></td>
+</tr>
+<tr>
+<td><code>src/assessments/domain/attempt-*.ts</code>, <code>response-*.ts</code>, <code>participant-invariants.ts</code>, <code>assessment-invariants.ts</code></td>
+<td>State machines and rules</td>
+</tr>
+<tr>
+<td><code>src/events/events.gateway.ts</code></td>
+<td>Socket.IO <code>code.run</code> handler</td>
+</tr>
+<tr>
+<td><code>src/common/helpers/question-content.helper.ts</code></td>
+<td>Candidate-safe views of questions and grades</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-known-gaps-and-todos-found-in-code">10. Known gaps and TODOs found in code<a class="headerlink" href="#10-known-gaps-and-todos-found-in-code" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>No duration enforcement and no auto-submit.</strong> <code>assessment.duration</code> is only displayed. Nothing closes an attempt when its time runs out or when the window ends (<code>attempts.service.ts</code> <code>startAttempt</code> and <code>submitAttempt</code>).</li>
+<li><strong>Submit ignores the window</strong> (<code>attempts.service.ts:339-341</code>), while saving answers does not (<code>resolveAnswerableQuestion</code>, line 229).</li>
+<li><strong>Code runs ignore the window.</strong> <code>CodeRunService.prepare</code> checks only <code>assertAnswerable</code> (<code>code-run.service.ts:72-73</code>), so code can still be run after <code>attemptEndTime</code> while the attempt is <code>in_progress</code>.</li>
+<li><strong>The start race gives a 500.</strong> The unique violation on <code>UQ_assessment_attempts_user_assessment</code> is not caught in <code>startAttempt</code> (<code>attempts.service.ts:86-99</code>).</li>
+<li><strong>Out-of-date Swagger text.</strong> The PUT response route says MCQ answers are "graded at once" (<code>attempts.controller.ts:335</code>), but every answer is saved <code>pending</code> and graded after submit. The start route lists "already completed it" as a 400 (<code>attempts.controller.ts:136</code>), but start just returns the existing attempt.</li>
+<li><strong>Code-run limits are per process.</strong> The in-flight set and the cooldown map live in memory (<code>code-run.service.ts:46-48</code>). With several instances, a user can run once per instance. The <code>lastRunAt</code> map is never pruned.</li>
+<li><strong>No push when grading finishes.</strong> The client has to poll <code>GET /result</code>. The submit response does not include the job id.</li>
+<li><strong>The result header marks come from the first section.</strong> <code>assessment.correctMarks/incorrectMarks</code> in <code>GET /result</code> come from <code>findSectionMarks</code>, while grading uses each question's own marks (<code>attempts.service.ts:400, 459-460</code>). These can differ when an assessment has several sections.</li>
+</ol>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>
